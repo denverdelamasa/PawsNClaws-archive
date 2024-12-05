@@ -45,7 +45,7 @@
         <div class="form-control mt-6">
           <button class="btn btn-primary">Login</button>
         </div>
-        <p>Don't have account? <a href="{{ url('') }}">Sign Up here</a></p>
+        <p>Don't have account? <a href="{{ url('/register') }}">Sign Up here</a></p>
       </form>
     </div>
   </div>
