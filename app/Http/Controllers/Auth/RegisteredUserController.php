@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
         // Handle profile picture upload
         $profilePicturePath = null; // Default to null if no picture is uploaded
         if ($request->hasFile('profile_picture')) {
-            $profilePicturePath = $request->file('profile_picture')->store('images/profile_picture', 'public');
+            $profilePicturePath = $request->file('profile_picture')->store('images/profile_pictures', 'public');
         }
     
         $user = User::create([
