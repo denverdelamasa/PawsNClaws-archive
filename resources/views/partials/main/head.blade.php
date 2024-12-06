@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="synthwave"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
