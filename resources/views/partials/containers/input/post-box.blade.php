@@ -2,13 +2,12 @@
     <div class="flex items-start gap-4">
       <!-- Profile Picture -->
       <img
-        src="https://via.placeholder.com/50"
+        src="https://picsum.photos/200"
         alt="Profile"
         class="w-12 h-12 rounded-full">
       <!-- Input and Buttons -->
       <div class="flex-grow">
-        <textarea placeholder="What do you want to share?" class="textarea textarea-bordered w-full resize-none" rows="2">
-        </textarea>
+        <textarea placeholder="What do you want to share?" class="textarea textarea-bordered w-full resize-none" rows="2"></textarea>
         <div class=" border-b border-b-base-100 my-2 py-2">        
             <button class="btn-primary btn btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">

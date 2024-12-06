@@ -6,7 +6,9 @@
         <!-- Page content nato -->
         @include('partials.containers.misc.header')
       
-        @include('partials.containers.input.post-box')
+        <div id="app">
+          <upload-post></upload-post>
+        </div>
         @include('partials.containers.post.post-card')
         @include('partials.containers.announcement.announcement-card')
         @include('partials.containers.event.event-card')
