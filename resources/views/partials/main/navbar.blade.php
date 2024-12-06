@@ -112,7 +112,6 @@
             <!-- Notifications -->
             <div id="app">
               <notifications></notifications>
-              <upload-post></upload-post>
             </div>
             <!-- Profile -->
             <div class="dropdown dropdown-end">

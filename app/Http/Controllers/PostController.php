@@ -11,14 +11,17 @@ class PostController extends Controller
 {
     public function getProfilePicture()
     {
-        // Assuming the user is authenticated
-        $user = auth()->user(); // This fetches the authenticated user
+        $user = Auth::user();  // Get the authenticated user
 
-        // You can change the response to include other user details as needed
+        if (!$user || !$user->profile_picture) {
+            // Return a default picture or a placeholder if no profile picture is set
+            return response()->json([
+                'profile_picture' => 'https://via.placeholder.com/150',  // You can customize this placeholder URL
+            ]);
+        }
+
         return response()->json([
-            'profileImage' => $user->profile_image, // Adjust field as necessary
-            'username' => $user->name, // Optionally include username or other data
-            // Add any other necessary data here
+            'profile_picture' => asset('storage/' . $user->profile_picture),  // Assuming the profile picture is stored in storage
         ]);
     }
 }
