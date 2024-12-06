@@ -7,7 +7,15 @@ import axios from 'axios';
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+// Import Vue and the component
 import { createApp } from 'vue';
-createApp(App).mount('#app');
+import Notification from './components/Notifications/Notifications.vue';
 
-//Components
+// Create the Vue app
+const app = createApp({});
+
+// Register components
+app.component('notifications', Notification);
+
+// Mount the Vue app to the #app element
+app.mount('#app');

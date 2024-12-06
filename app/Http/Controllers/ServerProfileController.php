@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
-class ProfileController extends Controller
+class ServerProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('profile.adminEdit', [
             'user' => $request->user(),
         ]);
     }

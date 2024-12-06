@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServerProfileController;
+use App\Http\Controllers\ServerController;
+use App\Http\Controllers\ClientProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController; // ETO NA RAGH
 
@@ -8,14 +10,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::middleware(['auth', 'CheckRole:Admin'])->group(function () {
+    Route::get('/server/dashboard',[ServerController::class, 'dashboard'])->name('server.dashboard');
+    Route::get('/server/profile', [ServerProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/server/profile', [ServerProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/server/profile', [ServerProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
+    Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
+    Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
 });
 
 

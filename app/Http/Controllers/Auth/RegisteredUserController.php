@@ -19,7 +19,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth.signup');
     }
 
     /**
@@ -36,24 +36,28 @@ class RegisteredUserController extends Controller
             'profile_picture' => ['nullable', 'image', 'max:2048'], // Validate the profile picture
         ]);
     
+        // Default profile picture path
+        $defaultProfilePicturePath = 'images/defaultpics/default-profile.png';
+    
         // Handle profile picture upload
-        $profilePicturePath = null; // Default to null if no picture is uploaded
+        $profilePicturePath = $defaultProfilePicturePath; // Default to the default profile picture
         if ($request->hasFile('profile_picture')) {
             $profilePicturePath = $request->file('profile_picture')->store('images/profile_pictures', 'public');
         }
     
+        // Create the user with a default role
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'profile_picture' => $profilePicturePath, // Save the file path in the database
+            'role' => 'User', // Assign the default role here
         ]);
     
         event(new Registered($user));
     
         Auth::login($user);
     
-        return redirect(route('dashboard', absolute: false));
-    }
-    
+        return redirect(route('home', absolute: false));
+    }    
 }

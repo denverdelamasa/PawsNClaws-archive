@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('signup') }}" enctype="multipart/form-data">
         @csrf
 
         <!-- Profile Picture -->
