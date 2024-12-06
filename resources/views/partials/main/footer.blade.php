@@ -1,18 +1,17 @@
     </body>
     <footer class="footer bg-base-300 text-base-content p-10">
         <nav>
-          <h6 class="footer-title">Services</h6>
-          <a class="link link-hover">Branding</a>
-          <a class="link link-hover">Design</a>
-          <a class="link link-hover">Marketing</a>
-          <a class="link link-hover">Advertisement</a>
+          <h6 class="footer-title">Contents</h6>
+          <a class="link link-hover">Posts</a>
+          <a class="link link-hover">Announcements</a>
+          <a class="link link-hover">Events</a>
+          <a class="link link-hover">Shelters</a>
         </nav>
         <nav>
-          <h6 class="footer-title">Company</h6>
+          <h6 class="footer-title">Site</h6>
           <a class="link link-hover">About us</a>
           <a class="link link-hover">Contact</a>
-          <a class="link link-hover">Jobs</a>
-          <a class="link link-hover">Press kit</a>
+          <a class="link link-hover">Apply</a>
         </nav>
         <nav>
           <h6 class="footer-title">Legal</h6>
