@@ -1,6 +1,6 @@
 <template>
   <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4">
-    <div class="flex items-start gap-4" id="observedDiv">
+    <div class="flex items-start gap-4" id="PostCardDivObserved">
       <!-- Profile Picture -->
       <img
         :src="profilePictureUrl"
@@ -97,37 +97,37 @@
 </template>
 
 <script>
-import axios from 'axios';
+  import axios from 'axios';
 
-export default {
-  data() {
-    return {
-      profilePictureUrl: '',  // Default empty URL
-    };
-  },
-  mounted() {
-    this.fetchUserProfile();
-  },
-  methods: {
-    fetchUserProfile() {
-      // Make a GET request to your backend API to fetch the user's profile
-      axios.get('/api/user/profile-picture')  // Replace with your actual endpoint
-        .then(response => {
-          if (response.data && response.data.profile_picture) {
-            this.profilePictureUrl = response.data.profile_picture;  // Assuming profile_picture is returned as URL
-          } else {
-            console.error('Profile picture not found');
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching user profile:', error);
-        });
+  export default {
+    data() {
+      return {
+        profilePictureUrl: '',  // Default empty URL
+      };
     },
-    openModal(type) {
-      // Your existing openModal method
+    mounted() {
+      this.fetchUserProfile();
+    },
+    methods: {
+      fetchUserProfile() {
+        // Make a GET request to your backend API to fetch the user's profile
+        axios.get('/api/user/profile-picture')  // Replace with your actual endpoint
+          .then(response => {
+            if (response.data && response.data.profile_picture) {
+              this.profilePictureUrl = response.data.profile_picture;  // Assuming profile_picture is returned as URL
+            } else {
+              console.error('Profile picture not found');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching user profile:', error);
+          });
+      },
+      openModal(type) {
+        // Your existing openModal method
+      }
     }
-  }
-};
+  };
 </script>
 
 
