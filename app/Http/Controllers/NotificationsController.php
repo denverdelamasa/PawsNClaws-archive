@@ -24,25 +24,17 @@ class NotificationsController extends Controller
     }
     public function markAsRead($notification_id)
     {
-        // Debugging: Log the ID
-        \Log::info('Notification ID:', ['id' => $notification_id]);
-
-        // Fetch the notification
         $notification = Notification::findOrFail($notification_id);
-
-        // Ensure the notification belongs to the authenticated user
+    
         if ($notification->user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
-        // Mark as read by setting the 'read_at' field to the current timestamp
+    
         $notification->update(['read_at' => now()]);
-
+    
         return response()->json([
             'message' => 'Notification marked as read',
-            'notification' => $notification,
+            'notification' => $notification, // Return the updated notification
         ]);
     }
-
-    
 }
