@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ClientProfileController;
@@ -23,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
+    Route::post('/api/posts', [PostController::class, 'store']);
 });
 
 
