@@ -12,6 +12,8 @@ class Notification extends Model
     // Define the table name if it's not the plural form of the model name
     protected $table = 'notifications';
 
+    protected $primaryKey = 'notification_id';
+
     // Specify which fields can be mass-assigned
     protected $fillable = [
         'user_id',   // Assuming the user associated with the notification

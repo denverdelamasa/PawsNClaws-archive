@@ -34,6 +34,8 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    Route::get('/', function () {return view('welcome');});
 });
 
 Route::middleware('auth')->group(function () {
@@ -59,4 +61,6 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 
     Route::get('/api/notifications', [NotificationsController::class, 'notif']);
+
+    Route::post('/api/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead']);
 });
