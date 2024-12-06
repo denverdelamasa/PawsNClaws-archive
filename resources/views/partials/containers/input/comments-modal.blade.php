@@ -27,7 +27,17 @@
                     </div>
                 </div>
             
-                <p class="mt-2">This is a sample comment inside the modal. The user can leave their thoughts here regarding the post or event!</p>    
+                <p class="mt-2">
+                    
+                </p>    
+                <p id="description" class="line-clamp-3 text-base transition-all duration-300">
+                    This is a sample comment inside the modal. The user can leave their 
+                    thoughts here regarding the post or event!
+                </p>
+                <!-- See More Button -->
+                <button id="toggleBtn" class="btn btn-link btn-xs text-sm mt-2 px-0">
+                    See More
+                </button>
 
                 <div class="flex gap-2 my-2">
                     <button class="btn bg-warning btn-sm">
