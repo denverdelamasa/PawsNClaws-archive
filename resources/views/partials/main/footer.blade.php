@@ -1,3 +1,9 @@
+                </div>
+                <div class="drawer-side">
+                @include('partials.containers.misc.sidebar-content')
+                </div>
+            </div>
+        </div>
     </body>
     <footer class="footer bg-base-300 text-base-content p-10">
         <nav>
