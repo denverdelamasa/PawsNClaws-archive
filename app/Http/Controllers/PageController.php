@@ -18,10 +18,6 @@ class PageController extends Controller
     {
         return view('pages.events.events'); // Return the view for the home page
     }
-    public function posts()
-    {
-        return view('pages.posts.posts'); // Return the view for the home page
-    }
     public function shelters()
     {
         return view('pages.shelters.shelters'); // Return the view for the home page
@@ -29,5 +25,9 @@ class PageController extends Controller
     public function categories()
     {
         return view('pages.categories.categories'); // Return the view for the home page
+    }
+    public function posts()
+    {
+        return view('pages.posts.posts'); // Return the view for the home page
     }
 }

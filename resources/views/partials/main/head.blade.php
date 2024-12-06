@@ -19,11 +19,5 @@
             </style>
         @endif
     </head>
-
-
-
-
-
-    
     <body class="font-sans antialiased">
       @include('partials.main.navbar')
