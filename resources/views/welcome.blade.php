@@ -2,7 +2,7 @@
 
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content flex-col lg:flex-row-reverse justify-center items-center w-full">
-    <div class="text-center lg:text-left w-full lg:w-1/2">
+    <div class="text-center lg:text-left w-full lg:w-1/2 flex flex-col justify-center items-center lg:items-start lg:justify-start">
       <h1 class="text-8xl font-bold">Login now!</h1>
       <p class="py-6 w-2/3 lg:w-full">
         Log in to Your Account and Engage with the Community to Access Exclusive Features
