@@ -39,7 +39,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    </div> 
   
     <!-- Thumbnail -->
     <div class="m-4 hover:cursor-pointer carousel rounded-lg">
