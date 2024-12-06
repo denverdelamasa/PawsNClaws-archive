@@ -1,14 +1,8 @@
 <div class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex flex-row items-end p-4 justify-between align-middle">
-        <!-- Date -->
-        <div class="text-xs w-3/4">
-            <span>From: December 4, 2024</span>
-            <span class="mx-1">|</span>
-            <span>To: December 5, 2024</span>
-        </div>
         <!-- Dropdown Menu -->
-        <div class="flex justify-end w-1/4">
+        <div class="flex justify-end w-full">
             <div class="dropdown dropdown-end z-50">
                 <label tabindex="0" class="btn btn-sm btn-ghost">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
@@ -42,7 +36,7 @@
     </div> 
   
     <!-- Thumbnail -->
-    <div class="m-4 hover:cursor-pointer carousel rounded-lg">
+    <div class="m-4 carousel rounded-lg">
         <div id="slide1" class="carousel-item relative w-full">
           <img
             src="https://picsum.photos/1920/1080"
@@ -84,6 +78,12 @@
         <div class="card-body">
             <div class="text-base mt-2 relative">
               <h2 class="card-title mb-2 text-3xl">This is a sample Event Title!</h2>
+                <!-- Date -->
+                <div class="text-xs w-full mb-4">
+                    <span>From: December 4, 2024</span>
+                    <span class="mx-1">|</span>
+                    <span>To: December 5, 2024</span>
+                </div>
               <p>
                 Imagine coming home from work to find something extraordinary—a glowing puppy! 
                 Yes, you read that right, glowing. I have no idea why or how this happened, but here we are. 
