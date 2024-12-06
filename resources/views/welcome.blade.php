@@ -4,7 +4,7 @@
 
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content flex-col lg:flex-row-reverse justify-center items-center w-full">
-    <div class="text-center lg:text-left w-full lg:w-1/2">
+    <div class="text-center lg:text-left w-full lg:w-1/2 flex flex-col justify-center items-center lg:items-start lg:justify-start">
       <h1 class="text-8xl font-bold">Login now!</h1>
       <p class="py-6 w-2/3 lg:w-full">
         Log in to Your Account and Engage with the Community to Access Exclusive Features
@@ -39,7 +39,7 @@
                 d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
                 clip-rule="evenodd" />
             </svg>
-            <input type="password" class="input input-bordered grow" value="password" />
+            <input type="password" class="input input-bordered grow" value="" placeholder="********"/>
           </label>
         </div>
         <div class="form-control mt-6">

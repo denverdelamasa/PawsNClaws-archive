@@ -26,4 +26,8 @@ class PageController extends Controller
     {
         return view('pages.shelters.shelters'); // Return the view for the home page
     }
+    public function categories()
+    {
+        return view('pages.categories.categories'); // Return the view for the home page
+    }
 }
