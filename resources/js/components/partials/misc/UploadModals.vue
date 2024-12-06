@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Modal Container -->
-    <div v-if="isModalOpen" class="fixed inset-0 z-50 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+    <div v-if="isModalOpen" class="fixed inset-0 z-50  bg-opacity-50 flex justify-center items-center">
       <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div class="flex justify-between items-center">
           <h3 class="text-xl font-semibold">{{ modalTitle }}</h3>
