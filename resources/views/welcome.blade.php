@@ -1,7 +1,5 @@
 @include('partials.main.head')
 
-
-
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content flex-col lg:flex-row-reverse justify-center items-center w-full">
     <div class="text-center lg:text-left w-full lg:w-1/2">
@@ -11,7 +9,9 @@
       </p>
     </div>
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-      <form class="card-body">
+      <form class="card-body" method="POST" action="{{ route('login') }}">
+        @csrf
+        <!-- Email Address -->
         <div class="form-control my-4">
           <label class="flex items-center gap-2">
             <svg
@@ -24,9 +24,14 @@
               <path
                 d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
             </svg>
-            <input type="text" class="input input-bordered grow" placeholder="Email" />
+            <input type="email" class="input input-bordered grow" name="email" id="email" placeholder="Email" value="{{ old('email') }}" required autofocus />
           </label>
+          @error('email')
+            <span class="text-error text-sm mt-1">{{ $message }}</span>
+          @enderror
         </div>
+
+        <!-- Password -->
         <div class="form-control my-4">
           <label class="flex items-center gap-2">
             <svg
@@ -39,18 +44,23 @@
                 d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
                 clip-rule="evenodd" />
             </svg>
-            <input type="password" class="input input-bordered grow" value="password" />
+            <input type="password" class="input input-bordered grow" name="password" id="password" placeholder="Password" required />
           </label>
+          @error('password')
+            <span class="text-error text-sm mt-1">{{ $message }}</span>
+          @enderror
         </div>
+
+        <!-- Login Button -->
         <div class="form-control mt-6">
-          <button class="btn btn-primary">Login</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </div>
-        <p>Don't have account? <a href="{{ url('/register') }}">Sign Up here</a></p>
+
+        <!-- Register Link -->
+        <p class="mt-4 text-center">Don't have an account? <a href="{{ url('/signup') }}" class="link link-primary">Sign Up here</a></p>
       </form>
     </div>
   </div>
 </div>
-
-
 
 @include('partials.main.footer')
