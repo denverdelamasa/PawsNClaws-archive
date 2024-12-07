@@ -1,5 +1,5 @@
 <template>
-  <UploadPost :fetch-posts="fetchPosts" />
+  <UploadPost v-if="isAuthenticated" :fetch-posts="fetchPosts" />
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4">
@@ -142,6 +142,7 @@ export default {
     return {
       posts:[],
       expanded: false,
+      isAuthenticated: false,
     };
   },
   methods: {
@@ -199,8 +200,18 @@ export default {
     deletePost(postId) {
       console.log("Delete post clicked for ID:", postId);
     },
+    async checkAuthentication() {
+      try {
+        const response = await axios.get('/api/auth/status');  // Your endpoint to check authentication
+        this.isAuthenticated = response.data.authenticated;  // Assume the response returns { authenticated: true/false }
+      } catch (error) {
+        console.error("Error checking authentication status:", error);
+      }
+    },
+    
   },
   mounted() {
+    this.checkAuthentication();
     this.fetchPosts();
   },
 };

@@ -2,7 +2,7 @@
   <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4">
     <div class="flex items-start gap-4" id="observedDiv">
       <!-- Profile Picture -->
-      <img src="https://picsum.photos/200" alt="Profile" class="w-12 h-12 rounded-full" />
+      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="w-12 h-12 rounded-full" />
       
       <!-- Input and Buttons -->
       <div class="flex-grow">
@@ -109,6 +109,9 @@ export default {
         image_path: null,
         image_preview: null,
       },
+      userProfile: {
+        profile_picture: "",
+      },
     };
   },
   methods: {
@@ -167,6 +170,20 @@ export default {
       this.modalData.image_path = null;
       this.modalData.image_preview = null;
     },
+    fetchUserProfile() {
+      axios
+        .get("/api/user-profile")
+        .then((response) => {
+          this.userProfile = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching user profile:", error);
+        });
+    },
+  },
+  mounted() {
+    this.fetchUserProfile(); // Fetch user profile when the component is mounted
+    this.fetchPosts();
   },
 };
 </script>

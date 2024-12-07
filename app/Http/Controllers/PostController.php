@@ -111,5 +111,15 @@ class PostController extends Controller
         $likesCount = Like::where('posts_id', $postId)->count();
         return response()->json(['likesCount' => $likesCount]);
     }
+
+    public function getUserProfile()
+    {
+        $user = Auth::user(); // Get the currently authenticated user
+
+        return response()->json([
+            'profile_picture' => $user->profile_picture, // Assuming `profile_picture` is a field in the users table
+            'username' => $user->name, // Username or any identifier
+        ]);
+    }
     
 }
