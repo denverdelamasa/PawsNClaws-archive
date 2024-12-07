@@ -3,9 +3,9 @@
                 <!-- Page content nato -->
                 @include('partials.containers.misc.header')
             
-                    @include('partials.containers.post.post-card')
-                    @include('partials.containers.announcement.announcement-card')
-                    @include('partials.containers.event.event-card')
+                <div id="browse-app">
+                    <browse></browse> <!-- Vue component will be rendered here -->
+                </div>
 
                 @include('partials.misc.loader')
 
