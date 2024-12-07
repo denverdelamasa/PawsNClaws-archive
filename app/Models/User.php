@@ -48,4 +48,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'user_id', 'user_id'); // Custom foreign and local keys
+    }
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'user_id');
+    }
+    
 }

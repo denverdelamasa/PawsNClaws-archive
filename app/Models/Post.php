@@ -25,4 +25,12 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'post_id');
+    }
+    public function getUsernameAttribute()
+    {
+        return $this->user ? $this->user->username : null;
+    }
 }

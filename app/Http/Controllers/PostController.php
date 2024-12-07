@@ -7,13 +7,37 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Like;
 
 class PostController extends Controller
 {
-    public function posts()
+    public function postList()
     {
-        
+        // Fetch posts with their associated user data
+        $posts = Post::with('user') // Eager load the user relationship
+            ->orderBy('created_at', 'desc') // Order by the latest posts
+            ->get();
+
+        // Map through the posts and format the response
+        $formattedPosts = $posts->map(function ($post) {
+            $likesCount = Like::where('posts_id', $post->post_id)->count();
+            return [
+                'post_id' => $post->post_id,
+                'user_id' => $post->user_id,
+                'username' => $post->user ? $post->user->username : 'Unknown User', // Fetch username from the related user
+                'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg', // Use default if no profile picture
+                'image_path' => $post->image_path ? $post->image_path : null, // Ensure image path exists
+                'caption' => $post->caption,
+                'created_at' => $post->created_at->format('Y-m-d H:i:s'), // Format the created_at timestamp
+                'updated_at' => $post->updated_at->format('Y-m-d H:i:s'), // Format the updated_at timestamp
+                'likes_count' => $likesCount,
+            ];
+        });
+
+        // Return the formatted response as JSON
+        return response()->json($formattedPosts, 200);
     }
+    
     public function getProfilePicture()
     {
         $user = Auth::user();  // Get the authenticated user
@@ -56,6 +80,36 @@ class PostController extends Controller
             'message' => 'Post created successfully!',
             'post' => $post
         ], 201);
+    }    
+
+    public function likePost($postId)
+    {
+        $userId = auth()->id(); // Get the current user's ID
+        
+        // Check if the user already liked this post
+        $like = Like::where('posts_id', $postId)
+                    ->where('user_id', $userId)
+                    ->first();
+    
+        if ($like) {
+            // Remove like (unlike the post)
+            $like->delete(); // Ensure you're deleting the correct record
+            return response()->noContent(); // Return 204 No Content
+        } else {
+            // Add like
+            Like::create([
+                'posts_id' => $postId,
+                'user_id' => $userId,
+            ]);
+            return response()->noContent(); // Return 204 No Content
+        }
+    }
+    
+    
+    public function getLikesCount($postId)
+    {
+        $likesCount = Like::where('posts_id', $postId)->count();
+        return response()->json(['likesCount' => $likesCount]);
     }
     
 }

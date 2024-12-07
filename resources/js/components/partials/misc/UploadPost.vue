@@ -13,7 +13,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil mr-2" viewBox="0 0 16 16">
             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
           </svg>
-          What do you want to share?
+          Share your thoughts!
         </div>
         <div class="border-b border-b-base-100 my-2 py-2"></div>
         <div class="mt-2 flex gap-2 flex-wrap">
@@ -94,14 +94,21 @@
 
 <script>
 export default {
+  props: {
+    fetchPosts: {
+      type: Function,
+      required: true
+    }
+  },
   data() {
     return {
+      posts: [], // To store fetched posts
       modalType: null,
       modalData: {
         caption: "",
         image_path: null,
         image_preview: null,
-      }
+      },
     };
   },
   methods: {
@@ -116,46 +123,51 @@ export default {
       document.querySelector("dialog").close();
     },
     handleImageChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-            this.modalData.image_path = file; // Store the selected file
-            this.modalData.image_preview = URL.createObjectURL(file); // Generate preview URL
-        }
+      const file = event.target.files[0];
+      if (file) {
+        this.modalData.image_path = file;
+        this.modalData.image_preview = URL.createObjectURL(file);
+      }
     },
     handleSubmit() {
-        const formData = new FormData();
-        formData.append('caption', this.modalData.caption); // Add the caption
-        
-        // If there's an image, append it to the form data
-        if (this.modalData.image_path) {
-            formData.append('image_path', this.modalData.image_path); // Add the image
-        }
+      const formData = new FormData();
+      formData.append("caption", this.modalData.caption);
 
-        // Send the form data via Axios
-        axios.post('/api/posts', formData)
-        .then(response => {
-            console.log(response.data);
-            this.closeModal();
-            this.resetForm(); // Reset the form after a successful post
+      if (this.modalData.image_path) {
+        formData.append("image_path", this.modalData.image_path);
+      }
+
+      axios
+        .post("/api/posts", formData)
+        .then((response) => {
+          console.log("Post created:", response.data);
+          this.closeModal();
+          this.resetForm();
+          this.fetchPosts(); // Fetch posts after successfully creating a post
         })
-        .catch(error => {
-            console.error(error);
+        .catch((error) => {
+          console.error("Error creating post:", error);
+        });
+    },
+    fetchPosts() {
+      axios
+        .get("/api/posts")
+        .then((response) => {
+          this.posts = response.data; // Update the posts list
+        })
+        .catch((error) => {
+          console.error("Error fetching posts:", error);
         });
     },
     triggerFileInput() {
-        this.$refs.imageInput.click(); // Trigger file input when button is clicked
-    },
-    handleImageChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-        this.modalData.image_path = file; // Store the selected file in modalData
-        }
+      this.$refs.imageInput.click();
     },
     resetForm() {
-        this.modalData.caption = ""; // Clear caption
-        this.modalData.image_path = null; // Reset image_path
-    }
-  }
+      this.modalData.caption = "";
+      this.modalData.image_path = null;
+      this.modalData.image_preview = null;
+    },
+  },
 };
 </script>
 

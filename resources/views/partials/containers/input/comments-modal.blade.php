@@ -56,7 +56,7 @@
                 </p>
 
                 <div class="flex gap-2 my-2">
-                    <button class="btn bg-warning btn-sm">
+                    <button class="btn bg-success btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10V21H10V10L5.5 10L12 3.5L18.5 10H14Z" />
                         </svg>

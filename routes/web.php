@@ -25,6 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
     Route::post('/api/posts', [PostController::class, 'store']);
+    Route::get('/api/posts/list', [PostController::class, 'postList']);
+    Route::post('/api/like/{post_id}', [PostController::class, 'likePost']);
+    Route::get('/api/like-count/{post_id}', [PostController::class, 'getLikesCount']);
 });
 
 
