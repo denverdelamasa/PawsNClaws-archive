@@ -1,11 +1,44 @@
+@include('partials.main.head')
+
+                <!-- Page content nato -->
+                @include('partials.containers.misc.header')
+            
+                    @include('partials.containers.post.post-card')
+                    @include('partials.containers.announcement.announcement-card')
+                    @include('partials.containers.event.event-card')
+
+                @include('partials.misc.loader')
+
+
                 </div>
                 <div class="drawer-side hide-scrollbar">
-                    @include('partials.containers.misc.sidebar-content')
+                    @include('partials.containers.browse.filter')
                 </div>
             </div>
         </div>
     </body>
 
+    <footer class="footer bg-base-300 text-base-content p-4 text-xs">
+        <nav>
+          <h6 class="footer-title text-xs">Contents</h6>
+          <a class="link link-hover">Posts</a>
+          <a class="link link-hover">Announcements</a>
+          <a class="link link-hover">Events</a>
+          <a class="link link-hover">Shelters</a>
+        </nav>
+        <nav>
+          <h6 class="footer-title text-xs">Site</h6>
+          <a class="link link-hover">About us</a>
+          <a class="link link-hover">Contact</a>
+          <a class="link link-hover">Apply</a>
+        </nav>
+        <nav>
+          <h6 class="footer-title text-xs">Legal</h6>
+          <a class="link link-hover">Terms of use</a>
+          <a class="link link-hover">Privacy policy</a>
+          <a class="link link-hover">Cookie policy</a>
+        </nav>
+      </footer>
     <footer class="footer bg-base-300 text-base-content border-base-300 border-t px-10 py-4">
         <aside class="grid-flow-col items-center">
             <svg

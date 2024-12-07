@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 06, 2024 at 07:37 AM
+-- Generation Time: Dec 07, 2024 at 09:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -163,6 +163,20 @@ CREATE TABLE `job_batches` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `likes`
+--
+
+CREATE TABLE `likes` (
+  `like_id` bigint(20) UNSIGNED NOT NULL,
+  `posts_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -204,15 +218,6 @@ CREATE TABLE `notifications` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `notifications`
---
-
-INSERT INTO `notifications` (`notification_id`, `user_id`, `type`, `read_at`, `created_at`, `updated_at`) VALUES
-(1, 2, 'Adoption Request', NULL, NULL, NULL),
-(2, 2, 'Role Request', NULL, NULL, NULL),
-(3, 3, 'hello', NULL, NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -240,6 +245,19 @@ CREATE TABLE `posts` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`post_id`, `user_id`, `image_path`, `caption`, `created_at`, `updated_at`) VALUES
+(1, 2, NULL, 'Jobert', '2024-12-06 23:05:47', '2024-12-06 23:05:47'),
+(2, 2, NULL, 'Jopay', '2024-12-06 23:06:47', '2024-12-06 23:06:47'),
+(3, 2, NULL, 'Test', '2024-12-06 23:07:15', '2024-12-06 23:07:15'),
+(4, 2, NULL, 'PLSSS PLSSS', '2024-12-06 23:09:01', '2024-12-06 23:09:01'),
+(5, 2, NULL, 'No refresh', '2024-12-06 23:09:19', '2024-12-06 23:09:19'),
+(6, 2, NULL, 'Test', '2024-12-06 23:57:25', '2024-12-06 23:57:25'),
+(7, 2, NULL, 'PLSSS', '2024-12-07 00:02:12', '2024-12-07 00:02:12');
+
 -- --------------------------------------------------------
 
 --
@@ -260,7 +278,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('qpdapW35fdw0uKbGzZb1bMCZux0XuetGRK1yeTKz', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQlVuOEtWSGxkS25ZaDRXckl1TzZ0bnZyMDFFTkpFbzVxdkVUenJVWCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fX0=', 1733467016);
+('zay7mtey1UKmJOde2DCzsHnrT3ja0P1fcDNzU5es', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiT1F5Yk9Lb09YVzVMSnBEWUJSbGZpUUllcWd4ckYzeGJCWE1rNHZJbyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1733559678);
 
 -- --------------------------------------------------------
 
@@ -286,7 +304,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `profile_picture`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(2, 'Jobert', 'images/profile_pictures/VszJMB0uhrkwrS19fPKGNs5A33I53YMyCYfPp3Hd.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', NULL, '2024-12-05 06:27:32', '2024-12-05 19:01:00'),
+(2, 'Longganisabu', 'images/profile_pictures/VszJMB0uhrkwrS19fPKGNs5A33I53YMyCYfPp3Hd.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', NULL, '2024-12-05 06:27:32', '2024-12-06 21:24:20'),
 (3, 'Jopay', 'images/defaultpics/default-profile.png', 'jopay@gmail.com', NULL, '$2y$12$zRIpIEqBUketefA.ST53EO0tHYm3Dcer9vd7LssT/lLicJhb6oKlu', 'User', NULL, '2024-12-05 20:16:11', '2024-12-05 20:16:11'),
 (4, 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', NULL, '2024-12-05 20:20:44', '2024-12-05 22:32:41');
 
@@ -356,6 +374,14 @@ ALTER TABLE `jobs`
 --
 ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`like_id`),
+  ADD KEY `likes_ibfk_1` (`posts_id`),
+  ADD KEY `likes_ibfk_2` (`user_id`);
 
 --
 -- Indexes for table `migrations`
@@ -439,6 +465,12 @@ ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -448,13 +480,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -492,6 +524,13 @@ ALTER TABLE `events`
 --
 ALTER TABLE `fosters`
   ADD CONSTRAINT `fosters_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `likes`
+--
+ALTER TABLE `likes`
+  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`posts_id`) REFERENCES `posts` (`post_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `notifications`

@@ -22,12 +22,16 @@ class PageController extends Controller
     {
         return view('pages.shelters.shelters'); // Return the view for the home page
     }
-    public function categories()
+    public function browse()
     {
-        return view('pages.categories.categories'); // Return the view for the home page
+        return view('pages.browse.browse'); // Return the view for the home page
     }
     public function posts()
     {
         return view('pages.posts.posts'); // Return the view for the home page
+    }
+    public function profile()
+    {
+        return view('pages.profile.profile'); // Return the view for the home page
     }
 }

@@ -36,8 +36,9 @@ Route::get('/home', [PageController::class, 'home'])->name('home');
 Route::get('/announcements', [PageController::class, 'announcements'])->name('announcements');
 Route::get('/events', [PageController::class, 'events'])->name('events');
 Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters'); 
-Route::get('/categories', [PageController::class, 'categories'])->name('categories'); 
+Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
+Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
  
 
 

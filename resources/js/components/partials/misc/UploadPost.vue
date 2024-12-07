@@ -1,6 +1,6 @@
 <template>
   <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4">
-    <div class="flex items-start gap-4" id="observedDiv">
+    <div class="flex items-start gap-4" id="PostCardDivObserved">
       <!-- Profile Picture -->
       <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="w-12 h-12 rounded-full" />
       
@@ -93,6 +93,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
     fetchPosts: {
@@ -183,7 +185,6 @@ export default {
   },
   mounted() {
     this.fetchUserProfile(); // Fetch user profile when the component is mounted
-    this.fetchPosts();
   },
 };
 </script>

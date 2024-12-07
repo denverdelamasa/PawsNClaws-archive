@@ -84,7 +84,7 @@
 </dialog>
 
 
-<script>
+<!--
     document.addEventListener("DOMContentLoaded", () => {
         const modal = document.getElementById("postboxModal");
         const modalTitle = document.getElementById("modalTitle");
@@ -127,4 +127,4 @@
         btnEvent.addEventListener("click", () => openModal("event"));
     });
 
-</script>
+-->

@@ -106,13 +106,17 @@
         </button>
 
 
-      <!-- Comments Button -->
-      <button id="commentsBtn" class="btn btn-outline btn-sm flex gap-1 items-center" onclick="commentsModal.showModal()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
-        </svg>
-        <span>Comments</span>
-      </button>
+        <!-- Comments Button -->
+        <button id="commentsBtn" class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
+          </svg>
+          <span>Comments</span>
+        </button>
+        <Comments
+            v-if="isModalOpen" 
+            @close-modal="closeModal"
+        />
 
       <!-- Bookmark Button -->
       <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -132,17 +136,22 @@
 
 <script>
 import axios from "axios";
+import { ref } from 'vue';
 import UploadPost from "../misc/UploadPost.vue";
+import Comments from "../misc/CommentModal.vue";
+
 
 export default {
   components: {
-    UploadPost
+    UploadPost,
+    Comments,
   },
   data() {
     return {
       posts:[],
       expanded: false,
       isAuthenticated: false,
+      isModalOpen: false,
     };
   },
   methods: {
