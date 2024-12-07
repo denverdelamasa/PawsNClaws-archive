@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\ServerProfileController;
-use App\Http\Controllers\ServerController;
-use App\Http\Controllers\ClientProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ServerController;
+use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\ClientProfileController;
+use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
 
 Route::get('/', function () {
@@ -25,10 +26,14 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
     Route::post('/api/posts', [PostController::class, 'store']);
-    Route::get('/api/posts/list', [PostController::class, 'postList']);
     Route::post('/api/like/{post_id}', [PostController::class, 'likePost']);
     Route::get('/api/like-count/{post_id}', [PostController::class, 'getLikesCount']);
+    Route::put('/api/post/edit/{post_id}', [PostController::class, 'updatePost']);
+    Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
+    Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
+    Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
 });
+Route::get('/api/posts/list', [PostController::class, 'postList']);
 
 
 // page controller paayos nalang jahefglkag

@@ -19,6 +19,7 @@ class Notification extends Model
         'user_id',   // Assuming the user associated with the notification
         'type',      // The type of the notification (e.g., 'info', 'warning', etc.
         'read_at',   // To mark the notification as read or unread (nullable)
+        'liked_by'
     ];
 
     // Optionally, you can define relationships if needed (e.g., a user has many notifications)

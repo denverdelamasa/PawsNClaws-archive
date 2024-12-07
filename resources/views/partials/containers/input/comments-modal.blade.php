@@ -63,13 +63,6 @@
                         <p>4.5k</p>
                         Upvotes
                     </button>
-
-                    <button class="btn btn-error btn-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14V3H14V14L18.5 14L12 20.5L5.5 14H10Z" />
-                        </svg>
-                        Downvote
-                    </button>
                 </div>
             </div>
 

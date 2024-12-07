@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import axios from "axios";
 
 export default {
@@ -149,9 +150,37 @@ export default {
           this.closeModal();
           this.resetForm();
           this.fetchPosts(); // Fetch posts after successfully creating a post
+
+          // Show success alert with SweetAlert2
+          Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Your post has been uploaded successfully!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b", // Dark background
+            color: "#ffffff", // Light text color
+            toast: true, // Toast-style alert
+            didOpen: (toast) => {
+              const progressBar = Swal.getTimerProgressBar();
+              if (progressBar) {
+                progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+              }
+            },
+          });
         })
         .catch((error) => {
           console.error("Error creating post:", error);
+
+          // Show error alert
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong while uploading your post!",
+            background: "#1e293b", // Dark background
+            color: "#ffffff", // Light text color
+          });
         });
     },
     fetchPosts() {

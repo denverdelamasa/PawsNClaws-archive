@@ -33,4 +33,8 @@ class Post extends Model
     {
         return $this->user ? $this->user->username : null;
     }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'post_comment_id', 'post_id');
+    }
 }

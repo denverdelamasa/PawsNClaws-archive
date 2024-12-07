@@ -71,5 +71,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/api/auth/status', function () {
-    return response()->json(['authenticated' => auth()->check()]);
+    if (auth()->check()) {
+        return response()->json([
+            'authenticated' => true,
+            'user_id' => auth()->id(), // Returns the logged-in user's ID
+        ]);
+    }
+    return response()->json(['authenticated' => false]);
 });
