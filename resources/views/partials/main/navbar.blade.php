@@ -61,7 +61,7 @@
             <input
             type="text"
             placeholder="Search"
-            class="input input-bordered input-accent max-w-xxs h-[40px] bg-base-200 md:block"/>    
+            class="input input-bordered border-base-100 input-accent max-w-xxs h-[40px] bg-base-200 md:block"/>    
           </ul>
         </ul>
       </div>
@@ -69,7 +69,7 @@
       <input
         type="text"
         placeholder="Search"
-        class="input input-bordered input-accent max-w-xxs h-[40px] bg-base-200 hidden lg:block"/>
+        class="input input-bordered border-base-100 input-accent max-w-xxs h-[40px] bg-base-200 hidden lg:block"/>
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1 gap-x-6">
