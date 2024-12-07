@@ -93,11 +93,6 @@
     </div>
   @endauth
   <ul class="menu bg-base-100 border border-base-300 text-base-content p-4 my-2 rounded-xl">
-    <h2>Shelters near you:</h2>
-    <li><a>Registered Shelter</a></li>
-    <li><a>Registered Shelter</a></li>
-  </ul>
-  <ul class="menu bg-base-100 border border-base-300 text-base-content p-4 my-2 rounded-xl">
     <h2>Shelters you may Like</h2>
     <li><a>Registered Shelter</a></li>
     <li><a>Registered Shelter</a></li>
