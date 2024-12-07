@@ -30,4 +30,8 @@ class PageController extends Controller
     {
         return view('pages.posts.posts'); // Return the view for the home page
     }
+    public function profile()
+    {
+        return view('pages.profile.profile'); // Return the view for the home page
+    }
 }

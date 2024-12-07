@@ -102,28 +102,29 @@
     <li><a>Registered Shelter</a></li>
     <li><a>Registered Shelter</a></li>
   </ul>
+
+  <footer class="absolute bottom-4 bg-base-300 text-base-content p-4 text-xs flex flex-row gap-x-4 justify-between rounded-xl border border-base-300">
+    <nav class="flex flex-col gap-y-2">
+      <h6 class="footer-title text-xs">Contents</h6>
+      <a class="link link-hover">Posts</a>
+      <a class="link link-hover">Announcements</a>
+      <a class="link link-hover">Events</a>
+      <a class="link link-hover">Shelters</a>
+    </nav>
+    <nav class="flex flex-col gap-y-2">
+      <h6 class="footer-title text-xs">Site</h6>
+      <a class="link link-hover">About us</a>
+      <a class="link link-hover">Contact</a>
+      <a class="link link-hover">Apply</a>
+    </nav>
+    <nav class="flex flex-col gap-y-2">
+      <h6 class="footer-title text-xs">Legal</h6>
+      <a class="link link-hover">Terms of use</a>
+      <a class="link link-hover">Privacy policy</a>
+      <a class="link link-hover">Cookie policy</a>
+    </nav>
+  </footer>
 </ul>
-<footer class="footer bg-base-300 text-base-content p-4 text-xs">
-  <nav>
-    <h6 class="footer-title text-xs">Contents</h6>
-    <a class="link link-hover">Posts</a>
-    <a class="link link-hover">Announcements</a>
-    <a class="link link-hover">Events</a>
-    <a class="link link-hover">Shelters</a>
-  </nav>
-  <nav>
-    <h6 class="footer-title text-xs">Site</h6>
-    <a class="link link-hover">About us</a>
-    <a class="link link-hover">Contact</a>
-    <a class="link link-hover">Apply</a>
-  </nav>
-  <nav>
-    <h6 class="footer-title text-xs">Legal</h6>
-    <a class="link link-hover">Terms of use</a>
-    <a class="link link-hover">Privacy policy</a>
-    <a class="link link-hover">Cookie policy</a>
-  </nav>
-</footer>
 
 <script>
   // PostCardDivObserved
