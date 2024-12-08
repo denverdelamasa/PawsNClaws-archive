@@ -40,4 +40,37 @@ Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'
 
 
 
+Route::get('/api/partial/containers/browse/{content}', function ($content) {
+    // Ensure only valid contents are allowed
+    $validContents = [
+        'browseAll',
+        'browsePosts',
+        'browseAnnouncements',
+        'browseEvents',
+        'browseShelters',
+        'browseAccounts'
+    ];
+
+    if (in_array($content, $validContents)) {
+        return response()->view("partials.containers.browse.$content");  // Dynamically load the Blade partial
+    } else {
+        return response("Content not found", 404);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require __DIR__.'/auth.php';

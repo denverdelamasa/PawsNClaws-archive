@@ -1,5 +1,5 @@
 <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-<ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+<ul id="SidebarPadding" class="menu bg-base-200 text-base-content min-h-full w-80 p-4 z-50 @auth pt-20 lg:pt-20 @endauth @guest pt-20 @endguest">
   <!-- Sidebar content here -->
   @auth
     <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4" id="PostCardDiv">
@@ -108,6 +108,10 @@
     </nav>
     <nav class="flex flex-col gap-y-2">
       <h6 class="footer-title text-xs">Site</h6>
+      @guest
+        <a class="link link-hover">Log in</a>
+        <a class="link link-hover">Sign Up</a>
+      @endguest
       <a class="link link-hover">About us</a>
       <a class="link link-hover">Contact</a>
       <a class="link link-hover">Apply</a>
@@ -134,9 +138,13 @@
         if (entry.isIntersecting) {
           // Observed div is visible
           PostCardDiv.classList.add("hidden");
+          SidebarPadding.classList.add("lg:pt-0");
+          SidebarPadding.classList.remove("lg:pt-20");
         } else {
           // Observed div is not visible
           PostCardDiv.classList.remove("hidden");
+          SidebarPadding.classList.remove("lg:pt-0");
+          SidebarPadding.classList.add("lg:pt-20");
         }
       },
       { threshold: 0.1 } // Trigger when at least 10% of the observed div is visible
