@@ -30,20 +30,20 @@
                 </a>
             </li>
             <li v-if="post.user_id !== currentUserId">
-                <a href="#">
+              <a href="#" @click.prevent="openReportModal(post.post_id)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
-                    <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z"/>
+                  <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z"/>
                 </svg>  
                 Report Post
-                </a>
+              </a>
             </li>
         </ul>
         </div>
     </div>
 
     <!-- Thumbnail -->
-    <div class="px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
-    <img v-if="post.image_path" :src="`/storage/${post.image_path}`" alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+    <div v-if="post.image_path" class="px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
+      <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
     </div>
 
     <!-- Edit Post Modal -->
@@ -84,6 +84,92 @@
         </div>
     </dialog>
 
+    <!-- Report Post Modal -->
+    <dialog :id="`reportPostModal-${post.post_id}`" class="modal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Report Post</h3>
+        <p class="py-4">Please select the reason for reporting this post:</p>
+
+        <form @submit.prevent="submitReport(post.post_id)">
+          <!-- Predefined Report Reasons -->
+          <div class="my-4">
+            <div>
+              <input
+                type="radio"
+                id="troll"
+                value="Troll"
+                v-model="reportReason"
+                class="radio"
+              />
+              <label for="troll" class="ml-2">Troll</label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                id="hate-speech"
+                value="Hate Speech"
+                v-model="reportReason"
+                class="radio"
+              />
+              <label for="hate-speech" class="ml-2">Hate Speech</label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                id="spam"
+                value="Spam"
+                v-model="reportReason"
+                class="radio"
+              />
+              <label for="spam" class="ml-2">Spam</label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                id="harassment"
+                value="Harassment"
+                v-model="reportReason"
+                class="radio"
+              />
+              <label for="harassment" class="ml-2">Harassment</label>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                id="other"
+                value="Other"
+                v-model="reportReason"
+                class="radio"
+              />
+              <label for="other" class="ml-2">Other</label>
+            </div>
+          </div>
+
+          <!-- If "Other" is selected, show a text area for additional comments -->
+          <div v-if="reportReason === 'Other'" class="my-4">
+            <label for="custom-reason" class="label">Please describe the issue</label>
+            <textarea
+              id="custom-reason"
+              v-model="customReason"
+              class="textarea textarea-bordered w-full"
+              rows="4"
+              placeholder="Enter custom reason for reporting..."
+            ></textarea>
+          </div>
+
+          <div class="modal-action">
+            <button class="btn btn-error">Submit Report</button>
+            <button class="btn" @click="closeReportModal(post.post_id)">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+
     <!-- Card Body -->
     <div class="card-body">
       <div class="flex items-center space-x-3">
@@ -102,10 +188,17 @@
         </div>
       </div>
       <div class="text-base mt-2">
-        <p class="line-clamp-3" v-bind:class="{ 'line-clamp-none': expanded }">
-            {{ post.caption }}
+        <p>
+          <!-- Truncate the caption to 20 characters initially -->
+          {{ post.expanded ? post.caption : post.caption.substring(0, 135) }}...
         </p>
-        <button class="btn btn-link btn-xs text-sm mt-2 px-0" @click="toggleDescription">{{ expanded ? 'See Less' : 'See More' }}</button>
+        <button
+          v-if="post.caption.length > 125"
+          class="btn btn-link btn-xs text-sm mt-2 px-0"
+          @click="toggleDescription(post)"
+        >
+          {{ post.expanded ? 'See Less' : 'See More' }}
+        </button>
       </div>
     <div class="flex gap-2 flex-wrap">
       <!-- Upvote Button -->
@@ -190,6 +283,8 @@ export default {
       isModalOpen: false,
       comments: [],  // Store comments here,
       selectedPostId: null,
+      reportReason: '',
+      customReason: '',
     };
   },
   methods: {
@@ -280,9 +375,9 @@ export default {
 
     // Submit the edit form
     submitEditPost() {
-        console.log(this.selectedPost); // Log selectedPost to check category_id
+      console.log(this.selectedPost); // Log selectedPost to check category_id
 
-        axios.put(`/api/post/edit/${this.selectedPost.post_id}`, this.selectedPost, {
+      axios.put(`/api/post/edit/${this.selectedPost.post_id}`, this.selectedPost, {
         })
         .then(response => {
             this.$emit('post-updated', response.data);  // Emit event to parent if needed
@@ -339,8 +434,68 @@ export default {
             });
         });
     },
-    toggleDescription() {
-      this.expanded = !this.expanded;
+    openReportModal(postId) {
+      const modal = document.getElementById(`reportPostModal-${postId}`);
+      modal.showModal();
+    },
+
+    closeReportModal(postId) {
+      const modal = document.getElementById(`reportPostModal-${postId}`);
+      modal.close();
+      this.reportReason = ''; // Clear the selected reason
+      this.customReason = ''; // Clear the custom reason field
+    },
+
+    submitReport(postId, commentId) {
+      const reportData = {
+        user_id: this.currentUserId,  // The user reporting the post/comment
+        reason: this.reportReason,
+        type: postId ? 'post' : 'comment',
+        post_id: postId,
+        comment_id: commentId,
+        details: this.reportReason === 'Other' ? this.customReason : '',
+      };
+
+      axios.post('/api/reports/submit', reportData)
+        .then(response => {
+          this.closeReportModal(postId, commentId);
+          
+          Swal.fire({
+          position: 'center',  // Positions it in the center of the screen
+          icon: 'success',  // You can change the icon to 'error', 'warning', etc.
+          title: 'Your report has been submitted successfully!',  // Customize your message
+          showConfirmButton: true,  // Show the OK button
+          confirmButtonText: 'OK',  // Text of the button
+          background: '#2c2f36',  // Dark background color
+          color: '#fff',  // White text color
+          confirmButtonColor: '#3085d6',  // Blue color for the button
+          toast: true,  // Display as a toast
+          timer: 3000,  // Time in milliseconds before the toast closes
+          timerProgressBar: true,  // Optional, shows a progress bar
+          didOpen: () => {
+            Swal.showLoading();  // Show loading indicator
+          }
+        });
+        })
+        .catch(error => {
+          console.error('Error submitting report:', error);
+          
+          Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Something went wrong!',
+          text: error.response ? error.response.data.message : 'Try again later.',
+          showConfirmButton: false,
+          toast: true,
+          timer: 3000,
+          timerProgressBar: true,
+          background: '#2c2f36',
+          color: '#fff',
+        });
+        });
+    },
+    toggleDescription(post) {
+      post.expanded = !post.expanded;
     },
     showModal(postId) {
         const modal = document.getElementById(`thumbnailModal-${postId}`);

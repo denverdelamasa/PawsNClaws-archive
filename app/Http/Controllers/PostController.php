@@ -87,7 +87,7 @@ class PostController extends Controller
     
         // Validate the incoming data (no image validation)
         $validated = $request->validate([
-            'caption' => 'required|string|max:255',
+            'caption' => 'required|string',
         ]);
     
         // Update the caption
