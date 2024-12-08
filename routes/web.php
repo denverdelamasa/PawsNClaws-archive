@@ -13,7 +13,7 @@ Route::get('/', function () {
 });
 
 Route::get('/admin/{any}', function () {
-    return view('pages.admin'); // Vue.js admin app
+    return view('pages.admin');
 })->where('any', '.*');
 
 

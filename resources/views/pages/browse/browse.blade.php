@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="night"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
     @include('partials.main.scripts-styles')
     <body class="font-sans antialiased">
         @include('partials.main.navbar')
@@ -32,7 +32,7 @@
           <h6 class="footer-title text-xs">Legal</h6>
           <a class="link link-hover">Terms of use</a>
           <a class="link link-hover">Privacy policy</a>
-          <a class="link link-hover">Cookie policy</a>
+          
         </nav>
     </footer>
     <footer class="footer bg-base-300 text-base-content border-base-300 border-t px-10 py-4">

@@ -40,38 +40,3 @@ const app = createApp({});
 
 app.component('browse', Browse);
 app.mount('#browse-app');
-
-// ==================================================================================================================
-
-
-
-import AdminDashboard from './components/AdminDashboard/AdminDashboard.vue'; // Root component
-
-import { createRouter, createWebHistory } from 'vue-router'; // Router import
-import DashboardStats from './components/AdminDashboard/DashboardStats.vue';
-import PostManagement from './components/AdminDashboard/PostManagement.vue';
-import ReportManagement from './components/AdminDashboard/ReportManagement.vue';
-import UserManagement from './components/AdminDashboard/UserManagement.vue';
-
-const routes = [
-  {
-    path: '/admin/dashboard',
-    name: 'AdminDashboard',
-    component: AdminDashboard,
-    children: [
-      { path: 'stats', name: 'DashboardStats', component: DashboardStats },
-      { path: 'posts', name: 'PostManagement', component: PostManagement },
-      { path: 'reports', name: 'ReportManagement', component: ReportManagement },
-      { path: 'users', name: 'UserManagement', component: UserManagement },
-    ],
-  },
-];
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
-
-const app3 = createApp(AdminDashboard); // Initialize Vue app with AdminDashboard as root component
-app3.use(router); // Use router in the app
-app3.mount('#app3'); // Mount the app to #app3 div in HTML

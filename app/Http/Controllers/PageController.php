@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public function index()
+    {
+        return view('admin'); // This assumes your admin blade view is named admin.blade.php
+    }
     public function home()
     {
         return view('pages.home'); // Return the view for the home page
