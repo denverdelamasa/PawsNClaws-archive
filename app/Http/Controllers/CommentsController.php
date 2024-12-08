@@ -19,11 +19,23 @@ class CommentsController extends Controller
     
         // Format the created_at field for each comment
         $comments->each(function ($comment) {
-            $comment->created_at = $comment->created_at->diffForHumans(); // This will return "x minutes ago", "x hours ago", etc.
+            $comment->created_at = $comment->created_at->diffForHumans(); // Format created_at
         });
     
-        return response()->json($comments);
+        // Optionally include user_id in the response explicitly
+        $formattedComments = $comments->map(function ($comment) {
+            return [
+                'comment_id' => $comment->id,
+                'user_id' => $comment->user_id, // Include user_id
+                'comment' => $comment->comment,
+                'created_at' => $comment->created_at,
+                'user' => $comment->user, // Include the user details
+            ];
+        });
+    
+        return response()->json($formattedComments);
     }
+    
     
 
     public function postComment(Request $request)

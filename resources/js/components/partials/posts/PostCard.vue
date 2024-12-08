@@ -355,47 +355,47 @@ export default {
         }
     },
     async fetchPosts() {
-    try {
-      const response = await axios.get("/api/posts/list");
-      this.posts = response.data;
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  },
-  async likePost(postId) {
-    try {
-      const response = await axios.post(`/api/like/${postId}`);
-      
-      // After liking/unliking the post, update the likes count and state
-      const post = this.posts.find(post => post.post_id === postId);
-      if (post) {
-        post.is_liked = !post.is_liked; // Toggle like state
-        await this.fetchLikesCount(postId); // Fetch updated likes count after liking/unliking
+      try {
+        const response = await axios.get("/api/posts/list");
+        this.posts = response.data;
+      } catch (error) {
+        console.error("Error fetching posts:", error);
       }
-    } catch (error) {
-      console.error("Error liking/unliking post:", error);
-    }
-  },
-  async fetchLikesCount(postId) {
-    try {
-      const response = await axios.get(`/api/like-count/${postId}`);
-      const post = this.posts.find(post => post.post_id === postId);
-      if (post) {
-        post.likes_count = response.data.likesCount; // Update likes count
+    },
+    async likePost(postId) {
+      try {
+        const response = await axios.post(`/api/like/${postId}`);
+        
+        // After liking/unliking the post, update the likes count and state
+        const post = this.posts.find(post => post.post_id === postId);
+        if (post) {
+          post.is_liked = !post.is_liked; // Toggle like state
+          await this.fetchLikesCount(postId); // Fetch updated likes count after liking/unliking
+        }
+      } catch (error) {
+        console.error("Error liking/unliking post:", error);
       }
-    } catch (error) {
-      console.error("Error fetching likes count:", error);
-    }
-  },
-  async checkAuthentication() {
-    try {
-        const response = await axios.get('/api/auth/status');
-        this.isAuthenticated = response.data.authenticated;
-        this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
-    } catch (error) {
-        console.error("Error checking authentication status:", error);
-    }
-},
+    },
+    async fetchLikesCount(postId) {
+      try {
+        const response = await axios.get(`/api/like-count/${postId}`);
+        const post = this.posts.find(post => post.post_id === postId);
+        if (post) {
+          post.likes_count = response.data.likesCount; // Update likes count
+        }
+      } catch (error) {
+        console.error("Error fetching likes count:", error);
+      }
+    },
+    async checkAuthentication() {
+      try {
+          const response = await axios.get('/api/auth/status');
+          this.isAuthenticated = response.data.authenticated;
+          this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
+      } catch (error) {
+          console.error("Error checking authentication status:", error);
+      }
+    },
   },
   mounted() {
     this.checkAuthentication();

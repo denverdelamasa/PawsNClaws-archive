@@ -21,33 +21,47 @@
 
         <!-- Comment Section -->
         <div class="comment-section mt-4">
-          <!-- If there are comments, loop through them -->
-          <div v-if="comments.length > 0">
-            <div v-for="comment in comments" :key="comment.comment_id" class="mt-4 bg-base-300 p-4 rounded-r-xl rounded-b-xl my-4 relative">
-              <div class="flex items-center space-x-3">
-                <div class="avatar">
-                  <div class="w-12 h-12 rounded-full">
-                    <img :src="comment.user.profile_picture 
-                                ? `/storage/${comment.user.profile_picture}` 
-                                : 'https://picsum.photos/200'" 
-                         alt="User Avatar" />
-                  </div>
-                </div>
-                <div>
-                  <p class="text-sm font-semibold">{{ comment.user.username }}</p>
-                  <div class="text-xs">
-                    <span>Posted on: {{ comment.created_at }}</span>
-
-                  </div>
-                </div>
+          <!-- Loading Animation -->
+          <div v-if="isLoading">
+            <div class="relative flex w-64 animate-pulse gap-2 p-4">
+              <div class="h-12 w-12 rounded-full bg-slate-400"></div>
+              <div class="flex-1">
+                <div class="mb-1 h-5 w-3/5 rounded-lg bg-slate-400 text-lg"></div>
+                <div class="h-5 w-[290%] rounded-lg bg-slate-400 text-sm"></div>
               </div>
-              <p class="text-base transition-all duration-300">{{ comment.comment }}</p>
+              <div class="absolute bottom-5 right-0 h-4 w-4 rounded-full bg-slate-400"></div>
             </div>
           </div>
 
-          <!-- If no comments, show a message -->
+          <!-- Comments List -->
           <div v-else>
-            <p>No comments yet. Be the first to comment!</p>
+            <!-- If there are comments, loop through them -->
+            <div v-if="comments.length > 0">
+              <div v-for="comment in comments" :key="comment.comment_id" class="mt-4 bg-base-300 p-4 rounded-r-xl rounded-b-xl my-4 relative">
+                <div class="flex items-center space-x-3">
+                  <div class="avatar">
+                    <div class="w-12 h-12 rounded-full">
+                      <img :src="comment.user.profile_picture 
+                                  ? `/storage/${comment.user.profile_picture}` 
+                                  : 'https://picsum.photos/200'" 
+                           alt="User Avatar" />
+                    </div>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold">{{ comment.user.username }}</p>
+                    <div class="text-xs">
+                      <span>Posted on: {{ comment.created_at }}</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-base transition-all duration-300">{{ comment.comment }}</p>
+              </div>
+            </div>
+
+            <!-- If no comments, show a message -->
+            <div v-else>
+              <p>No comments yet. Be the first to comment!</p>
+            </div>
           </div>
         </div>
 
@@ -58,6 +72,7 @@
     </dialog>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -80,6 +95,7 @@ export default {
     },
     fetchComments() {
         this.isLoading = true; // Set loading state to true when fetching comments
+        console.log("Fetching comments, isLoading:", this.isLoading);
         axios.get(`/api/comments/post/${this.postId}`)
         .then(response => {
             this.comments = response.data;
