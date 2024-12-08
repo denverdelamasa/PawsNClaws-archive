@@ -20,9 +20,6 @@
         <div v-if="notifications.filter(n => !n.read_at).length > 0" class="absolute bottom-1 left-1 w-1.5 h-1.5 bg-green-500 rounded-full flex items-center justify-center">
           <div class="absolute w-px h-px bg-green-500 rounded-full animate-ping"></div>
         </div>
-        <span v-if="notifications.filter(n => !n.read_at).length > 0" class="badge badge-xs badge-primary indicator-item">
-          {{ notifications.filter(n => !n.read_at).length }}
-        </span>
       </div>
     </button>
     <ul

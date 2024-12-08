@@ -31,12 +31,6 @@ app1.mount('#app');
 const app2 = createApp({});
 app2.component('upload-post', UploadPost);
 app2.component('post-card', PostCard);
-
-app2.mount("#app2");
 app2.component('browse', Browse);
 
-// Create the main Vue app instance
-const app = createApp({});
-
-app.component('browse', Browse);
-app.mount('#browse-app');
+app2.mount("#app2");

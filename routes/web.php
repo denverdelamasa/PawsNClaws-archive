@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdoptionFormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ClientProfileController;
@@ -36,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
     Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
+    Route::post('/api/reports/submit', [ReportController::class, 'submitReport']);
+    Route::post('/api/adoption/submit', [AdoptionFormController::class, 'submitAdoption']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 

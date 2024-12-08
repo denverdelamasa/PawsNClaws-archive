@@ -45,34 +45,35 @@ class PostController extends Controller
                 'likes_count' => $likesCount,
                 'is_liked' => $isLiked, // Add the `is_liked` state for the current user
                 'comments_count' => $post->comments_count, // Include the count of comments from the `withCount` query
+                'is_adoptable' => $post->is_adoptable, // Include the adoptable status
             ];
         });
     
         // Return the formatted response as JSON
         return response()->json($formattedPosts, 200);
     }
+    
 
     public function store(Request $request)
     {
-        // Validate the incoming data
         $request->validate([
             'caption' => 'required|string',
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate the image input
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'is_adoptable' => 'nullable|boolean',
         ]);
     
-        // Handle the image upload if a file is provided
         $imagePath = null;
         if ($request->hasFile('image_path') && $request->file('image_path')->isValid()) {
-            $imagePath = $request->file('image_path')->store('images/posts', 'public'); // Store image in public/storage/images/posts
+            $imagePath = $request->file('image_path')->store('images/posts', 'public');
         }
     
-        // Create a new post and save the caption, image path, and user_id
         $post = new Post();
         $post->caption = $request->input('caption');
         if ($imagePath) {
-            $post->image_path = $imagePath; // Store the image path in the post
+            $post->image_path = $imagePath;
         }
-        $post->user_id = Auth::id(); // Associate the authenticated user with the post
+        $post->user_id = Auth::id();
+        $post->is_adoptable = $request->input('is_adoptable', false); // Default to false
         $post->save();
     
         return response()->json([
@@ -80,6 +81,8 @@ class PostController extends Controller
             'post' => $post
         ], 201);
     }
+    
+    
     public function updatePost(Request $request, $postId)
     {
         // Find the post by ID
@@ -87,7 +90,7 @@ class PostController extends Controller
     
         // Validate the incoming data (no image validation)
         $validated = $request->validate([
-            'caption' => 'required|string|max:255',
+            'caption' => 'required|string',
         ]);
     
         // Update the caption

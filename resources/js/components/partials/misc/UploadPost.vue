@@ -76,6 +76,15 @@
               Add Image
             </button>
 
+            <label class="flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                class="checkbox" 
+                v-model="modalData.is_adoptable"
+              />
+              <span>This post is for adoption</span>
+            </label>
+
             <!-- Hidden File Input for Image -->
             <input 
               type="file" 
@@ -118,6 +127,7 @@ export default {
         caption: "",
         image_path: null,
         image_preview: null,
+        is_adoptable: false,
       },
       userProfile: {
         profile_picture: "",
@@ -150,15 +160,17 @@ export default {
         formData.append("image_path", this.modalData.image_path);
       }
 
+      // Convert the checkbox value to a boolean
+      formData.append("is_adoptable", this.modalData.is_adoptable ? "1" : "0");
+
       axios
         .post("/api/posts", formData)
         .then((response) => {
           console.log("Post created:", response.data);
           this.closeModal();
           this.resetForm();
-          this.fetchPosts(); // Fetch posts after successfully creating a post
+          this.fetchPosts();
 
-          // Show success alert with SweetAlert2
           Swal.fire({
             position: "bottom-end",
             icon: "success",
@@ -166,30 +178,24 @@ export default {
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
-            background: "#1e293b", // Dark background
-            color: "#ffffff", // Light text color
-            toast: true, // Toast-style alert
-            didOpen: (toast) => {
-              const progressBar = Swal.getTimerProgressBar();
-              if (progressBar) {
-                progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
-              }
-            },
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
           });
         })
         .catch((error) => {
           console.error("Error creating post:", error);
 
-          // Show error alert
           Swal.fire({
             icon: "error",
             title: "Oops...",
             text: "Something went wrong while uploading your post!",
-            background: "#1e293b", // Dark background
-            color: "#ffffff", // Light text color
+            background: "#1e293b",
+            color: "#ffffff",
           });
         });
     },
+
     fetchPosts() {
       axios
         .get("/api/posts")
@@ -207,6 +213,7 @@ export default {
       this.modalData.caption = "";
       this.modalData.image_path = null;
       this.modalData.image_preview = null;
+      this.modalData.is_adoptable = false;
     },
     fetchUserProfile() {
       axios
