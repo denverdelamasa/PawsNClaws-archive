@@ -2,7 +2,7 @@
   <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4">
     <div class="flex items-start gap-4" id="PostCardDivObserved">
       <!-- Profile Picture -->
-      <img src="https://picsum.photos/200" alt="Profile" class="w-12 h-12 rounded-full" />
+      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="w-12 h-12 rounded-full" />
       
       <!-- Input and Buttons -->
       <div class="flex-grow">
@@ -100,15 +100,28 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+import axios from "axios";
+
 export default {
+  props: {
+    fetchPosts: {
+      type: Function,
+      required: true
+    }
+  },
   data() {
     return {
+      posts: [], // To store fetched posts
       modalType: null,
       modalData: {
         caption: "",
         image_path: null,
         image_preview: null,
-      }
+      },
+      userProfile: {
+        profile_picture: "",
+      },
     };
   },
   methods: {
@@ -123,46 +136,92 @@ export default {
       document.querySelector("dialog").close();
     },
     handleImageChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-            this.modalData.image_path = file; // Store the selected file
-            this.modalData.image_preview = URL.createObjectURL(file); // Generate preview URL
-        }
+      const file = event.target.files[0];
+      if (file) {
+        this.modalData.image_path = file;
+        this.modalData.image_preview = URL.createObjectURL(file);
+      }
     },
     handleSubmit() {
-        const formData = new FormData();
-        formData.append('caption', this.modalData.caption); // Add the caption
-        
-        // If there's an image, append it to the form data
-        if (this.modalData.image_path) {
-            formData.append('image_path', this.modalData.image_path); // Add the image
-        }
+      const formData = new FormData();
+      formData.append("caption", this.modalData.caption);
 
-        // Send the form data via Axios
-        axios.post('/api/posts', formData)
-        .then(response => {
-            console.log(response.data);
-            this.closeModal();
-            this.resetForm(); // Reset the form after a successful post
+      if (this.modalData.image_path) {
+        formData.append("image_path", this.modalData.image_path);
+      }
+
+      axios
+        .post("/api/posts", formData)
+        .then((response) => {
+          console.log("Post created:", response.data);
+          this.closeModal();
+          this.resetForm();
+          this.fetchPosts(); // Fetch posts after successfully creating a post
+
+          // Show success alert with SweetAlert2
+          Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Your post has been uploaded successfully!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b", // Dark background
+            color: "#ffffff", // Light text color
+            toast: true, // Toast-style alert
+            didOpen: (toast) => {
+              const progressBar = Swal.getTimerProgressBar();
+              if (progressBar) {
+                progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+              }
+            },
+          });
         })
-        .catch(error => {
-            console.error(error);
+        .catch((error) => {
+          console.error("Error creating post:", error);
+
+          // Show error alert
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong while uploading your post!",
+            background: "#1e293b", // Dark background
+            color: "#ffffff", // Light text color
+          });
+        });
+    },
+    fetchPosts() {
+      axios
+        .get("/api/posts")
+        .then((response) => {
+          this.posts = response.data; // Update the posts list
+        })
+        .catch((error) => {
+          console.error("Error fetching posts:", error);
         });
     },
     triggerFileInput() {
-        this.$refs.imageInput.click(); // Trigger file input when button is clicked
-    },
-    handleImageChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-        this.modalData.image_path = file; // Store the selected file in modalData
-        }
+      this.$refs.imageInput.click();
     },
     resetForm() {
-        this.modalData.caption = ""; // Clear caption
-        this.modalData.image_path = null; // Reset image_path
-    }
-  }
+      this.modalData.caption = "";
+      this.modalData.image_path = null;
+      this.modalData.image_preview = null;
+    },
+    fetchUserProfile() {
+      axios
+        .get("/api/user-profile")
+        .then((response) => {
+          this.userProfile = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching user profile:", error);
+        });
+    },
+  },
+  mounted() {
+    this.fetchUserProfile(); // Fetch user profile when the component is mounted
+  },
 };
 </script>
 

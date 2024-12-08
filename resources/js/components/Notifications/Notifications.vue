@@ -1,10 +1,10 @@
 <template>
   <div class="dropdown dropdown-end">
     <button tabindex="0" class="btn btn-ghost btn-circle">
-      <div class="indicator z-50">
+      <div class="relative w-fit h-fit bg-gray-600 rounded-lg p-2 flex items-center justify-center cursor-pointer transition duration-200 hover:bg-gray-800 hover:text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
+          class="w-6 h-6 text-gray-300 transition duration-200 transform hover:scale-110"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -16,6 +16,10 @@
             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
           />
         </svg>
+        <!-- Notification point indicator -->
+        <div v-if="notifications.filter(n => !n.read_at).length > 0" class="absolute bottom-1 left-1 w-1.5 h-1.5 bg-green-500 rounded-full flex items-center justify-center">
+          <div class="absolute w-px h-px bg-green-500 rounded-full animate-ping"></div>
+        </div>
         <span v-if="notifications.filter(n => !n.read_at).length > 0" class="badge badge-xs badge-primary indicator-item">
           {{ notifications.filter(n => !n.read_at).length }}
         </span>
@@ -34,7 +38,10 @@
           :class="{'font-bold': !notification.read_at}"
           @click.prevent="markAsRead(notification)"
         >
-          {{ notification.type }}
+          <div>
+            <strong>{{ notification.liked_by }}</strong> liked your post 
+            <span class="text-gray-500">{{ notification.time_ago }}</span>
+          </div>
         </a>
       </li>
     </ul>
@@ -83,5 +90,19 @@ export default {
 <style scoped>
 .font-bold {
   font-weight: bold;
+}
+
+.dropdown-end {
+  position: relative; /* Ensures it can be positioned in relation to its parent */
+  z-index: 10; /* Set a lower z-index to make it appear behind other elements */
+}
+
+.indicator {
+  z-index: 20; /* Ensure that the notification indicator (badge) stays visible */
+}
+
+.dropdown-content {
+  position: absolute; /* Position it within the dropdown container */
+  z-index: 5; /* A lower z-index to place it behind other elements */
 }
 </style>

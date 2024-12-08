@@ -66,4 +66,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/api/notifications/mark-as-read/{id}', [NotificationsController::class, 'markAsRead']);
 
     Route::get('/api/user/profile-picture',[PostController::class, 'getProfilePicture']);
+
+    Route::get('/api/user-profile', [PostController::class, 'getUserProfile']);
+});
+
+Route::get('/api/auth/status', function () {
+    if (auth()->check()) {
+        return response()->json([
+            'authenticated' => true,
+            'user_id' => auth()->id(), // Returns the logged-in user's ID
+        ]);
+    }
+    return response()->json(['authenticated' => false]);
 });

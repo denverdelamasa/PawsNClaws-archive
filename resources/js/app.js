@@ -10,9 +10,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // Import Vue and the component
 import { createApp } from 'vue';
 import Notification from './components/Notifications/Notifications.vue';
-import UploadPost from './components/partials/misc/UploadPost.vue'; 
-import Browse from './components/partials/browse/Browse.vue';
-
+import UploadPost from './components/partials/misc/UploadPost.vue';
+import PostCard from './components/partials/posts/PostCard.vue';
 
 // Create the Vue app
 const app1 = createApp({});
@@ -30,6 +29,8 @@ app1.mount('#app');
 
 const app2 = createApp({});
 app2.component('upload-post', UploadPost);
+app2.component('post-card', PostCard);
+
 app2.mount("#app2");
 app2.component('browse', Browse);
 

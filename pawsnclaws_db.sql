@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 06, 2024 at 07:37 AM
+-- Generation Time: Dec 07, 2024 at 06:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -76,6 +76,18 @@ CREATE TABLE `comments` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`comment_id`, `user_id`, `post_comment_id`, `event_comment_id`, `announcement_comment_id`, `comment`, `created_at`, `updated_at`) VALUES
+(2, 5, 1, NULL, NULL, 'ikaw yon', NULL, NULL),
+(3, 2, 6, NULL, NULL, 'OMG OO NGA', '2024-12-06 16:00:00', '2024-12-07 08:43:52'),
+(4, 2, 6, NULL, NULL, 'hjasdhashd', '2024-12-07 08:46:39', '2024-12-07 08:46:39'),
+(5, 2, 6, NULL, NULL, 'asdasdasd', '2024-12-07 09:13:15', '2024-12-07 09:13:15'),
+(6, 2, 6, NULL, NULL, 'asdads', '2024-12-07 09:13:22', '2024-12-07 09:13:22'),
+(7, 2, 1, NULL, NULL, 'asdasd', '2024-12-07 09:39:23', '2024-12-07 09:39:23');
 
 -- --------------------------------------------------------
 
@@ -163,6 +175,36 @@ CREATE TABLE `job_batches` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `likes`
+--
+
+CREATE TABLE `likes` (
+  `like_id` bigint(20) UNSIGNED NOT NULL,
+  `posts_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `likes`
+--
+
+INSERT INTO `likes` (`like_id`, `posts_id`, `user_id`, `created_at`, `updated_at`) VALUES
+(9, 4, 3, '2024-12-07 07:43:04', '2024-12-07 07:43:04'),
+(10, 3, 3, '2024-12-07 07:43:06', '2024-12-07 07:43:06'),
+(11, 6, 5, '2024-12-07 07:47:29', '2024-12-07 07:47:29'),
+(12, 5, 5, '2024-12-07 07:47:31', '2024-12-07 07:47:31'),
+(13, 4, 5, '2024-12-07 07:47:33', '2024-12-07 07:47:33'),
+(14, 3, 5, '2024-12-07 07:47:35', '2024-12-07 07:47:35'),
+(15, 6, 2, '2024-12-07 07:48:47', '2024-12-07 07:48:47'),
+(16, 5, 2, '2024-12-07 07:48:49', '2024-12-07 07:48:49'),
+(17, 4, 2, '2024-12-07 07:48:50', '2024-12-07 07:48:50'),
+(19, 3, 2, '2024-12-07 08:02:33', '2024-12-07 08:02:33');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -199,6 +241,7 @@ CREATE TABLE `notifications` (
   `notification_id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `type` varchar(255) NOT NULL,
+  `liked_by` varchar(255) DEFAULT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -208,10 +251,21 @@ CREATE TABLE `notifications` (
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`notification_id`, `user_id`, `type`, `read_at`, `created_at`, `updated_at`) VALUES
-(1, 2, 'Adoption Request', NULL, NULL, NULL),
-(2, 2, 'Role Request', NULL, NULL, NULL),
-(3, 3, 'hello', NULL, NULL, NULL);
+INSERT INTO `notifications` (`notification_id`, `user_id`, `type`, `liked_by`, `read_at`, `created_at`, `updated_at`) VALUES
+(1, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:27:05', '2024-12-07 06:27:05'),
+(2, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:33:22', '2024-12-07 06:33:22'),
+(3, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:34:26', '2024-12-07 06:34:26'),
+(4, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:35:59', '2024-12-07 06:35:59'),
+(5, 2, 'like', 'Jopay', '2024-12-07 07:42:42', '2024-12-07 06:39:49', '2024-12-07 07:42:42'),
+(6, 3, 'like', 'Longganisabu', NULL, '2024-12-07 07:39:00', '2024-12-07 07:39:00'),
+(7, 2, 'like', 'Jopay', NULL, '2024-12-07 07:43:04', '2024-12-07 07:43:04'),
+(8, 2, 'like', 'Jopay', NULL, '2024-12-07 07:43:06', '2024-12-07 07:43:06'),
+(9, 3, 'like', 'catperson', NULL, '2024-12-07 07:47:29', '2024-12-07 07:47:29'),
+(10, 3, 'like', 'catperson', NULL, '2024-12-07 07:47:31', '2024-12-07 07:47:31'),
+(11, 2, 'like', 'catperson', '2024-12-07 07:48:17', '2024-12-07 07:47:33', '2024-12-07 07:48:17'),
+(12, 2, 'like', 'catperson', '2024-12-07 07:48:15', '2024-12-07 07:47:35', '2024-12-07 07:48:15'),
+(13, 3, 'like', 'Longganisabu', NULL, '2024-12-07 07:48:47', '2024-12-07 07:48:47'),
+(14, 3, 'like', 'Longganisabu', NULL, '2024-12-07 07:48:49', '2024-12-07 07:48:49');
 
 -- --------------------------------------------------------
 
@@ -240,6 +294,17 @@ CREATE TABLE `posts` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`post_id`, `user_id`, `image_path`, `caption`, `created_at`, `updated_at`) VALUES
+(1, 3, NULL, 'Bobo kayong lahat', '2024-12-07 06:26:49', '2024-12-07 06:26:49'),
+(3, 2, 'images/posts/f8yRcH7wzXmdAaB0ry6qmWJFr4neCN9W3UBAzBM6.jpg', 'May Stray kitten po dito sa Barangay Taal, pakikuha po pls nakakaawa huhu T.T', '2024-12-07 07:42:04', '2024-12-07 07:42:04'),
+(4, 2, 'images/posts/597LzvQo7GFAPn40s5BxZ3uQgAQnw6Jjz2RuODxi.jpg', 'May stray cat po dito sa barangay pag asa, pakikuha jusko huhu', '2024-12-07 07:42:33', '2024-12-07 07:42:33'),
+(5, 3, 'images/posts/XzDWyzIBZNkMhXEf7z2iYJmzdFl7Ej4IrsQL8lQl.jpg', 'Nakakaawa yung aso grabe huhu, pakikuha po pls', '2024-12-07 07:44:27', '2024-12-07 07:44:27'),
+(6, 3, 'images/posts/NOGMrWs6wl3ChzbHnfvUbYEuBNaUjijf2eEv9xzp.jpg', 'KAWAWA NAMAN TO JUSKO HUHU KUNIN NYO NA OMG', '2024-12-07 07:44:45', '2024-12-07 07:44:45');
+
 -- --------------------------------------------------------
 
 --
@@ -260,7 +325,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('qpdapW35fdw0uKbGzZb1bMCZux0XuetGRK1yeTKz', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQlVuOEtWSGxkS25ZaDRXckl1TzZ0bnZyMDFFTkpFbzVxdkVUenJVWCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fX0=', 1733467016);
+('c9BiR6etR4dcmtgauYxVD9zmmHirEh7um3yyMmFI', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVFd4ckdvZHd4NXF2SUVPUnlwT2xqdlVrMGdyakwwSjJ0NUZ6R1NaSiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1733593173);
 
 -- --------------------------------------------------------
 
@@ -286,9 +351,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `profile_picture`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(2, 'Jobert', 'images/profile_pictures/VszJMB0uhrkwrS19fPKGNs5A33I53YMyCYfPp3Hd.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', NULL, '2024-12-05 06:27:32', '2024-12-05 19:01:00'),
+(2, 'Longganisabu', 'images/profile_pictures/wmExpMEhYVydDhN7BrkaXR3KvibAS9o0SCOEA1xl.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', NULL, '2024-12-05 06:27:32', '2024-12-07 07:37:47'),
 (3, 'Jopay', 'images/defaultpics/default-profile.png', 'jopay@gmail.com', NULL, '$2y$12$zRIpIEqBUketefA.ST53EO0tHYm3Dcer9vd7LssT/lLicJhb6oKlu', 'User', NULL, '2024-12-05 20:16:11', '2024-12-05 20:16:11'),
-(4, 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', NULL, '2024-12-05 20:20:44', '2024-12-05 22:32:41');
+(4, 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', NULL, '2024-12-05 20:20:44', '2024-12-05 22:32:41'),
+(5, 'catperson', 'images/profile_pictures/Cd9CJmpS2BZiCHE9uGnsONUSwOSEKrvfBfQO4nDo.jpg', 'catperson@gmail.com', NULL, '$2y$12$J7FecznPE1UZ9lWv4cVQqOpRBsjwoVxlJdSLVNNLX9ASmkbbE.JdO', 'User', NULL, '2024-12-07 07:46:45', '2024-12-07 07:47:21');
 
 --
 -- Indexes for dumped tables
@@ -358,6 +424,14 @@ ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`like_id`),
+  ADD KEY `likes_ibfk_1` (`posts_id`),
+  ADD KEY `likes_ibfk_2` (`user_id`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -412,7 +486,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -439,6 +513,12 @@ ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -448,19 +528,19 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -492,6 +572,13 @@ ALTER TABLE `events`
 --
 ALTER TABLE `fosters`
   ADD CONSTRAINT `fosters_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `likes`
+--
+ALTER TABLE `likes`
+  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`posts_id`) REFERENCES `posts` (`post_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `notifications`
