@@ -12,6 +12,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/admin/{any}', function () {
+    return view('pages.admin'); // Vue.js admin app
+})->where('any', '.*');
+
 
 
 Route::middleware(['auth', 'CheckRole:Admin'])->group(function () {
