@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 07, 2024 at 06:40 PM
+-- Generation Time: Dec 08, 2024 at 10:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -82,12 +82,24 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`comment_id`, `user_id`, `post_comment_id`, `event_comment_id`, `announcement_comment_id`, `comment`, `created_at`, `updated_at`) VALUES
-(2, 5, 1, NULL, NULL, 'ikaw yon', NULL, NULL),
 (3, 2, 6, NULL, NULL, 'OMG OO NGA', '2024-12-06 16:00:00', '2024-12-07 08:43:52'),
 (4, 2, 6, NULL, NULL, 'hjasdhashd', '2024-12-07 08:46:39', '2024-12-07 08:46:39'),
 (5, 2, 6, NULL, NULL, 'asdasdasd', '2024-12-07 09:13:15', '2024-12-07 09:13:15'),
 (6, 2, 6, NULL, NULL, 'asdads', '2024-12-07 09:13:22', '2024-12-07 09:13:22'),
-(7, 2, 1, NULL, NULL, 'asdasd', '2024-12-07 09:39:23', '2024-12-07 09:39:23');
+(8, 5, 6, NULL, NULL, 'Location po?', '2024-12-07 18:38:55', '2024-12-07 18:38:55'),
+(9, 5, 5, NULL, NULL, 'Hala, Saan po to?', '2024-12-07 18:39:43', '2024-12-07 18:39:43'),
+(10, 3, 5, NULL, NULL, 'sa barangay kupang po kami', '2024-12-07 18:41:16', '2024-12-07 18:41:16'),
+(11, 2, 6, NULL, NULL, 'HALA JUSKO', '2024-12-07 18:42:56', '2024-12-07 18:42:56'),
+(12, 5, 4, NULL, NULL, 'kawawa naman yan, ang taba taba pa naman huhu', '2024-12-07 18:44:43', '2024-12-07 18:44:43'),
+(14, 5, 6, NULL, NULL, 'ok', '2024-12-07 18:49:26', '2024-12-07 18:49:26'),
+(15, 3, 9, NULL, NULL, 'meron po kaso ikaw yung kakain ng cat food', '2024-12-07 19:18:59', '2024-12-07 19:18:59'),
+(16, 5, 9, NULL, NULL, 'bastos!', '2024-12-07 19:21:20', '2024-12-07 19:21:20'),
+(17, 5, 3, NULL, NULL, 'omg ang cute!  persian po yan im sure!!', '2024-12-07 19:26:13', '2024-12-07 19:26:13'),
+(18, 5, 3, NULL, NULL, 'MINE!! *nag submit ng adoption form', '2024-12-07 19:26:37', '2024-12-07 19:26:37'),
+(19, 2, 9, NULL, NULL, 'pusa', '2024-12-07 19:42:21', '2024-12-07 19:42:21'),
+(20, 5, 12, NULL, NULL, 'fake news po to wag po kayo mainiwala dito sa tao na ito jusko tigil na!!!!', '2024-12-07 19:51:07', '2024-12-07 19:51:07'),
+(21, 5, 12, NULL, NULL, 'asdasd', '2024-12-07 21:32:44', '2024-12-07 21:32:44'),
+(22, 5, 17, NULL, NULL, '123123', '2024-12-07 22:24:49', '2024-12-07 22:24:49');
 
 -- --------------------------------------------------------
 
@@ -197,10 +209,12 @@ INSERT INTO `likes` (`like_id`, `posts_id`, `user_id`, `created_at`, `updated_at
 (12, 5, 5, '2024-12-07 07:47:31', '2024-12-07 07:47:31'),
 (13, 4, 5, '2024-12-07 07:47:33', '2024-12-07 07:47:33'),
 (14, 3, 5, '2024-12-07 07:47:35', '2024-12-07 07:47:35'),
-(15, 6, 2, '2024-12-07 07:48:47', '2024-12-07 07:48:47'),
-(16, 5, 2, '2024-12-07 07:48:49', '2024-12-07 07:48:49'),
-(17, 4, 2, '2024-12-07 07:48:50', '2024-12-07 07:48:50'),
-(19, 3, 2, '2024-12-07 08:02:33', '2024-12-07 08:02:33');
+(22, 9, 3, '2024-12-07 19:18:42', '2024-12-07 19:18:42'),
+(29, 5, 2, '2024-12-07 23:26:16', '2024-12-07 23:26:16'),
+(30, 6, 2, '2024-12-07 23:26:18', '2024-12-07 23:26:18'),
+(31, 15, 3, '2024-12-07 23:28:32', '2024-12-07 23:28:32'),
+(32, 14, 3, '2024-12-07 23:28:33', '2024-12-07 23:28:33'),
+(36, 20, 2, '2024-12-07 23:43:19', '2024-12-07 23:43:19');
 
 -- --------------------------------------------------------
 
@@ -229,7 +243,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2024_12_05_154344_create_announcements_table', 6),
 (9, '2024_12_05_154553_create_comments_table', 7),
 (10, '2024_12_05_161359_create_fosters_table', 8),
-(11, '2024_12_06_032330_create_notifications_table', 9);
+(11, '2024_12_06_032330_create_notifications_table', 9),
+(12, '2024_12_08_083659_add_reports_table', 10);
 
 -- --------------------------------------------------------
 
@@ -252,20 +267,31 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`notification_id`, `user_id`, `type`, `liked_by`, `read_at`, `created_at`, `updated_at`) VALUES
-(1, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:27:05', '2024-12-07 06:27:05'),
-(2, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:33:22', '2024-12-07 06:33:22'),
-(3, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:34:26', '2024-12-07 06:34:26'),
-(4, 3, 'like', 'Longganisabu', NULL, '2024-12-07 06:35:59', '2024-12-07 06:35:59'),
+(1, 3, 'like', 'Longganisabu', '2024-12-07 18:41:54', '2024-12-07 06:27:05', '2024-12-07 18:41:54'),
+(2, 3, 'like', 'Longganisabu', '2024-12-07 18:41:56', '2024-12-07 06:33:22', '2024-12-07 18:41:56'),
+(3, 3, 'like', 'Longganisabu', '2024-12-07 18:41:58', '2024-12-07 06:34:26', '2024-12-07 18:41:58'),
+(4, 3, 'like', 'Longganisabu', '2024-12-07 18:41:57', '2024-12-07 06:35:59', '2024-12-07 18:41:57'),
 (5, 2, 'like', 'Jopay', '2024-12-07 07:42:42', '2024-12-07 06:39:49', '2024-12-07 07:42:42'),
-(6, 3, 'like', 'Longganisabu', NULL, '2024-12-07 07:39:00', '2024-12-07 07:39:00'),
-(7, 2, 'like', 'Jopay', NULL, '2024-12-07 07:43:04', '2024-12-07 07:43:04'),
-(8, 2, 'like', 'Jopay', NULL, '2024-12-07 07:43:06', '2024-12-07 07:43:06'),
-(9, 3, 'like', 'catperson', NULL, '2024-12-07 07:47:29', '2024-12-07 07:47:29'),
-(10, 3, 'like', 'catperson', NULL, '2024-12-07 07:47:31', '2024-12-07 07:47:31'),
+(6, 3, 'like', 'Longganisabu', '2024-12-07 18:42:01', '2024-12-07 07:39:00', '2024-12-07 18:42:01'),
+(7, 2, 'like', 'Jopay', '2024-12-07 19:22:50', '2024-12-07 07:43:04', '2024-12-07 19:22:50'),
+(8, 2, 'like', 'Jopay', '2024-12-07 19:22:48', '2024-12-07 07:43:06', '2024-12-07 19:22:48'),
+(9, 3, 'like', 'catperson', '2024-12-07 18:42:02', '2024-12-07 07:47:29', '2024-12-07 18:42:02'),
+(10, 3, 'like', 'catperson', '2024-12-07 18:42:03', '2024-12-07 07:47:31', '2024-12-07 18:42:03'),
 (11, 2, 'like', 'catperson', '2024-12-07 07:48:17', '2024-12-07 07:47:33', '2024-12-07 07:48:17'),
 (12, 2, 'like', 'catperson', '2024-12-07 07:48:15', '2024-12-07 07:47:35', '2024-12-07 07:48:15'),
-(13, 3, 'like', 'Longganisabu', NULL, '2024-12-07 07:48:47', '2024-12-07 07:48:47'),
-(14, 3, 'like', 'Longganisabu', NULL, '2024-12-07 07:48:49', '2024-12-07 07:48:49');
+(13, 3, 'like', 'Longganisabu', '2024-12-07 18:42:04', '2024-12-07 07:48:47', '2024-12-07 18:42:04'),
+(14, 3, 'like', 'Longganisabu', '2024-12-07 18:42:05', '2024-12-07 07:48:49', '2024-12-07 18:42:05'),
+(15, 3, 'like', 'catperson', '2024-12-07 19:29:21', '2024-12-07 18:46:20', '2024-12-07 19:29:21'),
+(16, 5, 'like', 'Jopay', '2024-12-07 19:29:03', '2024-12-07 19:18:42', '2024-12-07 19:29:03'),
+(17, 5, 'like', 'Longganisabu', '2024-12-07 19:29:02', '2024-12-07 19:22:45', '2024-12-07 19:29:02'),
+(18, 5, 'like', 'DogLover02', '2024-12-07 23:29:19', '2024-12-07 23:24:41', '2024-12-07 23:29:19'),
+(19, 5, 'like', 'DogLover02', '2024-12-07 23:29:18', '2024-12-07 23:24:44', '2024-12-07 23:29:18'),
+(20, 5, 'like', 'DogLover02', '2024-12-07 23:29:18', '2024-12-07 23:24:49', '2024-12-07 23:29:18'),
+(21, 3, 'like', 'DogLover02', '2024-12-07 23:28:06', '2024-12-07 23:26:16', '2024-12-07 23:28:06'),
+(22, 3, 'like', 'DogLover02', '2024-12-07 23:28:05', '2024-12-07 23:26:18', '2024-12-07 23:28:05'),
+(23, 5, 'like', 'Jopay', '2024-12-07 23:29:16', '2024-12-07 23:28:32', '2024-12-07 23:29:16'),
+(24, 5, 'like', 'Jopay', '2024-12-07 23:29:15', '2024-12-07 23:28:33', '2024-12-07 23:29:15'),
+(25, 5, 'like', 'DogLover02', '2024-12-08 00:47:45', '2024-12-07 23:43:19', '2024-12-08 00:47:45');
 
 -- --------------------------------------------------------
 
@@ -299,11 +325,47 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`post_id`, `user_id`, `image_path`, `caption`, `created_at`, `updated_at`) VALUES
-(1, 3, NULL, 'Bobo kayong lahat', '2024-12-07 06:26:49', '2024-12-07 06:26:49'),
 (3, 2, 'images/posts/f8yRcH7wzXmdAaB0ry6qmWJFr4neCN9W3UBAzBM6.jpg', 'May Stray kitten po dito sa Barangay Taal, pakikuha po pls nakakaawa huhu T.T', '2024-12-07 07:42:04', '2024-12-07 07:42:04'),
 (4, 2, 'images/posts/597LzvQo7GFAPn40s5BxZ3uQgAQnw6Jjz2RuODxi.jpg', 'May stray cat po dito sa barangay pag asa, pakikuha jusko huhu', '2024-12-07 07:42:33', '2024-12-07 07:42:33'),
 (5, 3, 'images/posts/XzDWyzIBZNkMhXEf7z2iYJmzdFl7Ej4IrsQL8lQl.jpg', 'Nakakaawa yung aso grabe huhu, pakikuha po pls', '2024-12-07 07:44:27', '2024-12-07 07:44:27'),
-(6, 3, 'images/posts/NOGMrWs6wl3ChzbHnfvUbYEuBNaUjijf2eEv9xzp.jpg', 'KAWAWA NAMAN TO JUSKO HUHU KUNIN NYO NA OMG', '2024-12-07 07:44:45', '2024-12-07 07:44:45');
+(6, 3, 'images/posts/NOGMrWs6wl3ChzbHnfvUbYEuBNaUjijf2eEv9xzp.jpg', 'KAWAWA NAMAN TO JUSKO HUHU KUNIN NYO NA OMG', '2024-12-07 07:44:45', '2024-12-07 07:44:45'),
+(9, 5, NULL, 'Baka po meron kayong may breed dyan na ipapa adopt? never pa po kasi akong nagkaroon ng pet na may breed hehe, just hoping lang po na meron.', '2024-12-07 19:11:57', '2024-12-07 19:21:41'),
+(12, 2, 'images/posts/0yw1UNgE7FvCNmvsQkd0yzf0KOWCm3zRlS2idbpl.png', 'ito po si kuya alex nangkakain nang pusa hidden po profile niya kasi takot siya mahuli watch out po kay kuya alex para ligtas ang pusa niyo!!!', '2024-12-07 19:45:58', '2024-12-07 19:45:58'),
+(14, 5, NULL, 'asdasd', '2024-12-07 21:52:43', '2024-12-07 21:52:43'),
+(15, 5, NULL, 'asdasd', '2024-12-07 21:52:44', '2024-12-07 21:52:44'),
+(16, 5, NULL, 'asdas', '2024-12-07 21:52:58', '2024-12-07 21:52:58'),
+(17, 5, NULL, 'Mag p posr ako', '2024-12-07 21:53:12', '2024-12-07 21:53:12'),
+(18, 2, NULL, 'asddsa', '2024-12-07 23:11:22', '2024-12-07 23:11:22'),
+(19, 2, NULL, 'BUBU', '2024-12-07 23:11:28', '2024-12-07 23:11:28'),
+(20, 5, NULL, 'lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsumasdas', '2024-12-07 23:32:34', '2024-12-07 23:41:24');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reports`
+--
+
+CREATE TABLE `reports` (
+  `report_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `post_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `comment_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `reason` varchar(255) NOT NULL,
+  `details` text DEFAULT NULL,
+  `type` enum('post','comment') NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `reports`
+--
+
+INSERT INTO `reports` (`report_id`, `user_id`, `post_id`, `comment_id`, `reason`, `details`, `type`, `created_at`, `updated_at`) VALUES
+(1, 5, 19, NULL, 'Troll', NULL, 'post', '2024-12-08 00:59:04', '2024-12-08 00:59:04'),
+(2, 5, 19, NULL, 'Troll', NULL, 'post', '2024-12-08 01:07:58', '2024-12-08 01:07:58'),
+(3, 5, 19, NULL, 'Troll', NULL, 'post', '2024-12-08 01:09:08', '2024-12-08 01:09:08'),
+(4, 5, 18, NULL, 'Troll', NULL, 'post', '2024-12-08 01:14:37', '2024-12-08 01:14:37');
 
 -- --------------------------------------------------------
 
@@ -325,7 +387,39 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('c9BiR6etR4dcmtgauYxVD9zmmHirEh7um3yyMmFI', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVFd4ckdvZHd4NXF2SUVPUnlwT2xqdlVrMGdyakwwSjJ0NUZ6R1NaSiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1733593173);
+('3tAvf19gRQJkpQrfvaUldwumoiLB64GxnmIjhwf1', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoid2FpM2FPaE9qYVBCSUhMRVpFVjFjeWdmdlZuT25aMHFhVmE1cThaWiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643953),
+('3trtsTv2rOej61lHlgDGPEqjeZfIMWDhKOdvtMuX', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiMW8yclZXNk5Fejg0Z2IybEF4UVBiSjU3ZXpSNnNmUExHVmVvYU0xUyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643999),
+('688LzZo0RheW5viuFN99gjHS3ePQfwGkf4WHo18Q', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoib1o0UHFwbzg3ZXVJbWxqbGVkZFFobDY3QzdwWjRHaXdTdVJ4UkJvTCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643957),
+('8vRENoAVoghz3iPhEkhIeWFQT0W7Ih909ABAK1Tp', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiWEg5QTJNeU1acDVUbWIzTk5JZ1ZYMjltQWd3NGZCT25JWGVnb3l6TSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643958),
+('9gP039Iyfj99KBXWj6Z7u2gZSUomVixz1jNAJVDE', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiSVVBNk1wTjdaaDV1dkV1VFFMYmRLVXUyUmpmVmN3bEVuNkZpdnhvNCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733644000),
+('BIJ7AJ4d5eTMjvr7I3l1o69OD79fNB7LEsrQAQsH', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoibXBDalZ5SjN1dktIeGZmcjBGVUkzWG1vMWhQaHVxSzB4VENSOHdpVSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733644000),
+('croN9nlxJPAwFDkzrajU0o62iRvoPCWKWRkenozF', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoidko2VE5OR0dTN1pOTzA4TXQ1aEVPSWN1RlBFVmRqQVhEbGprVlNsdCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643958),
+('ejtbipvSmXO0JYINVTh444AGMak7pUjZtbKN47gr', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoibVl1eU9mT1RXUGhXaU0xZUVBazlET3Y2dWQ3R09Rc3A4eUNtWElDUyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643958),
+('FaF1diDygxsnH03OITaNl96pUW2B2YnjVKzJQ8tm', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiMTIzb3B3MW1wUWdiblBWang5eE1Fbjk4em9ZU1V4aTRJckVjRlZwdSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643957),
+('fsfIRTd0IqtA3K144ypaYPUxnM3r2BJ8Hk5KkZIZ', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiaDZJMzQ5TmFYRDh6UmQ0cTh3c3pIZk9tNWhEemczR24wVlhrQ0FFaiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643959),
+('GGc3YEfCN177QHgn2Ya9U3DerH7tsjIeXW12l6EE', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiVVlRTmZMR1dDYThpZko4b3RRZ1RsMVRwblJNSjl1SUUxR2RMRGVSbiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643935),
+('h566d6ujhBWQKpL43UFed1JBsyeeyiGsv5Rxs8Kc', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiTGswVlJkejhQR0pzajRQTHJUeWFJa3pvUXNnWjlOMXA4WkdHenhzcCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643960),
+('hDcx6k108JhoQ4KVxmgxJbcSZFdUx6fvSPkeG8Rq', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNlJ1NnlwY1dmRzJpeFRVbldUZk9sUGZxR2RGcDNYU01qS05wem5NdyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643934),
+('hssYtSMYchexV5GIMSMqzBds49Q7AZbbciljnkkN', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiZmlqdDhTb2JqN0dLNDliVllJMnpicXdnd2sxZHhVNk50c05RWXliSSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643959),
+('HTPobhQ3sGd16WLlVChSHN8aWesnksuSbwv7Ehf8', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoickZkdWpiQnB3T2hpcEk3RnZ6OEZzUFU4MXRyMXE4UmZCT1Ztd28wNiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643935),
+('JkQuqas9gOORyJRgTCsTHOs5Vit4hChPIEd4ztwc', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiMERxd0pHNWJNYmE2QVlwVUNzTWlnRnU3VjdiUXVzU0tLQ3djZW9zQiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643959),
+('K0Ud6Y8rBTfQCYvL00UtSAM6R9ftxU5EqgZoPgvY', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiRmRxNU9ObFRnR3NtSzZLMXRycGhDeG1wUGx1cndhdnA4bXlkeGkxMCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643929),
+('K7rA6oWELtjOy6ZBUjjCwqpz1wyXqHEkl8jyo26S', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoicEt3YWk2ejNUZ1BzSjBBeHRLVFlzUkthOHVXUEF6cFIybnNvQWpEUiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643928),
+('kd5UfKO4YkLZx3Icr417va0HtcaImBQNvC4kdFqu', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoid2dMSDlVTVNqaG1GaWdVejMzSkRrekhZNFA2VkVJZDNDYUVZT0lDNyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643929),
+('lf6ZPQePkBKjUDVtJoHRve3bsrlHZdshKRJsgAcs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiOUxZSWw5SXpkN3V1bnZQTzB0bFZhU1VzSElLYldQc0x2TVYwTHlwWCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643957),
+('mBg0Mzi2y5celsrIMCADVBnrhVEePZQHPkDrOaMp', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiRjJPc2FxWnpnMVprbVNOUk1QRzRieWsySEdZd01yT2M3QllVNzV5OSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643999),
+('mlARU05kLMCyC4HOE7s7hQUPWMyngKzP8RHZ0OMg', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiM2ZVM0hkckp4cUJ2STBENlhKaURuTTZVdU53czRreXlabEdnMzJhUSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643957),
+('nw50hTprVmkJklTQOUWN7mWM1DGD7nXbreqn4RtT', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiSkpvelZSRHZYT1dHOFBQUG1IcG5lQUNGbVVSTndYN1ZoR3UwWTJkeCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643956),
+('qfbxsLTR5LSgJMBjaEoW7G2ojcndF0PDANuG5zJH', 5, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYnVwaExjblB6UjhFcDlRdlBrd0xuUUVhSTZqWjRVNTNoZ2Z5cU5qdSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6NTt9', 1733649277),
+('RkgLYAkgIKxV44rSsu1DKMTz95k8st6jqKrQWjMq', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiQ25qUE1KSjZET2VuY000OG9odVYxcFhaaU5wQ1djMWdpeUV6Y25aeiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643958),
+('RrIN1derdl7YVkXfM746ndD9iQJkCq821ODJ3lg5', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiQjhkcVhnM3NhamNwZ1h2TFVJVWNGZmQySVppZDROSURyN3FDMGFvWSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643935),
+('SU7fxY0UsflIT3Jf1srxkyRhwPa5BKGRMZquCzOB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiODVMUDdoNVcybTdoNHE1TlJnMUt5d2t3elM0cFZiQ0JvdnR2Z0VtWiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643960),
+('UE7wYIHFNl5ODXFO1WukAUPeQFuuJns2LutYLaCq', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiVXpVS0xUdlJiUkpWRUE1a1h1MEhzMjZ3Yk9sNWZva3ZxTkpRVGZPUyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643960),
+('uUWDZxcVHlkuXbCoyfeq9M371zxp2NJt0Z1rFCMW', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiR2NVa1VDS1lTaEYzbVBGUmpoQ2RJUlM3UktWYXRldUhIbUhSUFQ0TiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643951),
+('x6rhhtiGvzQY3lKby22Tc27qld6O2rez9n6Z99Pl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiMTA0UTRCemY1QzhGR0RLaHJ0ZjVvQ0pwaWpybHBabnZPd3hBUXNzSCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643959),
+('XQ3OW96f3X68ZLjNfRdp3vpgmDpo9wdX7wDY91xI', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiMlNFMGs3YVpDYVd4S2lvZEI4S3BjY2hzUW9pMmhqSUYyS2lMNGlSNyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643953),
+('Y6W5MeKoNIGNqGhnNx52K8vGbPmyMgSnMmVK0hBh', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiU3FoT0FENXBPUGdQUnEwQzVLSHhUMDFDTmVlSEFXOXJEeE1hZk9TdSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643952),
+('zWt0peR3Tsv2Ydr6JR28YE6LB9iir6Yemf2hkGYV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.95.3 Chrome/128.0.6613.186 Electron/32.2.1 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiRjBFSXV3SFR0MWl1ZjNQcm9LTWtSM1EzbWduYzR3aHVrdUo1bEtvMSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1733643929);
 
 -- --------------------------------------------------------
 
@@ -351,7 +445,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `profile_picture`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(2, 'Longganisabu', 'images/profile_pictures/wmExpMEhYVydDhN7BrkaXR3KvibAS9o0SCOEA1xl.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', NULL, '2024-12-05 06:27:32', '2024-12-07 07:37:47'),
+(2, 'DogLover02', 'images/profile_pictures/wmExpMEhYVydDhN7BrkaXR3KvibAS9o0SCOEA1xl.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', NULL, '2024-12-05 06:27:32', '2024-12-07 19:31:43'),
 (3, 'Jopay', 'images/defaultpics/default-profile.png', 'jopay@gmail.com', NULL, '$2y$12$zRIpIEqBUketefA.ST53EO0tHYm3Dcer9vd7LssT/lLicJhb6oKlu', 'User', NULL, '2024-12-05 20:16:11', '2024-12-05 20:16:11'),
 (4, 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', NULL, '2024-12-05 20:20:44', '2024-12-05 22:32:41'),
 (5, 'catperson', 'images/profile_pictures/Cd9CJmpS2BZiCHE9uGnsONUSwOSEKrvfBfQO4nDo.jpg', 'catperson@gmail.com', NULL, '$2y$12$J7FecznPE1UZ9lWv4cVQqOpRBsjwoVxlJdSLVNNLX9ASmkbbE.JdO', 'User', NULL, '2024-12-07 07:46:45', '2024-12-07 07:47:21');
@@ -458,6 +552,15 @@ ALTER TABLE `posts`
   ADD KEY `posts_user_id_foreign` (`user_id`);
 
 --
+-- Indexes for table `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`report_id`),
+  ADD KEY `reports_user_id_foreign` (`user_id`),
+  ADD KEY `reports_post_id_foreign` (`post_id`),
+  ADD KEY `reports_comment_id_foreign` (`comment_id`);
+
+--
 -- Indexes for table `sessions`
 --
 ALTER TABLE `sessions`
@@ -486,7 +589,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -516,31 +619,37 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `report_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
@@ -591,6 +700,14 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `posts`
   ADD CONSTRAINT `posts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reports`
+--
+ALTER TABLE `reports`
+  ADD CONSTRAINT `reports_comment_id_foreign` FOREIGN KEY (`comment_id`) REFERENCES `comments` (`comment_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reports_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reports_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
