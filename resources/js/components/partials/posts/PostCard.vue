@@ -2,7 +2,28 @@
   <UploadPost v-if="isAuthenticated" :fetch-posts="fetchPosts" />
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
-    <div class="flex justify-end items-end p-4">
+    <div class="flex justify-end items-end p-4 gap-x-2">
+      <!-- Show "Open for Adoption" when is_adoptable is true -->
+      <div v-if="post.is_adoptable === 1" class="badge badge-warning badge-outline gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5z"/>
+          <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/>
+          <path d="M8 6.982C9.664 5.309 13.825 8.236 8 12 2.175 8.236 6.336 5.31 8 6.982"/>
+        </svg>
+        Open for Adoption
+      </div>
+
+      <!-- Show "Adopted" when is_adoptable is 0 -->
+      <div v-else-if="post.is_adoptable === 3" class="badge badge-info badge-outline gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart-fill" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
+          <path fill-rule="evenodd" d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5zm4 5.982c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.69 0-5.018"/>
+        </svg>
+        Adopted
+      </div>
+
+      <!-- Hide both if is_adoptable is null or not set -->
+      <div v-else class="badge badge-hidden"></div>
       <!-- Dropdown Menu -->
       <div class="dropdown dropdown-end z-50">
         <label tabindex="0" class="btn btn-sm btn-ghost">
@@ -38,7 +59,7 @@
               </a>
             </li>
         </ul>
-        </div>
+      </div>
     </div>
 
     <!-- Thumbnail -->
@@ -163,7 +184,7 @@
 
           <div class="modal-action">
             <button class="btn btn-error">Submit Report</button>
-            <button class="btn" @click="closeReportModal(post.post_id)">Cancel</button>
+            <a class="btn" @click="closeReportModal(post.post_id)">Cancel</a>
           </div>
         </form>
       </div>
@@ -252,6 +273,130 @@
         </svg>
         <span id="bookmarkText">Add to bookmarks</span>
       </button>
+
+      <!-- Apply Adopt Button -->
+      <button v-if="post.is_adoptable === 1, post.user_id !== currentUserId" @click="openAdoptionModal(post.post_id, post.user_id)" class="btn btn-outline btn-success btn-sm flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1.133l.941.502A2 2 0 0 1 16 5.4V14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5.4a2 2 0 0 1 1.059-1.765L2 3.133zm0 2.267-.47.25A1 1 0 0 0 1 5.4v.817l1 .6zm1 3.15 3.75 2.25L8 8.917l1.25.75L13 7.417V2a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zm11-.6 1-.6V5.4a1 1 0 0 0-.53-.882L14 4.267zM8 2.982C9.664 1.309 13.825 4.236 8 8 2.175 4.236 6.336 1.31 8 2.982m7 4.401-4.778 2.867L15 13.117zm-.035 6.88L8 10.082l-6.965 4.18A1 1 0 0 0 2 15h12a1 1 0 0 0 .965-.738ZM1 13.116l4.778-2.867L1 7.383v5.734Z"/>
+        </svg>
+        <span>Send Adoption Form</span>
+      </button>
+      <!-- Apply Adopt Button -->
+      <button class="btn btn-outline btn-active btn-warning btn-sm flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-paper-heart-fill" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="m3 7.5 3.5 2L8 8.75l1.5.75 3.5-2v-6A1.5 1.5 0 0 0 11.5 0h-7A1.5 1.5 0 0 0 3 1.5zM2 3.133l-.941.502A2 2 0 0 0 0 5.4v.313l2 1.173zm12 3.753 2-1.173V5.4a2 2 0 0 0-1.059-1.765L14 3.133zm-3.693 3.324L16 6.873v6.5zm5.634 4.274L8 10.072.059 14.484A2 2 0 0 0 2 16h12a2 2 0 0 0 1.941-1.516M5.693 10.21 0 13.372v-6.5zM8 1.982C9.664.309 13.825 3.236 8 7 2.175 3.236 6.336.31 8 1.982"/>
+        </svg>
+        <span>Done Sending Adoption Form</span>
+      </button>
+      <dialog id="adoptionModal" class="modal">
+        <div class="modal-box w-96 h-auto max-w-6xl max-h-[80vh] hide-scrollbar">
+          <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('adoptionModal').close()">✕</button>
+          </form>
+          
+          <h3 class="text-lg font-bold mb-4">Adoption Application</h3>
+          
+          <!-- Adoption Form -->
+          <form @submit.prevent="submitAdoptionForm">
+            <!-- 1. Full Name  -->
+            <div class="mb-4">
+              <label for="adopterName" class="block text-sm font-medium">Full Name</label>
+              <p class="m-2 text-xs text-secondary" >ex: Denver Dela Masa </p>
+              <input type="text" id="adopterName" v-model="formData.adopterName" name="adopterName" class="input input-bordered w-full" required>
+            </div>
+
+            <!-- 2. Contact Info -->
+            <div class="mb-4">
+              <label for="contactInfo" class="block text-sm font-medium">Contact Info </label>
+              <p class="m-2 text-xs text-secondary" >(Phone or Email)</p>
+              <input type="text" id="contactInfo" v-model="formData.contactInfo"name="contactInfo" class="input input-bordered w-full" required>
+            </div>
+            <div class="flex flex-row justify-between gap-x-2">
+              <!-- 3. Individual/Organization/Shelter -->
+              <div class="mb-4 w-full">
+                <label for="adoptType" class="block text-sm font-medium">Who Are You Representing?</label>
+                <select id="adoptType" v-model="formData.adoptType" name="adoptType" class="select select-bordered w-full" required>
+                  <option value="individual">Individual</option>
+                  <option value="organization">Organization</option>
+                  <option value="shelter">Shelter</option>
+                </select>
+              </div>
+
+              <!-- 9. Student/Employed/Volunteer -->
+              <div class="mb-4 w-full">
+                <label for="employmentStatus" class="block text-sm font-medium">Current Status</label>
+                <select id="employmentStatus" v-model="formData.employmentStatus" name="employmentStatus" class="select select-bordered w-full" required>
+                  <option value="student">Student</option>
+                  <option value="employed">Employed</option>
+                  <option value="volunteer">Volunteer</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 4. Social Media Links -->
+            <div class="mb-4">
+              <label for="socmed" class="block text-sm font-medium">Social Media Links</label>
+              <p class="m-2 text-xs text-secondary">(Optional)</p>
+              <input type="text" id="socmed" v-model="formData.socmed" name="location" class="input input-bordered w-full" required>
+            </div>
+
+            <!-- 4. Complete Location -->
+            <div class="mb-4">
+              <label for="location" class="block text-sm font-medium">Location</label>
+              <p class="m-2 text-xs text-secondary">1234 Maple Street, Apartment 5B, Town, City</p>
+              <input type="text" id="location" v-model="formData.location" name="location" class="input input-bordered w-full" required>
+            </div>
+
+            <!-- 5. Experience with Pets -->
+            <div class="mb-4">
+              <label for="experience" class="block text-sm font-medium">Pet Experience Pet</label>
+              <p class="m-2 text-xs text-secondary">Any pets you have taken care of?</p>
+              <textarea id="experience" v-model="formData.experience" name="experience" rows="4" class="textarea textarea-bordered w-full" required></textarea>
+            </div>
+
+            <!-- 6. Reason for Adopting -->
+            <div class="mb-4">
+              <label for="reason" class="block text-sm font-medium">Reason for Adopting</label>
+              <textarea id="reason" name="reason" v-model="formData.reason" rows="6" class="textarea textarea-bordered w-full" required></textarea>
+            </div>
+
+            <!-- 7. Number of Current Pets -->
+            <div class="mb-4">
+              <label for="currentPets" class="block text-sm font-medium">Number of Current Pets</label>
+              <input 
+                type="number" 
+                id="currentPets" 
+                name="currentPets"
+                v-model="formData.currentPets" 
+                class="input input-bordered w-full" 
+                min="0" 
+                value="0" 
+                required>
+            </div>
+
+            <!-- 8. Valid Gov. ID -->
+            <div class="mb-4">
+              <label for="govId" class="block text-sm font-medium">Valid Government ID (Upload)</label>
+              <input type="file" id="gov_id" name="gov_id" @change="handleFileChange"  class="file-input file-input-bordered w-full" accept=".jpg,.jpeg,.png,.pdf" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mb-4 flex flex-col justify-center items-center">
+              <!-- Apply Adopt Button -->
+              <button type="submit" onclick="document.getElementById('adoptionModal').showModal()" class="btn btn-outline btn-warning btn-md flex items-center gap-2 m-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1.133l.941.502A2 2 0 0 1 16 5.4V14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5.4a2 2 0 0 1 1.059-1.765L2 3.133zm0 2.267-.47.25A1 1 0 0 0 1 5.4v.817l1 .6zm1 3.15 3.75 2.25L8 8.917l1.25.75L13 7.417V2a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zm11-.6 1-.6V5.4a1 1 0 0 0-.53-.882L14 4.267zM8 2.982C9.664 1.309 13.825 4.236 8 8 2.175 4.236 6.336 1.31 8 2.982m7 4.401-4.778 2.867L15 13.117zm-.035 6.88L8 10.082l-6.965 4.18A1 1 0 0 0 2 15h12a1 1 0 0 0 .965-.738ZM1 13.116l4.778-2.867L1 7.383v5.734Z"/>
+                </svg>
+                <span>Submit Application</span>
+              </button>
+              <p class="m-2 text-xs text-secondary">
+                By pressing submit button you are agreeing to our 
+                <a href="#" class="underline">Terms of Service</a>.
+              </p>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </div>
     </div>
   </div>
@@ -259,14 +404,11 @@
     No posts available.
   </div>
 </template>
-
-
-
 <script>
-import axios from "axios";
-import Swal from 'sweetalert2';
-import UploadPost from "../misc/UploadPost.vue";
-import Comments from '../misc/Comments.vue';
+  import axios from "axios";
+  import Swal from 'sweetalert2';
+  import UploadPost from "../misc/UploadPost.vue";
+  import Comments from '../misc/Comments.vue';
 
 export default {
   components: {
@@ -285,9 +427,85 @@ export default {
       selectedPostId: null,
       reportReason: '',
       customReason: '',
+      formData: {
+        adopterName: '',
+        contactInfo: '',
+        adoptType: '',
+        employmentStatus: '',
+        socmed: '',
+        location: '',
+        experience: '',
+        reason: '',
+        currentPets: 0,
+        gov_id: '', // File input will be handled separately
+      },
     };
   },
   methods: {
+    openAdoptionModal(postId, userId) {
+      this.adoptionPostId = postId; // Set the post_id
+      this.adoptionUserId = userId;
+      document.getElementById('adoptionModal').showModal(); // Open the modal
+    },
+    closeModal() {
+      document.getElementById('adoptionModal').close(); // Close the modal
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.formData.govIdFile = file;
+        console.log('File selected:', file);
+      } else {
+        this.formData.govIdFile = null;
+      }
+    },
+    async submitAdoptionForm() {
+            const formData = new FormData();
+            
+            // Append data to FormData
+            formData.append('user_id', this.adoptionUserId);
+            formData.append('post_id', this.adoptionPostId);
+            formData.append('adopter_name', this.formData.adopterName);
+            formData.append('contact_info', this.formData.contactInfo);
+            formData.append('adopt_type', this.formData.adoptType);
+            formData.append('employment_status', this.formData.employmentStatus);
+            formData.append('socmed', this.formData.socmed);
+            formData.append('location', this.formData.location);
+            formData.append('experience', this.formData.experience);
+            formData.append('reason', this.formData.reason);
+            formData.append('current_pets', this.formData.currentPets);
+            formData.append('gov_id', this.formData.govIdFile);
+
+            try {
+                const response = await axios.post('/api/adoption/submit', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                Swal.fire({
+                  position: 'center',  // Positions it in the center of the screen
+                  icon: 'success',  // You can change the icon to 'error', 'warning', etc.
+                  title: 'Your application has been submitted successfully!',  // Customize your message
+                  showConfirmButton: true,  // Show the OK button
+                  confirmButtonText: 'OK',  // Text of the button
+                  background: '#2c2f36',  // Dark background color
+                  color: '#fff',  // White text color
+                  confirmButtonColor: '#3085d6',  // Blue color for the button
+                  toast: true,  // Display as a toast
+                  timer: 3000,  // Time in milliseconds before the toast closes
+                  timerProgressBar: true,  // Optional, shows a progress bar
+                  didOpen: () => {
+                    Swal.showLoading();  // Show loading indicator
+                  }
+                });
+                this.closeModal();
+                // Reset the form data
+                this.resetForm();
+            } catch (error) {
+                console.error(error.response.data);
+                alert('Failed to submit the application.');
+            }
+        },
     openModal(postId) {
       this.isModalOpen = true;
       this.fetchComments(postId);  // Fetch comments for the selected post  
@@ -325,53 +543,53 @@ export default {
           console.log("Post deleted successfully");
           this.closeDeleteModal(postId);
 
-          Swal.fire({
-            position: "bottom-end",
-            icon: "success",
-            title: "Your post has been deleted successfully!",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: "#1e293b", // Dark background
-            color: "#ffffff", // Light text color
-            toast: true, // Toast-style alert
-            didOpen: (toast) => {
-              const progressBar = Swal.getTimerProgressBar();
-              if (progressBar) {
-                progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
-              }
-            },
-          });
-        })
-        .catch(error => {
-          console.error("Error deleting post:", error);
-
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            showConfirmButton: false,
-            text: "Something went wrong while uploading your post!",
-            background: "#1e293b", // Dark background
-            color: "#ffffff", // Light text color
-            toast: true,
+            Swal.fire({
+              position: "bottom-end",
+              icon: "success",
+              title: "Your post has been deleted successfully!",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: "#1e293b", // Dark background
+              color: "#ffffff", // Light text color
+              toast: true, // Toast-style alert
+              didOpen: (toast) => {
+                const progressBar = Swal.getTimerProgressBar();
+                if (progressBar) {
+                  progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                }
+              },
             });
-        });
-    },
-    editPost(post) {
-        this.selectedPost = { ...post };     // Make sure to copy post data correctly
-        const modal = document.getElementById(`editPostModal-${post.post_id}`);
-        if (modal) {
-            modal.showModal();
-        }
-    },
+          })
+          .catch(error => {
+            console.error("Error deleting post:", error);
 
-    // Close the edit modal
-    closeEditModal(postId) {
-        const modal = document.getElementById(`editPostModal-${postId}`);
-        if (modal) {
-            modal.close();  // This will close the modal
-        }
-    },
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              showConfirmButton: false,
+              text: "Something went wrong while uploading your post!",
+              background: "#1e293b", // Dark background
+              color: "#ffffff", // Light text color
+              toast: true,
+              });
+          });
+      },
+      editPost(post) {
+          this.selectedPost = { ...post };     // Make sure to copy post data correctly
+          const modal = document.getElementById(`editPostModal-${post.post_id}`);
+          if (modal) {
+              modal.showModal();
+          }
+      },
+
+      // Close the edit modal
+      closeEditModal(postId) {
+          const modal = document.getElementById(`editPostModal-${postId}`);
+          if (modal) {
+              modal.close();  // This will close the modal
+          }
+      },
 
     // Submit the edit form
     submitEditPost() {
@@ -461,21 +679,21 @@ export default {
           this.closeReportModal(postId, commentId);
           
           Swal.fire({
-          position: 'center',  // Positions it in the center of the screen
-          icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-          title: 'Your report has been submitted successfully!',  // Customize your message
-          showConfirmButton: true,  // Show the OK button
-          confirmButtonText: 'OK',  // Text of the button
-          background: '#2c2f36',  // Dark background color
-          color: '#fff',  // White text color
-          confirmButtonColor: '#3085d6',  // Blue color for the button
-          toast: true,  // Display as a toast
-          timer: 3000,  // Time in milliseconds before the toast closes
-          timerProgressBar: true,  // Optional, shows a progress bar
-          didOpen: () => {
-            Swal.showLoading();  // Show loading indicator
-          }
-        });
+            position: 'center',  // Positions it in the center of the screen
+            icon: 'success',  // You can change the icon to 'error', 'warning', etc.
+            title: 'Your report has been submitted successfully!',  // Customize your message
+            showConfirmButton: true,  // Show the OK button
+            confirmButtonText: 'OK',  // Text of the button
+            background: '#2c2f36',  // Dark background color
+            color: '#fff',  // White text color
+            confirmButtonColor: '#3085d6',  // Blue color for the button
+            toast: true,  // Display as a toast
+            timer: 3000,  // Time in milliseconds before the toast closes
+            timerProgressBar: true,  // Optional, shows a progress bar
+            didOpen: () => {
+              Swal.showLoading();  // Show loading indicator
+            }
+          });
         })
         .catch(error => {
           console.error('Error submitting report:', error);
@@ -558,6 +776,9 @@ export default {
   },
 };
 </script>
+
+
+
 
 <style scoped>
 .line-clamp-none {

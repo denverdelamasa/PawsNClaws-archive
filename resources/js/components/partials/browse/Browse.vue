@@ -4,7 +4,7 @@
       <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col items-center justify-center">
         <div class="w-full px-6 flex flex-row gap-x-2 mt-4">
-
+ 
           <!-- DropDown Functionality -->
           <div class="dropdown dropdown-bottom">
             <div tabindex="0" role="button" class="btn btn-md flex items-center">

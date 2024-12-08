@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdoptionFormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportController;
@@ -34,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
     Route::post('/api/reports/submit', [ReportController::class, 'submitReport']);
+    Route::post('/api/adoption/submit', [AdoptionFormController::class, 'submitAdoption']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 

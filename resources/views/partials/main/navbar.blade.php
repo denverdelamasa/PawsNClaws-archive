@@ -58,10 +58,14 @@
               </svg>
               Browse more
             </a></li>
-            <input
-            type="text"
-            placeholder="Search"
-            class="input input-bordered border-base-100 input-accent max-w-xxs h-[40px] bg-base-200 md:block"/>    
+            @if(request()->is('browse'))
+              <!-- Do not show this div if the URL is /some-path -->
+            @else
+              <input
+                type="text"
+                placeholder="Search"
+                class="input input-bordered border-base-100 input-accent max-w-xxs h-[40px] bg-base-200 hidden lg:block"/>
+            @endif  
           </ul>
         </ul>
       </div>
@@ -72,10 +76,14 @@
         </svg>
       </label>
       @include('partials.main.logo')
-      <input
-        type="text"
-        placeholder="Search"
-        class="input input-bordered border-base-100 input-accent max-w-xxs h-[40px] bg-base-200 hidden lg:block"/>
+      @if(request()->is('browse'))
+        <!-- Do not show this div if the URL is /some-path -->
+      @else
+        <input
+          type="text"
+          placeholder="Search"
+          class="input input-bordered border-base-100 input-accent max-w-xxs h-[40px] bg-base-200 hidden lg:block"/>
+      @endif
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1 gap-x-6">
@@ -129,7 +137,7 @@
               </div>
               <ul
                 tabindex="0"
-                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow gap-y-2">
                 <li><a href="{{ route('client.profile.edit') }}">Profile</a></li>
                 <li><a href="#">Settings</a></li>
                 <li>

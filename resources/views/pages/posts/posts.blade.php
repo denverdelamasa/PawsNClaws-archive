@@ -1,11 +1,7 @@
 @include('partials.main.head')
 
   
-    @auth
-      <upload-post></upload-post>
-    @endauth
-    
-    @include('partials.containers.post.post-card')
+    <post-card></post-card>
 
     @include('partials.misc.loader')
 
