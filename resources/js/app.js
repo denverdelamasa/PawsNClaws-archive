@@ -16,6 +16,11 @@ import PostCard from './components/partials/posts/PostCard.vue';
 // Create the Vue app
 const app1 = createApp({});
 
+// Create the event bus and attach it globally to the window
+const eventBus = createApp({});
+window.eventBus = eventBus;
+
+
 // Register components
 app1.component('notifications', Notification);
 
@@ -27,3 +32,10 @@ app2.component('upload-post', UploadPost);
 app2.component('post-card', PostCard);
 
 app2.mount("#app2");
+app2.component('browse', Browse);
+
+// Create the main Vue app instance
+const app = createApp({});
+
+app.component('browse', Browse);
+app.mount('#browse-app');
