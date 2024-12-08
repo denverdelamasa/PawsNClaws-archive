@@ -1,8 +1,8 @@
 <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
 <ul id="SidebarPadding" class="menu bg-base-200 text-base-content min-h-full w-80 p-4 z-50 @auth pt-20 lg:pt-20 @endauth @guest pt-20 @endguest">
   <!-- Sidebar content here -->
-  <upload-post></upload-post>
-  <ul class="menu bg-base-100 border border-base-300 text-base-content p-4 my-2 rounded-xl">
+
+  <ul class="menu bg-base-100 border border-base-300 text-base-content gap-y-2 p-4 my-2 rounded-xl">
     <h2>Shelters you may Like</h2>
     <li><a>Registered Shelter</a></li>
     <li><a>Registered Shelter</a></li>

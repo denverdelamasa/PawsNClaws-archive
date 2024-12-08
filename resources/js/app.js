@@ -12,6 +12,7 @@ import { createApp } from 'vue';
 import Notification from './components/Notifications/Notifications.vue';
 import UploadPost from './components/partials/misc/UploadPost.vue';
 import PostCard from './components/partials/posts/PostCard.vue';
+import Browse from './components/partials/browse/Browse.vue';
 
 // Create the Vue app
 const app1 = createApp({});

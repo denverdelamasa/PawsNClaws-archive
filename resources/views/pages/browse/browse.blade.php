@@ -5,7 +5,7 @@
         @include('partials.main.navbar')
       
         <div id="app2">
-            <div id="browse-app" class="">
+            <div id="browse-app">
                 <browse></browse> <!-- Vue component will be rendered here -->
             </div>
         </div>
