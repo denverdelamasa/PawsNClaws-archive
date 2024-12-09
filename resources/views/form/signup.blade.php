@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="night"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+@include('partials.main.scripts-styles')
+    <body class="font-sans antialiased">
+        <div id="app2">
+          <section class="bg-base-200 h-[100vh] hide-scrollbar m-auto">
+            <div class="h-full">
+              <div class="flex flex-row items-center justify-center min-h-screen">
+                <!-- Centered image div -->
+                <div class="group relative hidden md:block flex-shrink-0 m-auto ">
+                  <!-- Hoverable Image Div -->
+                  <div class="bg-cover bg-center w-full md:w-[40vw] h-[90vh] 
+                    hover:scale-105 transition-all rounded-xl filter brightness-75" 
+                    style="background-image: url('{{ asset('images/pictures/pexels-lensloji.jpg') }}');">
+                  </div>
+                
+                  <!-- Tooltip content appears on hover -->
+                  <div class="absolute bottom-2 left-2 bg-black text-white text-sm p-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                    Photographer: Lensloji
+                  </div>
+                </div>                          
+              
+                <!-- Centered form div -->
+                <div class="flex-shrink-0 m-auto space-y-4 md:space-y-6 sm:p-8 w-[80vw] md:w-1/2 bg-base-100 shadow-lg transition-all">
+                  <h1 class="text-xl font-bold leading-tight tracking-tight text-content md:text-2xl">
+                    Create an account
+                  </h1>
+                  <form class="space-y-4 md:space-y-6" action="#">
+                    <div>
+                      <label for="email" class="block mb-2 text-sm text-secondary font-medium">Your email</label>
+                      <input type="email" name="email" id="email" class="input input-bordered w-full" placeholder="name@company.com" required="">
+                    </div>
+                    <div>
+                      <label for="username" class="block mb-2 text-sm font-medium text-secondary">Username</label>
+                      <input type="text" name="username" id="username" placeholder="_Username123" class="input input-bordered w-full" required="">
+                    </div>
+                    <div>
+                      <label for="password" class="block mb-2 text-sm font-medium text-secondary">Password</label>
+                      <input type="password" name="password" id="password" placeholder="••••••••" class="input input-bordered w-full" required="">
+                    </div>
+                    <div>
+                      <label for="confirm-password" class="block mb-2 text-sm font-medium text-secondary">Confirm password</label>
+                      <input type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" class="input input-bordered w-full" required="">
+                    </div>
+                    <div class="flex items-start">
+                      <div class="flex items-center h-5">
+                        <input id="terms" type="checkbox" class="checkbox checkbox-base-100" required="">
+                      </div>
+                      <div class="ml-3 text-sm">
+                        <label for="terms" class="font-light text-secondary">I accept the
+                          <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="{{ url('pages/terms-and-conditions') }}">Terms and Conditions</a>
+                        </label>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">Create an account</button>
+                    <p class="text-sm font-light text-secondary">
+                      Already have an account? <a href="{{ url('form/login') }}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
+                    </p>
+                  </form>
+                </div>
+              </div>                            
+            </div>
+          </section>          
+        </div>
+    </body>
+
+    <footer class="flex flex-row justify-evenly footer bg-base-300 text-base-content p-4 text-xs">
+      <nav>
+        <h6 class="footer-title text-xs">Contents</h6>
+        <a class="link link-hover">Posts</a>
+        <a class="link link-hover">Announcements</a>
+        <a class="link link-hover">Events</a>
+        <a class="link link-hover">Shelters</a>
+      </nav>
+      <nav>
+        <h6 class="footer-title text-xs">Site</h6>
+        <a class="link link-hover">About us</a>
+        <a class="link link-hover">Contact</a>
+        <a class="link link-hover">Apply</a>
+      </nav>
+      <nav>
+        <h6 class="footer-title text-xs">Legal</h6>
+        <a class="link link-hover">Terms of use</a>
+        <a class="link link-hover">Privacy policy</a>
+        
+      </nav>
+    </footer>
+    <footer class="flex flex-row justify-between footer bg-base-300 text-base-content border-base-300 border-t px-10 py-4">
+        <aside class="grid-flow-col items-center">
+            <p>
+              Paws'N Claws 
+            </p>
+        </aside>
+        <nav class="md:place-self-center md:justify-self-end">
+            <div class="grid grid-flow-col gap-4">
+            <a>
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                class="fill-current">
+                <path
+                    d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
+                </svg>
+            </a>
+            <a>
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                class="fill-current">
+                <path
+                    d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                </svg>
+            </a>
+            <a>
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                class="fill-current">
+                <path
+                    d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
+                </svg>
+            </a>
+            </div>
+        </nav>
+    </footer>
+</html>
+
+<style>
+  /* Hide the scrollbar but allow scrolling */
+  .hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Hides scrollbar in WebKit browsers */
+  }
+
+  .hide-scrollbar {
+  -ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hides scrollbar in Firefox */
+  overflow: auto; /* Ensure scrolling is enabled */
+  }
+</style>

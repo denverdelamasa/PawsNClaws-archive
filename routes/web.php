@@ -52,6 +52,10 @@ Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters');
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+
+Route::get('/form/login', [PageController::class, 'login'])->name('form/login');
+Route::get('/form/signup', [PageController::class, 'signup'])->name('form/signup');
+
  
 
 

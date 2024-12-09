@@ -10,6 +10,14 @@ class PageController extends Controller
     {
         return view('admin'); // This assumes your admin blade view is named admin.blade.php
     }
+    public function login()
+    {
+        return view('form.login'); // Return the view for the login page
+    }
+    public function signup()
+    {
+        return view('form.signup'); // Return the view for the login page
+    }
     public function home()
     {
         return view('pages.home'); // Return the view for the home page
