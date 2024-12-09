@@ -7,9 +7,9 @@
         <section
             class="hero min-h-[70vh]"
             style="
-            background-image: url('{{ asset('images/pictures/pexels-wildlittlethingsphoto.jpg') }}');
-            background-size: cover;
-            background-position: center;
+                background-image: url('{{ asset('images/pictures/pexels-wildlittlethingsphoto.jpg') }}');
+                background-size: 110%; /* Zoomed in by 10% */
+                background-position: center;
             "
             id="parallaxHero">
             <div class="hero-overlay bg-opacity-60"></div>
@@ -199,10 +199,10 @@
 
 </style>
 <script>
-    const hero = document.getElementById("parallaxHero");
-  
-    window.addEventListener("scroll", () => {
-      const scrollPosition = window.scrollY;
-      hero.style.backgroundPosition = `center ${scrollPosition * 0.5}px`;
-    });
+const hero = document.getElementById("parallaxHero");
+
+window.addEventListener("scroll", () => {
+  const scrollPosition = window.scrollY;
+  hero.style.backgroundPosition = `center ${scrollPosition * 0.5}px`;
+});
 </script>
