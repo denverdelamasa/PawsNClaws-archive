@@ -2,7 +2,7 @@
   <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4">
     <div class="flex items-start gap-4" id="PostCardDivObserved">
       <!-- Profile Picture -->
-      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="w-12 h-12 rounded-full" />
+      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />
       
       <!-- Input and Buttons -->
       <div class="flex-grow">
@@ -164,7 +164,7 @@ export default {
       formData.append("is_adoptable", this.modalData.is_adoptable ? "1" : "0");
 
       axios
-        .post("/api/posts", formData)
+        .post("/api/posts/upload", formData)
         .then((response) => {
           console.log("Post created:", response.data);
           this.closeModal();

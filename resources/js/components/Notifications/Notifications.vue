@@ -36,7 +36,9 @@
           @click.prevent="markAsRead(notification)"
         >
           <div>
-            <strong>{{ notification.liked_by }}</strong> liked your post 
+            <img :src="`/storage/${notification.liker_profile_picture}`" class="w-8 h-8 rounded-full mr-2" />
+            <strong>{{ notification.liker_username }}</strong> <strong>{{ notification.type }}</strong>
+            <br>
             <span class="text-gray-500">{{ notification.time_ago }}</span>
           </div>
         </a>

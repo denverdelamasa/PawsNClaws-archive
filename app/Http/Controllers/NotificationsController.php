@@ -12,32 +12,23 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 {
-
     public function notif()
     {
-        // Get the authenticated user's ID
         $userId = Auth::id();
-    
-        // Retrieve notifications for the authenticated user
         $notifications = Notification::where('user_id', $userId)
-                                     ->orderBy('created_at', 'desc') // Optional: to order by creation date
-                                     ->get();
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($notification) {
+                $notification->time_ago = Carbon::parse($notification->created_at)->diffForHumans();
     
-        // Format the notifications
-        $notifications = $notifications->map(function ($notification) {
-            // Get the user who liked the post (assuming a relationship between notifications and likes)
-            $like = Like::where('posts_id', $notification->post_id)->first();
-            if ($like) {
-                $notification->liked_by = $like->user->username; // Assuming 'user' relationship in Like model
-            }
+                if ($notification->liker) {
+                    $notification->liker_username = $notification->liker->username;
+                    $notification->liker_profile_picture = $notification->liker->profile_picture;
+                }
     
-            // Format the time as 'x minutes ago', 'x hours ago', etc.
-            $notification->time_ago = Carbon::parse($notification->created_at)->diffForHumans();
+                return $notification;
+            });
     
-            return $notification;
-        });
-    
-        // Return the notifications as JSON
         return response()->json($notifications);
     }
 

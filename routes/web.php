@@ -27,18 +27,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
-    Route::post('/api/posts', [PostController::class, 'store']);
+    Route::post('/api/posts/upload', [PostController::class, 'createPost']);
     Route::post('/api/like/{post_id}', [PostController::class, 'likePost']);
     Route::get('/api/like-count/{post_id}', [PostController::class, 'getLikesCount']);
     Route::put('/api/post/edit/{post_id}', [PostController::class, 'updatePost']);
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
-    Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
+    
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
     Route::post('/api/reports/submit', [ReportController::class, 'submitReport']);
     Route::post('/api/adoption/submit', [AdoptionFormController::class, 'submitAdoption']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
-
+Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');

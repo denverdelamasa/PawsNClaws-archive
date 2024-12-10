@@ -25,10 +25,10 @@ class CommentsController extends Controller
         // Optionally include user_id in the response explicitly
         $formattedComments = $comments->map(function ($comment) {
             return [
-                'comment_id' => $comment->id,
+                'comment_id' => $comment->comment_id,
                 'user_id' => $comment->user_id, // Include user_id
                 'comment' => $comment->comment,
-                'created_at' => $comment->created_at,
+                'created_at' => $comment->created_at->diffForHumans(),
                 'user' => $comment->user, // Include the user details
             ];
         });
