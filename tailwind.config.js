@@ -9,6 +9,7 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue', // Add Vue components
         './resources/js/**/*.js',  // Add JS files if they use Tailwind
+        './node_modules/flowbite/**/*.js'
     ],
 
     theme: {
@@ -20,7 +21,6 @@ export default {
     },
 
     plugins: [
-        
         require('daisyui'),
         forms
     ],

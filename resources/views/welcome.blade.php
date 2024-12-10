@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="night"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
 @include('partials.main.scripts-styles')
     <body class="font-sans antialiased">
         @include('partials.main.navbar')
@@ -115,12 +115,27 @@
               </div>                           
             </div>
         </section> 
+        <section class="h-[80vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-300">
+            <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
+              <div class="md:flex md:flex-wrap w-1/2 m-auto gap-2 hidden"> <!-- Add gap property here -->
+                <div class="w-full h-[70vh] bg-base-100 overflow-auto hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
+                    @include('partials.containers.announcement.announcement-card')
+                </div>
+              </div>  
+              <div class="flex flex-col text-start justify-start w-1/2 m-auto p-2">
+                <h1 class="sm:text-5xl text-2xl font-medium title-font">See what's happening in our community!</h1>
+                <p class="leading-relaxed text-base">
+                    Stay up-to-date with the latest news and updates from the site, and discover what’s new in the community!
+                </p>
+              </div>                         
+            </div>
+        </section> 
         <section class="text-base-content body-font bg-base-100">
-            <div class="container px-5 py-24 mx-auto">
+            <div class="container px-5 py-24 mx-auto ">
                 <div class="flex flex-col text-center w-full mb-10">
                     <h1 class="sm:text-5xl text-4xl font-medium title-font">Have Questions?</h1>
                 </div>
-                <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex flex-wrap md:flex-col gap-8">
                     <div class="card w-full bg-base-200 shadow-xl">
                         <div class="card-body">
                             <h2 class="card-title text-lg sm:text-xl mb-2">What is Paws'N Claws?</h2>
