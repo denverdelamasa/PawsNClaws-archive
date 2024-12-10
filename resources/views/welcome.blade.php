@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ $theme }}">
 @include('partials.main.scripts-styles')
+
     <body class="font-sans antialiased">
         @include('partials.main.navbar')
         <section
@@ -228,8 +229,8 @@
         </nav>
         <nav>
           <h6 class="footer-title text-xs">Legal</h6>
-          <a class="link link-hover">Terms of use</a>
-          <a class="link link-hover">Privacy policy</a>
+          <a class="link link-hover" href="{{ url('terms-of-service') }}">Terms of Service</a>
+          <a class="link link-hover" href="{{ url('privacy-policy') }}">Privacy policy</a>
           
         </nav>
     </footer>
@@ -315,10 +316,19 @@
 
 </style>
 <script>
-const hero = document.getElementById("parallaxHero");
+    const hero = document.getElementById("parallaxHero");
 
-window.addEventListener("scroll", () => {
-  const scrollPosition = window.scrollY;
-  hero.style.backgroundPosition = `center ${scrollPosition * 0.5}px`;
-});
+    window.addEventListener("scroll", () => {
+    const scrollPosition = window.scrollY;
+    hero.style.backgroundPosition = `center ${scrollPosition * 0.5}px`;
+    });
+
+    // Theme switching functionality
+    document.querySelectorAll('[data-theme]').forEach(item => {
+      item.addEventListener('click', (event) => {
+        const theme = event.target.getAttribute('data-theme');
+        document.documentElement.setAttribute('data-theme', theme); // Update the theme
+        localStorage.setItem('theme', theme); // Save theme preference
+      });
+    });
 </script>

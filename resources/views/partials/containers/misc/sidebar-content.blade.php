@@ -28,8 +28,8 @@
     </nav>
     <nav class="flex flex-col gap-y-2">
       <h6 class="footer-title text-xs">Legal</h6>
-      <a class="link link-hover">Terms of use</a>
-      <a class="link link-hover">Privacy policy</a>
+      <a class="link link-hover" href="{{ url('terms-of-service') }}">Terms of Service</a>
+      <a class="link link-hover" href="{{ url('privacy-policy') }}">Privacy policy</a>
       
     </nav>
   </footer>

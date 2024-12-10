@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="night"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
-    @include('partials.main.scripts-styles')
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ $theme ?? 'light' }}">
+    @include('partials.main.scripts-styles', ['theme' => $theme])
     <body class="font-sans antialiased">
         @include('partials.main.navbar')
       

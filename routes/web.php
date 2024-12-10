@@ -56,6 +56,16 @@ Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'
 Route::get('/form/login', [PageController::class, 'login'])->name('form/login');
 Route::get('/form/signup', [PageController::class, 'signup'])->name('form/signup');
 
+Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');
+Route::get('/privacy-policy', [PageController::class, 'PrivacyPolicy'])->name('privacy-policy');
+
+
+Route::post('/set-theme', function (\Illuminate\Http\Request $request) {
+    $theme = $request->input('theme', 'light'); // Default to 'light' if no theme is provided
+    session(['theme' => $theme]); // Store theme in session
+    return back(); // Redirect back to the previous page
+})->name('set-theme');
+
  
 
 

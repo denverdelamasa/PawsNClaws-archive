@@ -122,39 +122,46 @@
       </ul>
     </div>
     <div class="navbar-end">
+      <form method="POST" action="{{ route('set-theme') }}">
+          @csrf
+          <select name="theme" onchange="this.form.submit()" class="select select-bordered">
+              <option value="light" {{ session('theme') === 'light' ? 'selected' : '' }}>Light</option>
+              <option value="dark" {{ session('theme') === 'dark' ? 'selected' : '' }}>Dark</option>
+              <!-- Add other themes as needed -->
+          </select>
+      </form>
       @auth
-            <!-- Notifications -->
-            <div id="app">
-              <notifications></notifications>
-            </div>
-            <!-- Profile -->
-            <div class="dropdown dropdown-end">
-              <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-                  <div class="w-10 rounded-full">
-                      <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/images/defaultpics/defaultuserprofile.jpg') }}" 
-                          alt="{{ Auth::user()->username }}" />
-                  </div>
+        <!-- Notifications -->
+        <div id="app">
+          <notifications></notifications>
+        </div>
+        <!-- Profile -->
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                  <img src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('storage/images/defaultpics/defaultuserprofile.jpg') }}" 
+                      alt="{{ Auth::user()->username }}" />
               </div>
-              <ul
-                tabindex="0"
-                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow gap-y-2">
-                <li><a href="{{ route('client.profile.edit') }}">Profile</a></li>
-                <li><a href="#">Settings</a></li>
-                <li>
-                  <!-- Authentication -->
-                  <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                    @csrf
-                    <a 
-                      href="#" 
-                      onclick="event.preventDefault(); this.closest('form').submit();" 
-                    >
-                      {{ __('Log Out') }}
-                    </a>
-                  </form>
-                </li>
-              </ul>
-
           </div>
-        @endauth           
+          <ul
+            tabindex="0"
+            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow gap-y-2">
+            <li><a href="{{ route('client.profile.edit') }}">Profile</a></li>
+            <li><a href="#">Settings</a></li>
+            <li>
+              <!-- Authentication -->
+              <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                @csrf
+                <a 
+                  href="#" 
+                  onclick="event.preventDefault(); this.closest('form').submit();" 
+                >
+                  {{ __('Log Out') }}
+                </a>
+              </form>
+            </li>
+          </ul>
+        </div>
+      @endauth           
     </div>
 </div>

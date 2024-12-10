@@ -56,6 +56,27 @@
                 </div>
                 <p class="text-base transition-all duration-300">{{ comment.comment }}</p>
               </div>
+              <div class="pl-12 border-l-2 border-blue-600 pt-4">
+                <div v-for="comment in comments" :key="comment.comment_id" class="bg-base-300 p-4 rounded-r-xl rounded-b-xl relative">
+                  <div class="flex items-center space-x-3">
+                    <div class="avatar">
+                      <div class="w-12 h-12 rounded-full">
+                        <img :src="comment.user.profile_picture 
+                                    ? `/storage/${comment.user.profile_picture}` 
+                                    : 'https://picsum.photos/200'" 
+                            alt="User Avatar" />
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold">{{ comment.user.username }}</p>
+                      <div class="text-xs">
+                        <span>Posted on: {{ comment.created_at }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-base transition-all duration-300">{{ comment.comment }}</p>
+                </div>
+              </div>
             </div>
 
             <!-- If no comments, show a message -->
