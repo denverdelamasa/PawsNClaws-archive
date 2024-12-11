@@ -187,6 +187,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- Edit Comment-->
                 <div v-if="isEditing && selectedComment.comment_id === comment.comment_id">
                   <textarea 
                     v-model="selectedComment.comment" 
@@ -372,7 +373,7 @@ export default {
       const reportData = {
         user_id: this.currentUserId,  // The user reporting the post/comment
         reason: this.reportReason,
-        type: 'comment',
+        type: "comment",
         comment_id: commentId,
         details: this.reportReason === 'Other' ? this.customReason : '',
       };

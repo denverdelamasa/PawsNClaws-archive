@@ -24,9 +24,14 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_picture',
-        'role'
+        'role',
+        'status'
     ];
 
+    protected $casts = [
+        'is_online' => 'boolean',
+        'suspended_until' => 'datetime',
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Controllers\AdoptionFormController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\DashboardControllers;
+use App\Http\Middleware\TrackUserOnlineStatus;
+use App\Http\Controllers\AdoptionFormController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
@@ -14,20 +18,39 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/admin/{any}', function () {
-    return view('pages.admin');
-})->where('any', '.*');
+Route::post('/user/offline', function (Request $request) {
+    // Ensure the user is authenticated
+    if ($request->user_id) {
+        $user = User::find($request->user_id);
+        if ($user) {
+            $user->is_online = 0;  // Set user as offline
+            $user->save();
+        }
+    }
+    return response()->json(['status' => 'offline']);
+});
 
-
-
-Route::middleware(['auth', 'CheckRole:Admin'])->group(function () {
+Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(function () {
+    Route::get('/admin/{any}', function () {
+        return view('pages.admin');
+    })->where('any', '.*')->name('admin.any');
     Route::get('/server/dashboard',[ServerController::class, 'dashboard'])->name('server.dashboard');
     Route::get('/server/profile', [ServerProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/server/profile', [ServerProfileController::class, 'update'])->name('profile.update');
     Route::delete('/server/profile', [ServerProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/api/dashboard/count', [DashboardControllers::class, 'getCounts']);
+    //Users Management
+    Route::get('/api/users/lists', [UserController::class, 'getUsersList']);
+    Route::get('/api/users/check/role', [UserController::class, 'getCurrentUserRole']);
+    Route::put('/api/users/role/change/{user_id}', [UserController::class, 'updateRole']);
+    Route::put('/api/users/role/suspend/{user_id}', [UserController::class, 'suspendUser']);
+    Route::delete('/api/users/delete/{user_id}', [UserController::class, 'deleteUser']);
+
+    //Reports Management
+    Route::get('/api/reports/lists', [ReportController::class, 'reportsList']);
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'TrackUserOnlineStatus'])->group(function () {
     Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
@@ -57,6 +80,16 @@ Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters');
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
+
+Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');
+Route::get('/privacy-policy', [PageController::class, 'PrivacyPolicy'])->name('privacy-policy');
+
+Route::post('/set-theme', function (\Illuminate\Http\Request $request) {
+    $theme = $request->input('theme', 'light'); // Default to 'light' if no theme is provided
+    session(['theme' => $theme]); // Store theme in session
+    return back(); // Redirect back to the previous page
+})->name('set-theme');
 
  
 

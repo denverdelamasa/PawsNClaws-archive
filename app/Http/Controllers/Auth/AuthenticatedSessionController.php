@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
     
         // Check the authenticated user's role and redirect accordingly
         if (auth()->user()->role === 'Admin') {
-            return redirect()->intended(route('server.dashboard', absolute: false));
+            return redirect()->intended(route('admin.any', ['any' => 'dashboard'], false));
         } elseif (auth()->user()->role === 'User') {
             return redirect()->intended(route('home', absolute: false));
         }
@@ -45,6 +45,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+        $user->is_online = 0; // Mark the user offline
+        $user->save();
+        
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

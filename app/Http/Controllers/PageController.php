@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public function showPage(Request $request)
+    {
+        // Fetch theme from session or default to 'light'
+        $theme = $request->session()->get('theme', 'light'); 
+        return view('your-view', ['theme' => $theme]);
+    }
     public function index()
     {
         return view('admin'); // This assumes your admin blade view is named admin.blade.php
@@ -45,5 +51,13 @@ class PageController extends Controller
     public function profile()
     {
         return view('pages.profile.profile'); // Return the view for the home page
+    }
+    public function TermsOfService()
+    {
+        return view('pages.site.TermsOfService'); // Return the view for the home page
+    }
+    public function PrivacyPolicy()
+    {
+        return view('pages.site.PrivacyPolicy'); // Return the view for the home page
     }
 }

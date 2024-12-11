@@ -17,23 +17,23 @@ class Report extends Model
     protected $primaryKey = 'report_id';
 
     // Specify the fillable columns
-    protected $fillable = ['user_id', 'report_post_id', 'report_comment_id', 'reason', 'details', 'type'];
+    protected $fillable = ['reporter_id', 'report_post_id', 'report_comment_id', 'reason', 'details', 'type'];
 
     // Define the relationship with the User model
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'reporter_id');
     }
 
     // Define the relationship with the Post model (only if the report is about a post)
     public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id');
+        return $this->belongsTo(Post::class, 'report_post_id');
     }
 
     // Define the relationship with the Comment model (only if the report is about a comment)
     public function comment()
     {
-        return $this->belongsTo(Comment::class, 'comment_id');
+        return $this->belongsTo(Comment::class, 'report_comment_id');
     }
 }

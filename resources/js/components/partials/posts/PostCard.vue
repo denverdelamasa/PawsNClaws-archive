@@ -14,7 +14,7 @@
       </div>
 
       <!-- Show "Adopted" when is_adoptable is 3 -->
-      <div v-else-if="post.is_adoptable === 3" class="badge badge-info badge-outline gap-2">
+      <div v-else-if="post.is_adoptable === 2" class="badge badge-info badge-outline gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
           <path fill-rule="evenodd" d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5zm4 5.982c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.69 0-5.018"/>
@@ -115,57 +115,27 @@
           <!-- Predefined Report Reasons -->
           <div class="my-4">
             <div>
-              <input
-                type="radio"
-                id="troll"
-                value="Troll"
-                v-model="reportReason"
-                class="radio"
-              />
+              <input type="radio" id="troll" value="Troll" v-model="reportReason" class="radio"/>
               <label for="troll" class="ml-2">Troll</label>
             </div>
 
             <div>
-              <input
-                type="radio"
-                id="hate-speech"
-                value="Hate Speech"
-                v-model="reportReason"
-                class="radio"
-              />
+              <input type="radio" id="hate-speech" value="Hate Speech" v-model="reportReason" class="radio"/>
               <label for="hate-speech" class="ml-2">Hate Speech</label>
             </div>
 
             <div>
-              <input
-                type="radio"
-                id="spam"
-                value="Spam"
-                v-model="reportReason"
-                class="radio"
-              />
+              <input type="radio" id="spam" value="Spam" v-model="reportReason" class="radio"/>
               <label for="spam" class="ml-2">Spam</label>
             </div>
 
             <div>
-              <input
-                type="radio"
-                id="harassment"
-                value="Harassment"
-                v-model="reportReason"
-                class="radio"
-              />
+              <input type="radio" id="harassment" value="Harassment" v-model="reportReason" class="radio"/>
               <label for="harassment" class="ml-2">Harassment</label>
             </div>
 
             <div>
-              <input
-                type="radio"
-                id="other"
-                value="Other"
-                v-model="reportReason"
-                class="radio"
-              />
+              <input type="radio" id="other" value="Other" v-model="reportReason" class="radio"/>
               <label for="other" class="ml-2">Other</label>
             </div>
           </div>
@@ -679,19 +649,18 @@ export default {
       this.customReason = ''; // Clear the custom reason field
     },
 
-    submitReport(postId, commentId) {
+    submitReport(postId) {
       const reportData = {
         user_id: this.currentUserId,  // The user reporting the post/comment
         reason: this.reportReason,
-        type: postId ? 'post' : 'comment',
+        type: 'post',
         post_id: postId,
-        comment_id: commentId,
         details: this.reportReason === 'Other' ? this.customReason : '',
       };
 
-      axios.post('/api/posts/reports/submit', reportData)
+      axios.post('/api/reports/submit', reportData)
         .then(response => {
-          this.closeReportModal(postId, commentId);
+          this.closeReportModal(postId);
           
           Swal.fire({
             position: 'center',  // Positions it in the center of the screen
