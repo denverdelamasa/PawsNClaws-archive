@@ -13,8 +13,8 @@ class ReportController extends Controller
             'user_id' => 'required|exists:users,user_id',
             'reason' => 'required|string',
             'type' => 'required|in:post,comment',
-            'post_id' => 'nullable|exists:posts,post_id',
-            'comment_id' => 'nullable|exists:comments,comment_id',
+            'report_post_id' => 'nullable|exists:posts,post_id',
+            'report_comment_id' => 'nullable|exists:comments,comment_id',
             'details' => 'nullable|string',
         ]);
 
@@ -23,8 +23,8 @@ class ReportController extends Controller
             'user_id' => $request->user_id,
             'reason' => $request->reason,
             'type' => $request->type,
-            'post_id' => $request->type === 'post' ? $request->post_id : null,
-            'comment_id' => $request->type === 'comment' ? $request->comment_id : null,
+            'report_post_id' => $request->type === 'post' ? $request->post_id : null,
+            'report_comment_id' => $request->type === 'comment' ? $request->comment_id : null,
             'details' => $request->details,
         ]);
 

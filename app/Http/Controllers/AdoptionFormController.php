@@ -32,13 +32,13 @@ class AdoptionFormController extends Controller
             $validated['gov_id'] = $path;
         }
 
+        $validated['status'] = 'Pending';
         // Save to the database
         AdoptionApplication::create($validated);
 
         DoneAdoptionForm::create([
             'done_user_id' => $validated['sender_id'],
             'done_post_id' => $validated['post_id'],
-            'status' => 'Done', // Default status
         ]);
 
         return response()->json(['message' => 'Application submitted successfully!'], 201);

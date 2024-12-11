@@ -3,7 +3,7 @@
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4 gap-x-2">
-      <!-- Show "Open for Adoption" when is_adoptable is true -->
+      <!-- Show "Open for Adoption" when is_adoptable is 1 -->
       <div v-if="post.is_adoptable === 1" class="badge badge-warning badge-outline gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5z"/>
@@ -13,7 +13,7 @@
         Open for Adoption
       </div>
 
-      <!-- Show "Adopted" when is_adoptable is 0 -->
+      <!-- Show "Adopted" when is_adoptable is 3 -->
       <div v-else-if="post.is_adoptable === 3" class="badge badge-info badge-outline gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
@@ -25,7 +25,7 @@
       <!-- Hide both if is_adoptable is null or not set -->
       <div v-else class="badge badge-hidden"></div>
       <!-- Dropdown Menu -->
-      <div class="dropdown dropdown-end z-50">
+      <div class="dropdown dropdown-end ">
         <label tabindex="0" class="btn btn-sm btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
@@ -97,7 +97,7 @@
 
     <!-- Modal Thumbnail -->
     <dialog :id="`thumbnailModal-${post.post_id}`" class="modal">
-        <div class="modal-box w-[90vw] h-[90vh] max-w-7xl max-h-screen">
+        <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
             <div class="flex justify-center items-center h-full">
             <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
@@ -204,7 +204,7 @@
           <div class="text-xs">
             <span class="font-small">{{ post.username }}</span>
             <br>
-            <span>Posted on: {{ post.created_at }}</span>
+            <span>Posted: {{ post.created_at }}</span>
             <span class="mx-1">|</span>
             <span>Edited on: {{ post.updated_at }}</span>
           </div>
@@ -339,7 +339,16 @@
             <div class="mb-4">
               <label for="socmed" class="block text-sm font-medium">Social Media Links</label>
               <p class="m-2 text-xs text-secondary">(Optional)</p>
-              <input type="link" id="socmed" v-model="formData.socmed" name="location" class="input input-bordered w-full">
+              <input
+                type="url"
+                id="socmed"
+                v-model="formData.socmed"
+                name="socmed"
+                class="input input-bordered w-full"
+                @input="validateSocmedLink"
+                placeholder="Enter social media link (Facebook, Instagram, etc.)"
+              >
+              <p v-if="invalidSocmedLink" class="text-xs text-red-500 mt-1">Please enter a valid social media link (e.g., Facebook, Instagram, X).</p>
             </div>
 
             <!-- 4. Complete Location -->
@@ -407,10 +416,10 @@
   </div>
 </template>
 <script>
-  import axios from "axios";
-  import Swal from 'sweetalert2';
-  import UploadPost from "../misc/UploadPost.vue";
-  import Comments from '../misc/Comments.vue';
+import axios from "axios";
+import Swal from 'sweetalert2';
+import UploadPost from "../misc/UploadPost.vue";
+import Comments from '../misc/Comments.vue';
 
 export default {
   components: {
@@ -419,7 +428,7 @@ export default {
   },
   data() {
     return {
-        posts: [],
+      posts: [],
       expanded: false,
       isAuthenticated: false,
       currentUserId: null,
@@ -429,6 +438,7 @@ export default {
       selectedPostId: null,
       reportReason: '',
       customReason: '',
+      invalidSocmedLink: false,
       formData: {
         adopterName: '',
         contactInfo: '',
@@ -462,54 +472,54 @@ export default {
       }
     },
     async submitAdoptionForm() {
-            const formData = new FormData();
+      const formData = new FormData();
             
-            // Append data to FormData
-            formData.append('receiver_id', this.receiverUserId);
-            formData.append('post_id', this.adoptionPostId);
-            formData.append('sender_id', this.currentUserId);
-            formData.append('adopter_name', this.formData.adopterName);
-            formData.append('contact_info', this.formData.contactInfo);
-            formData.append('adopt_type', this.formData.adoptType);
-            formData.append('employment_status', this.formData.employmentStatus);
-            formData.append('socmed', this.formData.socmed);
-            formData.append('location', this.formData.location);
-            formData.append('experience', this.formData.experience);
-            formData.append('reason', this.formData.reason);
-            formData.append('current_pets', this.formData.currentPets);
-            formData.append('gov_id', this.formData.govIdFile);
+      // Append data to FormData
+      formData.append('receiver_id', this.receiverUserId);
+      formData.append('post_id', this.adoptionPostId);
+      formData.append('sender_id', this.currentUserId);
+      formData.append('adopter_name', this.formData.adopterName);
+      formData.append('contact_info', this.formData.contactInfo);
+      formData.append('adopt_type', this.formData.adoptType);
+      formData.append('employment_status', this.formData.employmentStatus);
+      formData.append('socmed', this.formData.socmed);
+      formData.append('location', this.formData.location);
+      formData.append('experience', this.formData.experience);
+      formData.append('reason', this.formData.reason);
+      formData.append('current_pets', this.formData.currentPets);
+      formData.append('gov_id', this.formData.govIdFile);
 
-            try {
-                const response = await axios.post('/api/adoption/submit', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                Swal.fire({
-                  position: 'center',  // Positions it in the center of the screen
-                  icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-                  title: 'Your application has been submitted successfully!',  // Customize your message
-                  showConfirmButton: true,  // Show the OK button
-                  confirmButtonText: 'OK',  // Text of the button
-                  background: '#2c2f36',  // Dark background color
-                  color: '#fff',  // White text color
-                  confirmButtonColor: '#3085d6',  // Blue color for the button
-                  toast: true,  // Display as a toast
-                  timer: 3000,  // Time in milliseconds before the toast closes
-                  timerProgressBar: true,  // Optional, shows a progress bar
-                  didOpen: () => {
-                    Swal.showLoading();  // Show loading indicator
-                  }
-                });
-                this.closeModal();
-                this.fetchPosts();
-                // Reset the form data
-                this.resetForm();
-            } catch (error) {
-                console.error(error.response.data);
-                alert('Failed to submit the application.');
+      try {
+        const response = await axios.post('/api/adoption/submit', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        Swal.fire({
+          position: 'center',  // Positions it in the center of the screen
+          icon: 'success',  // You can change the icon to 'error', 'warning', etc.
+          title: 'Your application has been submitted successfully!',  // Customize your message
+          showConfirmButton: true,  // Show the OK button
+          confirmButtonText: 'OK',  // Text of the button
+          background: '#2c2f36',  // Dark background color
+          color: '#fff',  // White text color
+          confirmButtonColor: '#3085d6',  // Blue color for the button
+          toast: true,  // Display as a toast
+          timer: 3000,  // Time in milliseconds before the toast closes
+          timerProgressBar: true,  // Optional, shows a progress bar
+          didOpen: () => {
+            Swal.showLoading();  // Show loading indicator
             }
-        },
+          });
+          this.closeModal();
+          this.fetchPosts();
+          // Reset the form data
+          this.resetForm();
+          } catch (error) {
+              console.error(error.response.data);
+              alert('Failed to submit the application.');
+            }
+    },
     openModal(postId) {
       this.isModalOpen = true;
       this.fetchComments(postId);  // Fetch comments for the selected post  
@@ -518,6 +528,7 @@ export default {
     closeCommentsModal() {
       this.isModalOpen = false;
       this.comments = [];  // Clear comments when modal is closed
+      this.fetchPost();
     },
     fetchComments(postId) {
       axios.get(`/api/comments/post/${postId}`)
@@ -678,7 +689,7 @@ export default {
         details: this.reportReason === 'Other' ? this.customReason : '',
       };
 
-      axios.post('/api/reports/submit', reportData)
+      axios.post('/api/posts/reports/submit', reportData)
         .then(response => {
           this.closeReportModal(postId, commentId);
           
@@ -771,6 +782,15 @@ export default {
           this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
       } catch (error) {
           console.error("Error checking authentication status:", error);
+      }
+    },
+    validateSocmedLink() {
+      const socmedPattern = /^(https?:\/\/)?(www\.)?(facebook|instagram|x|twitter|tiktok|linkedin)\.(com|co|io)\/[a-zA-Z0-9_.-]+(\/)?$/;
+
+      if (this.formData.socmed && !socmedPattern.test(this.formData.socmed)) {
+        this.invalidSocmedLink = true; // Set to true if invalid
+      } else {
+        this.invalidSocmedLink = false; // Set to false if valid
       }
     },
   },

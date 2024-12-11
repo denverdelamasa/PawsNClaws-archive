@@ -30,7 +30,7 @@
       <h6 class="footer-title text-xs">Legal</h6>
       <a class="link link-hover">Terms of use</a>
       <a class="link link-hover">Privacy policy</a>
-      <a class="link link-hover">Cookie policy</a>
+      
     </nav>
   </footer>
 </ul>

@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\Announcement;
+use App\Models\CommentReply;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -45,5 +46,9 @@ class Comment extends Model
     public function announcement()
     {
         return $this->belongsTo(Announcement::class, 'announcement_comment_id');
+    }
+    public function replies()
+    {
+        return $this->hasMany(CommentReply::class);
     }
 }

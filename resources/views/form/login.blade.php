@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="night"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
 @include('partials.main.scripts-styles')
     <body class="font-sans antialiased">
-        @include('partials.main.navbar')
-      
         <div id="app2">
           <div class="hero bg-base-200 min-h-screen">
             <div class="hero-content flex-col lg:flex-row-reverse justify-center items-center w-full">
               <div class="text-center lg:text-left w-full lg:w-1/2 flex flex-col justify-center items-center lg:items-start lg:justify-start">
-                <h1 class="text-8xl font-bold">Signup now!</h1>
+                <h1 class="text-8xl font-bold">Login now!</h1>
                 <p class="py-6 w-2/3 lg:w-full">
-                    Create an Account and Join the Community to Access Exclusive Features
+                  Log in to Your Account and Engage with the Community to Access Exclusive Features
                 </p>
               </div>
               <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">

@@ -20,7 +20,8 @@ class Notification extends Model
         'type',      // The type of the notification (e.g., 'info', 'warning', etc.
         'read_at',   // To mark the notification as read or unread (nullable)
         'post_id',
-        'liked_by_user_id'
+        'liked_by_user_id',
+        'comment_by_user_id'
     ];
 
     // Optionally, you can define relationships if needed (e.g., a user has many notifications)
@@ -37,6 +38,10 @@ class Notification extends Model
     public function post()
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function commenter() {
+        return $this->belongsTo(User::class, 'comment_by_user_id');
     }
 
     // Optionally, add any custom methods or accessor/mutators if needed

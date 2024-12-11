@@ -12,24 +12,27 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 {
-    public function notif()
-    {
+    public function notif() {
         $userId = Auth::id();
         $notifications = Notification::where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($notification) {
-                $notification->time_ago = Carbon::parse($notification->created_at)->diffForHumans();
-    
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(function ($notification) {
+        $notification->time_ago = Carbon::parse($notification->created_at)->diffForHumans();
+        
                 if ($notification->liker) {
-                    $notification->liker_username = $notification->liker->username;
+                    $notification->liker_name = $notification->liker->name;
                     $notification->liker_profile_picture = $notification->liker->profile_picture;
+                } elseif ($notification->commenter) {
+                    $notification->commenter_name = $notification->commenter->name;
+                    $notification->commenter_profile_picture = $notification->commenter->profile_picture;
                 }
-    
+                
                 return $notification;
             });
-    
+        
         return response()->json($notifications);
+        
     }
 
     public function markAsRead($notification_id)

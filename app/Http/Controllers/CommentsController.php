@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 
 class CommentsController extends Controller
 {
@@ -35,25 +36,84 @@ class CommentsController extends Controller
     
         return response()->json($formattedComments);
     }
-    
-    
 
-    public function postComment(Request $request)
-    {
+    public function postComment(Request $request) {
+        $userId = Auth::id();
+
         $request->validate([
-            'post_comment_id' => 'required|exists:posts,post_id', // Change posts_id to post_id
-            'comment' => 'required|string|max:1000',             // Comment must be valid and not too long
+            'post_comment_id' => 'required|exists:posts,post_id',
+            'comment' => 'required|string|max:1000',
         ]);
     
         $comment = Comment::create([
             'post_comment_id' => $request->post_comment_id,
-            'user_id' => Auth::id(),  // Get the authenticated user's ID
+            'user_id' => $userId,
             'comment' => $request->comment,
         ]);
     
-        // Load the related user to include user data in the response
         $comment->load('user');
     
-        return response()->json($comment, 201); // Return the created comment with user data
+        // Get the post owner
+        $postOwner = Post::find($request->post_comment_id)->user_id;
+    
+        // Check if the commenter is not the post owner
+        if (Auth::id() !== $postOwner) {
+            // Create a notification for the post owner
+            Notification::create([
+                'user_id' => $postOwner,
+                'type' => 'commented on your post',
+                'comment_by_user_id' => $userId,
+                'post_id' => $request->post_comment_id,
+                'read_at' => null,
+            ]);
+        }
+    
+        return response()->json($comment, 201);
+    }
+
+    public function updateComment(Request $request, $commentId)
+    {
+        // Validate the input
+        $request->validate([
+            'comment' => 'required|string|max:500', // Adjust max length as needed
+        ]);
+
+        // Find the comment
+        $comment = Comment::find($commentId);
+
+        if (!$comment) {
+            return response()->json([
+                'message' => 'Comment not found.',
+            ], 404);
+        }
+
+        // Check if the authenticated user is the owner of the comment
+        if (auth()->id() !== $comment->user_id) {
+            return response()->json([
+                'message' => 'Unauthorized to edit this comment.',
+            ], 403);
+        }
+
+        // Update the comment
+        $comment->comment = $request->comment;
+        $comment->save();
+
+        return response()->json([
+            'message' => 'Comment updated successfully.',
+            'comment' => $comment,
+        ], 200);
+    }
+
+    public function deleteComment($id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        // Optional: Check if the authenticated user owns the post
+        if ($comment->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $comment->delete();
+        return response()->json(['message' => 'Post deleted successfully']);
     }
 }

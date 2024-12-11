@@ -14,6 +14,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/admin/{any}', function () {
+    return view('pages.admin');
+})->where('any', '.*');
+
 
 
 Route::middleware(['auth', 'CheckRole:Admin'])->group(function () {
@@ -27,14 +31,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
+
+    //Post Modifiers
     Route::post('/api/posts/upload', [PostController::class, 'createPost']);
     Route::post('/api/like/{post_id}', [PostController::class, 'likePost']);
     Route::get('/api/like-count/{post_id}', [PostController::class, 'getLikesCount']);
     Route::put('/api/post/edit/{post_id}', [PostController::class, 'updatePost']);
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
     
+    //Post Interactions
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
-    Route::post('/api/reports/submit', [ReportController::class, 'submitReport']);
+    Route::put('/api/comments/edit/{comment_id}', [CommentsController::class, 'updateComment']);
+    Route::delete('/api/comments/delete/{comment_id}', [CommentsController::class, 'deleteComment']);
+    Route::post('/api/reports/submit/', [ReportController::class, 'submitReport']);
     Route::post('/api/adoption/submit', [AdoptionFormController::class, 'submitAdoption']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
@@ -48,6 +57,7 @@ Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters');
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+
  
 
 

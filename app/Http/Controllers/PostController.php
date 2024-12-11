@@ -183,6 +183,7 @@ class PostController extends Controller
         return response()->json([
             'profile_picture' => $user->profile_picture, // Assuming `profile_picture` is a field in the users table
             'username' => $user->name, // Username or any identifier
+            'role' => $user->role
         ]);
     }
     

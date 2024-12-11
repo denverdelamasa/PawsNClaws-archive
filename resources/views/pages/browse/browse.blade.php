@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="night"> <!-- Page theme dapat responsive to sa theme button gagawin ko next time -->
     @include('partials.main.scripts-styles')
     <body class="font-sans antialiased">
         @include('partials.main.navbar')
       
         <div id="app2">
-                <browse></browse> <!-- Vue component will be rendered here -->
+            <browse></browse> <!-- Vue component will be rendered here -->
         </div>
 
     <footer class="footer bg-base-300 text-base-content p-4 text-xs">
@@ -19,8 +19,8 @@
         <nav>
             <h6 class="footer-title text-xs">Site</h6>
             @guest
-                <a class="link link-hover">Log in</a>
-                <a class="link link-hover">Sign Up</a>
+                <a class="link link-hover"  href="{{ url('form/login') }}">Log in</a>
+                <a class="link link-hover"  href="{{ url('form/signup') }}">Sign Up</a>
             @endguest
             <a class="link link-hover">About us</a>
             <a class="link link-hover">Contact</a>
@@ -30,7 +30,7 @@
           <h6 class="footer-title text-xs">Legal</h6>
           <a class="link link-hover">Terms of use</a>
           <a class="link link-hover">Privacy policy</a>
-          <a class="link link-hover">Cookie policy</a>
+          
         </nav>
     </footer>
     <footer class="footer bg-base-300 text-base-content border-base-300 border-t px-10 py-4">

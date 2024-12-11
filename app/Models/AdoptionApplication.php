@@ -30,6 +30,7 @@ class AdoptionApplication extends Model
         'reason',
         'current_pets',
         'gov_id',
+        'status'
     ];
 
     // Define the relationships
