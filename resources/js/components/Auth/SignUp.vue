@@ -21,9 +21,7 @@
           </div>
 
           <!-- Centered form div -->
-          <div
-            class="flex-shrink-0 m-auto space-y-4 md:space-y-6 sm:p-8 w-[80vw] md:w-1/2 bg-base-100 shadow-lg transition-all"
-          >
+          <div class="flex-shrink-0 m-auto space-y-4 md:space-y-6 sm:p-8 w-[80vw] md:w-1/2 bg-base-100 shadow-lg transition-all">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-content md:text-2xl">
               Create an account
             </h1>
@@ -112,26 +110,39 @@
                   class="block mb-2 text-sm font-medium text-secondary"
                   >Password</label
                 >
-                <input
-                  type="password"
-                  v-model="form.password"
-                  @input="checkAvailability('password')"
-                  id="password"
-                  placeholder="••••••••"
-                  class="input input-bordered w-full"
-                  required
-                />
+                <div class="relative">
+                  <input
+                    :type="showPassword ? 'text' : 'password'"
+                    v-model="form.password"
+                    @input="checkAvailability('password')"
+                    id="password"
+                    placeholder="••••••••"
+                    class="input input-bordered w-full"
+                    required
+                  />
+                  <span
+                    @click="toggleShowPassword"
+                    class="absolute inset-y-0 right-3 flex items-center cursor-pointer z-10"
+                  >
+                    <i
+                      :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"
+                      class="text-gray-500"
+                      aria-hidden="true"
+                    ></i>
+                  </span>
+                </div>
                 <span
-                    v-if="availability.password"
-                    :class="{
+                  v-if="availability.password"
+                  :class="{
                     'text-success': availability.password.valid,
                     'text-error': !availability.password.valid
-                    }"
-                    class="text-sm"
+                  }"
+                  class="text-sm"
                 >
-                    {{ availability.password.message }}
+                  {{ availability.password.message }}
                 </span>
               </div>
+
               <div>
                 <label
                   for="confirm-password"
@@ -199,6 +210,7 @@ export default {
         username: "",
         password: "",
         password_confirmation: "",
+        role: "",
         terms: false,
       },
       availability: {
@@ -209,6 +221,9 @@ export default {
     };
   },
   methods: {
+    toggleShowPassword() {
+      this.showPassword = !this.showPassword;
+    },
     async handleSubmit() {
       try {
         const response = await axios.post("/signup", this.form);

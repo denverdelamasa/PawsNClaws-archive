@@ -47,11 +47,15 @@ class CheckAvailabilityController extends Controller
         // Check password strength
         if (!empty($data['password'])) {
             $validator = Validator::make($data, [
-                'password' => [Password::defaults()],
+                'password' => [
+                    'required',
+                    'regex:/^(?=.*[a-zA-Z])(?=.*[\W_]).+$/', // At least one letter and one special character
+                    'min:8', // Optional: Minimum length of 8 characters
+                ],
             ]);
-
+        
             $response['password'] = $validator->fails()
-                ? ['valid' => false, 'message' => 'Password is not strong enough.']
+                ? ['valid' => false, 'message' => 'Password must include at least one letter and one special character.']
                 : ['valid' => true, 'message' => 'Password is strong.'];
         }
 
