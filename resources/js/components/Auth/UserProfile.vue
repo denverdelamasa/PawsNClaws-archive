@@ -157,7 +157,7 @@
             </div>
         
             <!-- Search Input -->
-            <div class="form-control w-full max-w-xs">
+            <div class="form-control w-full max-w-md">
                 <input type="text" placeholder="Search requests..." class="input input-bordered" />
             </div>
             </div>

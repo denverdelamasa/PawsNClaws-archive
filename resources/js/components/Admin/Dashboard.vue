@@ -91,7 +91,7 @@
                         </a></li>
                     </ul>
                 </div>
-                <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-xs" />
+                <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-md" />
             </div>
         </div>
         <div class="join">
@@ -183,7 +183,7 @@
                     </a></li>
                 </ul>
             </div>
-            <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-xs" />
+            <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-md" />
         </div>
         <div class="overflow-x-auto">
             <table class="table">

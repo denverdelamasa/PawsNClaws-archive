@@ -33,9 +33,11 @@ Route::post('/user/offline', function (Request $request) {
 });
 
 Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(function () {
+
     Route::get('/admin/{any}', function () {
         return view('pages.admin');
     })->where('any', '.*')->name('admin.any');
+    
     Route::get('/server/dashboard',[ServerController::class, 'dashboard'])->name('server.dashboard');
     Route::get('/server/profile', [ServerProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/server/profile', [ServerProfileController::class, 'update'])->name('profile.update');
