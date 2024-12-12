@@ -74,6 +74,8 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     //Profile
     Route::get('/api/user/profile/info', [UserProfileController::class, 'getUserProfile']);
     Route::get('/api/user/adoption', [UserProfileController::class, 'getAdoptionList']);
+    Route::put('/api/user/adoption/accept/{id}', [UserProfileController::class, 'acceptApplication']);
+    Route::get('/api/user/posts/list',[UserProfileController::class, 'userPostList']);
     Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);

@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
-                        dito sana lalabas lahat ng posts nya, tsaka yung post-box:
+                        <ProfilePostCard/>
                     </div>
                 </div>
             </div>
@@ -163,12 +163,12 @@
             </div>
         
             <!-- Table Section -->
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto z-10">
                 <table class="table w-full">
                     <!-- Table Head -->
                     <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Trace Number</th>
                         <th>Sender</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -177,53 +177,150 @@
             
                     <!-- Table Body -->
                     <tbody v-for="(application, index) in userAdoptionForms" :key="index">
-                    <tr>
-                        <td>{{ application.adoption_code }}</td>
-                        <td>{{ application.adopter_account }}</td>
-                        <td>{{ application.status }}</td>
-                        <td>
-                            <button class="btn btn-xs btn-success" @click="openReviewModal(application)">Review</button>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>{{ application.adoption_code }}</td>
+                            <td>{{ application.adopter_account }}</td>
+                            <td>{{ application.status }}</td>
+                            <td>
+                                <button v-if="application.status === 'Pending'" class="btn btn-xs btn-success text-white" @click.prevent="openReviewModal(application)">
+                                    Review
+                                </button>
+
+                                <button v-if="application.status === 'Ongoing'" class="btn btn-xs btn-primary text-white" @click.prevent="openReviewModal(application)">
+                                    Review
+                                </button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <!-- Review Modal -->
-                <dialog v-if="showFormModal" class="modal">
-                    <div class="modal-box w-full max-w-6xl">
-                        <h3 class="text-lg font-bold mb-4">Review Application</h3>
-                        <form>
-                        <div class="form-control">
-                            <label class="label">Adoption Code:</label>
-                            <input type="text" :value="selectedApplication.adoption_code" disabled />
-                        </div>
-                        <div class="form-control">
-                            <label class="label">Adopter Account:</label>
-                            <input type="text" :value="selectedApplication.adopter_account" disabled />
-                        </div>
-                        <button class="btn btn-primary" @click="saveReview()">Save Review</button>
-                        <button class="btn btn-error" @click="closeReviewModal()">Cancel</button>
-                        </form>
-                    </div>
-                </dialog>
             </div>
         </div>
-    </dialog>          
+        <div v-if="showFormModal" class="fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 relative">
+                <h3 class="text-lg font-bold mb-4"><img :src="`/storage/${ selectedApplication.adopter_profile}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt=""><strong>Review Adoption Application</strong></h3>
+                <div class="max-h-[400px] overflow-y-auto mb-4">  
+                    <form @submit.prevent="saveReview">
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Adoption Code:</strong>
+                                <span class="ml-2">{{ selectedApplication?.adoption_code || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Adopter Account:</strong>
+                                <span class="ml-2">{{ selectedApplication?.adopter_account || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Adopter Name:</strong>
+                                <span class="ml-2">{{ selectedApplication?.adopter_name || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Contact Info:</strong>
+                                <span class="ml-2">{{ selectedApplication?.contact_info || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Adopt Type:</strong>
+                                <span class="ml-2 capitalize">{{ selectedApplication?.adopt_type || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Employment Status:</strong>
+                                <span class="ml-2 capitalize">{{ selectedApplication?.employment_status || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Social Media Links:</strong>
+                                <span class="ml-2">{{ selectedApplication?.socmed || 'No Social Media Links' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Location:</strong>
+                                <span class="ml-2">{{ selectedApplication?.location || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Experience:</strong>
+                                <span class="ml-2">{{ selectedApplication?.experience || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Reason:</strong>
+                                <span class="ml-2">{{ selectedApplication?.reason || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p class="flex">
+                                <strong>Current Pets:</strong>
+                                <span class="ml-2">{{ selectedApplication?.current_pets || '' }}</span>
+                            </p>
+                        </div>
+                        <div class="form-control mb-4">
+                            <p>
+                                <strong>Government ID:</strong>
+                                <img :src="`/storage/${ selectedApplication.gov_id }`" alt="" class="rounded-lg">
+                            </p>
+                        </div>
+                        <div class="flex justify-end gap-4 mt-6">
+                            <button v-if="selectedApplication.status === 'Pending'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="closeReviewModal">
+                                <strong>Reject</strong>
+                            </button>
+                            <button v-if="selectedApplication.status === 'Pending'" @click.prevent="acceptForm" type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                <strong>Accept</strong>
+                            </button>
+                            <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="changeStatusToFailed">
+                                <strong>Failed</strong>
+                            </button>
+                            <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600" @click.prevent="changeStatusToComplete">
+                                <strong>Completed</strong>
+                            </button>
+                            
+                        </div>
+                    </form>
+                </div>  
+                <button
+                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+                    @click.prevent="closeReviewModal"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </dialog>         
 </template>
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import ProfilePostCard from '../partials/profile/ProfilePostCard.vue';
 
 export default {
+  components: {
+    ProfilePostCard
+  },
   data() {
     return {
       isEditing: false,
       isModalOpen: false,
       imagePreview: null,
-      selectedApplication: null,
       userAdoptionForms: [],
       showFormModal: false,
-
+      selectedApplication: null,
       user: {
         name: '',
         username: '',
@@ -235,13 +332,71 @@ export default {
   },
   methods: {
     openReviewModal(application) {
-        this.selectedApplication = application;
-        this.showFormModal = true;
+        console.log(application);
+        this.selectedApplication = application; // Clone the application object
+        this.showFormModal = true; // Open the modal
+        console.log("showFormModal state:", this.showFormModal);
     },
     closeReviewModal() {
-        this.showFormModal = false;
-        this.selectedApplication = null;
+        this.showFormModal = false; // Close the modal
+        this.selectedApplication = null; // Clear the application data
     },
+    acceptForm() {
+        // Ensure there is an application_id to update
+        const applicationId = this.selectedApplication?.application_id;
+        
+        if (!applicationId) {
+            // Show a message or alert if no application_id is available
+            return;
+        }
+
+        // Update the status of the adoption application (send a request to the backend)
+        axios.put(`/api/user/adoption/accept/${applicationId}`)
+        .then((response) => {
+            // Handle the success (e.g., show a success message, update UI, etc.)
+            alert('Adoption application accepted!');
+            this.closeReviewModal(); // Close the modal after success
+        })
+        .catch((error) => {
+            // Handle the error (e.g., show an error message)
+            console.error('Error accepting application:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    },
+
+    changeStatusToComplete() {
+        const applicationId = this.selectedApplication?.application_id;
+        if (!applicationId) return;
+
+        axios
+        .put(`/api/user/adoption/complete/${applicationId}`)
+        .then((response) => {
+            alert('Adoption application completed!');
+            this.closeReviewModal();
+        })
+        .catch((error) => {
+            console.error('Error completing application:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    },
+
+    // Change the adoption application status to 'Failed'
+    changeStatusToFailed() {
+        const applicationId = this.selectedApplication?.application_id;
+        if (!applicationId) return;
+
+        axios
+        .put(`/api/user/adoption/fail/${applicationId}`)
+        .then((response) => {
+            alert('Adoption application marked as failed!');
+            this.closeReviewModal();
+        })
+        .catch((error) => {
+            console.error('Error marking as failed:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    },
+
     openModal() {
       this.isModalOpen = true;
     },
@@ -264,50 +419,58 @@ export default {
       this.isEditing = !this.isEditing;
     },
     async save() {
-      this.isEditing = false;  // Hide the input field after saving
+        this.isEditing = false; // Hide the input field after saving
 
-      const formData = new FormData();
-      formData.append('name', this.user.name);  // Append the updated name
+        const formData = new FormData();
+        formData.append('name', this.user.name); // Append the updated name
 
-      try {
-        const response = await axios.put('/api/user/update/profile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        });
+        try {
+            const response = await axios.put('/api/user/update/profile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            });
 
-        // On success, update the local user data
-        this.user.name = response.data.name;
+            // Log server response for debugging
+            console.log('Server Response:', response.data);
 
-        Swal.fire({
-          position: "bottom-end",
-          icon: "success",
-          title: "Your profile has been updated successfully!",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: "#1e293b",
-          color: "#ffffff",
-          toast: true,
-        });
+            // On success, update the local user data
+            if (response.data.name) {
+            this.user.name = response.data.name;
 
-        this.fetchUserProfileInfo();  // Refresh user profile data
-        this.closeModal();  // Close the modal after saving
-      } catch (error) {
-        console.error('Error updating profile:', error);
-        Swal.fire({
-          position: "bottom-end",
-          icon: "error",
-          title: "An error occurred. Please try again.",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: "#1e293b",
-          color: "#ffffff",
-          toast: true,
-        });
-      }
-    },
+            Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Your profile has been updated successfully!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+                toast: true,
+            });
+
+            this.fetchUserProfileInfo(); // Refresh user profile data
+            this.closeModal(); // Close the modal after saving
+            } else {
+            throw new Error('Name not updated in server response.');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+
+            Swal.fire({
+            position: "bottom-end",
+            icon: "error",
+            title: "An error occurred. Please try again.",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+            });
+        }
+        },
     async fetchUserProfileInfo() {
       try {
         const response = await axios.get('/api/user/profile/info');
