@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 11, 2024 at 05:23 PM
+-- Generation Time: Dec 12, 2024 at 02:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `adoption_applications` (
   `application_id` bigint(20) UNSIGNED NOT NULL,
+  `adoption_id` varchar(20) DEFAULT NULL,
   `receiver_id` bigint(20) UNSIGNED NOT NULL,
   `sender_id` bigint(20) UNSIGNED NOT NULL,
   `post_id` bigint(20) UNSIGNED NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE `adoption_applications` (
   `reason` text NOT NULL,
   `current_pets` int(10) UNSIGNED NOT NULL,
   `gov_id` varchar(255) NOT NULL,
-  `status` varchar(255) NOT NULL DEFAULT 'Pending, Ongoing, Complete, Failed',
+  `status` enum('Pending','Ongoing','Complete','Failed') NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -51,9 +52,36 @@ CREATE TABLE `adoption_applications` (
 -- Dumping data for table `adoption_applications`
 --
 
-INSERT INTO `adoption_applications` (`application_id`, `receiver_id`, `sender_id`, `post_id`, `adopter_name`, `contact_info`, `adopt_type`, `employment_status`, `socmed`, `location`, `experience`, `reason`, `current_pets`, `gov_id`, `status`, `created_at`, `updated_at`) VALUES
-(6, 7, 7, 6, 'asdasd', 'asdasd', 'individual', 'student', NULL, 'asdasd', 'asdasd', 'asdasd', 1, 'uploads/1GZ6mM786QM3OzxT0FtnisEnnEi1aI7mwQrT0bJx.jpg', 'Pending, Ongoing, Complete, Failed', '2024-12-09 07:54:08', '2024-12-09 07:54:08'),
-(7, 2, 3, 5, 'Adjhasjdasj', 'ajsdhjasdjasjd', 'individual', 'student', NULL, 'asdjkasdhj', 'asjkdasjdja', 'asdjashjdkas', 2, 'uploads/atCXnSKX8710ijVW1wxzws5ect2Kc9zUhdO3KGxX.jpg', 'Pending, Ongoing, Complete, Failed', '2024-12-09 07:57:05', '2024-12-09 07:57:05');
+INSERT INTO `adoption_applications` (`application_id`, `adoption_id`, `receiver_id`, `sender_id`, `post_id`, `adopter_name`, `contact_info`, `adopt_type`, `employment_status`, `socmed`, `location`, `experience`, `reason`, `current_pets`, `gov_id`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'A-1-1533-1212', 4, 7, 15, 'asd', 'asd', 'individual', 'student', 'asdasd', 'asdas', 'asdasd', 'asdasd', 12, 'asd', '', '2024-12-12 07:32:40', '2024-12-12 07:32:40'),
+(2, 'A-2-1538-1212', 5, 2, 15, 'Alexandre Justin Repia', '09123563651', 'individual', 'student', NULL, 'asjdajkdsjka', 'askdkasjdlkasjd', 'aaskdaskdj', 3, 'gov_ids/orFfdk5TZD3FegmEzFQqrYj35oQUNRt0YwUBhszc.jpg', 'Pending', '2024-12-11 23:38:06', '2024-12-11 23:38:06'),
+(3, 'A-3-1907-1212', 2, 5, 5, 'asd', 'asd', 'individual', 'student', 'asd', 'asd', 'asd', 'asd', 2, 'asd', 'Pending', NULL, NULL);
+
+--
+-- Triggers `adoption_applications`
+--
+DELIMITER $$
+CREATE TRIGGER `generate_application_id` BEFORE INSERT ON `adoption_applications` FOR EACH ROW BEGIN
+    DECLARE next_id INT;
+
+    -- Get the next auto-increment value
+    SELECT AUTO_INCREMENT INTO next_id
+    FROM information_schema.tables
+    WHERE table_name = 'adoption_applications'
+    AND table_schema = DATABASE();
+
+    -- Generate the custom application_id
+    SET NEW.adoption_id = CONCAT(
+        'A-', 
+        next_id, 
+        '-', 
+        DATE_FORMAT(NOW(), '%H%i'),  -- Time in 24-hour format
+        '-', 
+        DATE_FORMAT(NOW(), '%m%d')  -- Month and day
+    );
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -132,7 +160,8 @@ INSERT INTO `comments` (`comment_id`, `user_id`, `post_comment_id`, `event_comme
 (30, 2, 13, NULL, NULL, 'asdasdads', '2024-12-10 03:15:17', '2024-12-10 03:15:17'),
 (39, 3, 16, NULL, NULL, 'asd', '2024-12-10 07:12:12', '2024-12-10 07:12:12'),
 (40, 3, 16, NULL, NULL, 'asd', '2024-12-10 07:14:24', '2024-12-10 07:14:24'),
-(41, 4, 15, NULL, NULL, 'asdasd', '2024-12-11 05:01:45', '2024-12-11 05:01:45');
+(41, 4, 15, NULL, NULL, 'asdasd', '2024-12-11 05:01:45', '2024-12-11 05:01:45'),
+(42, 2, 15, NULL, NULL, 'Wow!', '2024-12-12 03:50:01', '2024-12-12 03:50:01');
 
 -- --------------------------------------------------------
 
@@ -169,8 +198,7 @@ CREATE TABLE `done_adoption_forms` (
 --
 
 INSERT INTO `done_adoption_forms` (`done_id`, `done_user_id`, `done_post_id`, `created_at`, `updated_at`) VALUES
-(5, 7, 6, '2024-12-09 07:54:08', '2024-12-09 07:54:08'),
-(6, 3, 5, '2024-12-09 07:57:05', '2024-12-09 07:57:05');
+(12, 2, 15, '2024-12-11 23:38:06', '2024-12-11 23:38:06');
 
 -- --------------------------------------------------------
 
@@ -337,7 +365,8 @@ CREATE TABLE `notifications` (
 INSERT INTO `notifications` (`notification_id`, `user_id`, `liked_by_user_id`, `comment_by_user_id`, `post_id`, `type`, `read_at`, `created_at`, `updated_at`) VALUES
 (3, 2, NULL, 3, 16, 'commented on your post', '2024-12-10 07:19:39', '2024-12-10 07:14:24', '2024-12-10 07:19:39'),
 (4, 5, 2, NULL, 15, 'liked your post', NULL, '2024-12-11 02:31:04', '2024-12-11 02:31:04'),
-(5, 5, NULL, 4, 15, 'commented on your post', NULL, '2024-12-11 05:01:45', '2024-12-11 05:01:45');
+(5, 5, NULL, 4, 15, 'commented on your post', '2024-12-12 03:47:25', '2024-12-11 05:01:45', '2024-12-12 03:47:25'),
+(6, 5, NULL, 2, 15, 'commented on your post', '2024-12-12 03:51:37', '2024-12-12 03:50:01', '2024-12-12 03:51:37');
 
 -- --------------------------------------------------------
 
@@ -431,7 +460,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('uv7XEOoHPZmuoVDAqPFnJnQTQFtWypGcRqMkbIJK', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVnVWTVVWTFY1YzNSMVZPR3ozMUhITFNOaGpnN3g4eHFXRnNVYmIzRCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQvcmVwb3J0cyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjQ7fQ==', 1733934035);
+('bkjsztMq1zvn8sG9po9QbU2Lu8s9gmOU4lmBymgI', 2, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoic21FNGJFdHhNUEwxbnVWYWo2ZldJN3NHUlVlbjFmUTZOZzk5NzllOSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9', 1734008729);
 
 -- --------------------------------------------------------
 
@@ -444,6 +473,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `profile_picture` varchar(255) DEFAULT NULL,
+  `bio` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
@@ -461,13 +491,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `name`, `username`, `profile_picture`, `email`, `email_verified_at`, `password`, `role`, `status`, `is_online`, `last_online`, `suspended_until`, `remember_token`, `created_at`, `updated_at`) VALUES
-(2, 'Dog Cat', 'DogLover02', 'images/profile_pictures/RrPhwn4c38iKMUaW5FSjDsxWwsWbT0aKAORb0pH2.jpg', 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 06:27:32', '2024-12-11 02:52:32'),
-(3, 'Jopay De Guzman', 'Yapoj', 'images/profile_pictures/DtpkrFOogxnFaFas8pZG2BxBnxm3wmJhB11g4fRs.jpg', 'jopay@gmail.com', NULL, '$2y$12$zRIpIEqBUketefA.ST53EO0tHYm3Dcer9vd7LssT/lLicJhb6oKlu', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 20:16:11', '2024-12-11 01:18:59'),
-(4, 'Admin Dela Cruz', 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', 'Active', 1, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 20:20:44', '2024-12-11 05:10:25'),
-(5, 'Kitty Cat', 'catperson', 'images/profile_pictures/Cd9CJmpS2BZiCHE9uGnsONUSwOSEKrvfBfQO4nDo.jpg', 'catperson@gmail.com', NULL, '$2y$12$J7FecznPE1UZ9lWv4cVQqOpRBsjwoVxlJdSLVNNLX9ASmkbbE.JdO', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-07 07:46:45', '2024-12-07 07:47:21'),
-(7, 'Aj Waquiz', 'ajwaquiz', 'images/defaultpics/default-profile.png', 'alexwaquiz11@gmail.com', NULL, '$2y$12$GH0xPhKBRqLIzOCGUiYNROelb4zzy5gdskdsKijut3uwCMu3QxhLK', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-09 07:33:21', '2024-12-11 03:23:09'),
-(9, 'personcat', 'personofcat', 'images/defaultpics/default-profile.png', 'personcat@gmail.com', NULL, '$2y$12$GBH.5CFM98CPqHy4d6V4V.vWAIk9pRI49FlPuFb6Qt584RHz2Ya.6', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-09 23:08:30', '2024-12-09 23:08:30');
+INSERT INTO `users` (`user_id`, `name`, `username`, `profile_picture`, `bio`, `email`, `email_verified_at`, `password`, `role`, `status`, `is_online`, `last_online`, `suspended_until`, `remember_token`, `created_at`, `updated_at`) VALUES
+(2, 'Dog Cat', 'DogLover02', 'images/profile_pictures/RrPhwn4c38iKMUaW5FSjDsxWwsWbT0aKAORb0pH2.jpg', NULL, 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', 'Active', 1, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 06:27:32', '2024-12-12 04:24:25'),
+(3, 'Jopay De Guzman', 'Yapoj', 'images/profile_pictures/DtpkrFOogxnFaFas8pZG2BxBnxm3wmJhB11g4fRs.jpg', NULL, 'jopay@gmail.com', NULL, '$2y$12$zRIpIEqBUketefA.ST53EO0tHYm3Dcer9vd7LssT/lLicJhb6oKlu', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 20:16:11', '2024-12-12 03:54:21'),
+(4, 'Admin Dela Cruz', 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', NULL, 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 20:20:44', '2024-12-12 04:23:54'),
+(5, 'Kitty Cat', 'catperson', 'images/profile_pictures/Cd9CJmpS2BZiCHE9uGnsONUSwOSEKrvfBfQO4nDo.jpg', NULL, 'catperson@gmail.com', NULL, '$2y$12$J7FecznPE1UZ9lWv4cVQqOpRBsjwoVxlJdSLVNNLX9ASmkbbE.JdO', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-07 07:46:45', '2024-12-12 03:48:05'),
+(7, 'Aj Waquiz', 'ajwaquiz', 'images/defaultpics/default-profile.png', NULL, 'alexwaquiz11@gmail.com', NULL, '$2y$12$GH0xPhKBRqLIzOCGUiYNROelb4zzy5gdskdsKijut3uwCMu3QxhLK', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-09 07:33:21', '2024-12-11 03:23:09'),
+(9, 'personcat', 'personofcat', 'images/defaultpics/default-profile.png', NULL, 'personcat@gmail.com', NULL, '$2y$12$GBH.5CFM98CPqHy4d6V4V.vWAIk9pRI49FlPuFb6Qt584RHz2Ya.6', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-09 23:08:30', '2024-12-09 23:08:30');
 
 --
 -- Indexes for dumped tables
@@ -632,7 +662,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `adoption_applications`
 --
 ALTER TABLE `adoption_applications`
-  MODIFY `application_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `application_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `announcements`
@@ -644,7 +674,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `comment_replies`
@@ -656,7 +686,7 @@ ALTER TABLE `comment_replies`
 -- AUTO_INCREMENT for table `done_adoption_forms`
 --
 ALTER TABLE `done_adoption_forms`
-  MODIFY `done_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `done_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -698,13 +728,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `reports`

@@ -30,7 +30,8 @@ class AdoptionApplication extends Model
         'reason',
         'current_pets',
         'gov_id',
-        'status'
+        'status',
+        'adoption_id'
     ];
 
     // Define the relationships
@@ -49,5 +50,18 @@ class AdoptionApplication extends Model
     public function post()
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'receiver_id', 'user_id');
+    }
+
+    /**
+     * Get the sender user associated with the adoption application.
+     */
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id', 'user_id');
     }
 }

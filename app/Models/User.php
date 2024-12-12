@@ -25,7 +25,8 @@ class User extends Authenticatable
         'password',
         'profile_picture',
         'role',
-        'status'
+        'status',
+        'bio'
     ];
 
     protected $casts = [

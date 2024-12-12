@@ -1,0 +1,347 @@
+<template>
+    <div class="bg-base-200">
+        <div class="container mx-auto py-8">
+            <div class="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
+                <!-- Profile Card -->
+                <div class="col-span-4 sm:col-span-3 sticky">
+                    <div class="bg-base-100 shadow-lg rounded-lg p-6">
+                        <div class="flex flex-col items-center relative group">
+                            <!-- Profile Picture -->
+                            <img :src="`/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
+
+                            <!-- Camera Icon inside the Profile Picture, only shown when hovering over the image -->
+                            <i class="fas fa-camera w-8 h-8 absolute top-0 bottom-0 left-0 right-0 m-auto opacity-0 hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
+
+                            <!-- Modal for Image Preview -->
+                            <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+                                <div class="bg-white p-6 rounded-lg w-80">
+                                    <h2 class="text-xl font-bold mb-4">Choose Profile Picture</h2>
+                                    <!-- Image Preview -->
+                                    <div class="mb-4">
+                                        <img :src="imagePreview" v-if="imagePreview" class="w-full h-40 object-cover rounded-lg"/>
+                                        <p v-if="!imagePreview" class="text-gray-500">No image selected</p>
+                                    </div>
+
+                                    <!-- File Input -->
+                                    <input type="file" @change="handleFileChange" class="mb-4" accept="image/*" />
+
+                                    <!-- Save and Cancel Buttons -->
+                                    <div class="flex justify-end gap-4">
+                                        <button @click="save" class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">Save</button>
+                                        <button @click="closeModal" class="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-row gap-x-2 align-middle items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16" @click="toggleEditing">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                </svg>
+
+                                <div v-if="isEditing">
+                                    <input v-model="user.name" type="text" class="mt-2 p-3 w-4/2 text-sm font-bold border-2 border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:ring-blue-400 transition duration-300" @blur="save" @keyup.enter="save"/>
+                                    <button @click="save" class="mt-2 p-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">Save</button>
+                                </div>
+                                <div v-else>
+                                    <h1 class="text-xl font-bold">{{ user.name }}</h1>
+                                </div>
+                            </div>
+                            <span class="text-sm">{{ user.username }}</span>
+                            <p class="text-base-content/70">{{ user.role }}</p>
+                        </div>
+
+
+
+
+                        <hr class="my-6 border-t border-base-300">
+                        <!-- -->
+                        <div class="flex flex-col">
+                            <span class="text-base-content uppercase font-bold tracking-wider mb-2">Badges</span>
+                            <ul class="flex flex-wrap gap-x-2 gap-y-2">
+                                <div class="badge badge-accent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                        <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                    </svg>
+                                    100-Paws-t
+                                </div>
+                                <div class="badge badge-warning badge-outline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                        <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
+                                    </svg>
+                                    First Accounts
+                                </div>
+                                <div class="badge badge-info badge-outline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                        <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707z"/>
+                                        <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018"/>
+                                    </svg>
+                                    Foster
+                                </div>
+                                <div class="badge badge-accent badge-outline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1z"/>
+                                    </svg>
+                                    Applied
+                                </div>
+                                <div class="badge badge-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                        <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
+                                    </svg>
+                                    Furr-Parent
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- About Me Section -->
+                <div class="col-span-4 sm:col-span-9 flex gap-y-4 flex-col">
+                    <div class="bg-base-100 shadow-lg rounded-lg p-6">
+                        <div class="flex flex-row gap-x-2 align-middle items-center justify-left">
+                            <h1 class="text-xl font-bold">Bio</h1>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                        </div>
+                        <p class="text-base-content/70">
+                            Animal lover and proud pet parent! Here to connect, share, and help find loving homes for our furry friends. Let’s make a difference together!                            
+                        </p>
+                    </div>
+                    <div class="p-2 flex flex-row gap-x-4">
+                        <!-- mag cchange ng laman yung "div sa baba base sa pinindot dito" -->
+                        <div class="flex flex-row border-r-2 border-accent pr-4 gap-x-4">        
+                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                                Posts
+                            </h1>
+                            <!-- If shelter Acooutt -->
+                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                                Announcement
+                            </h1>
+                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                                Events
+                            </h1>
+                        </div>
+                        <!-- Modal muna to -->
+                        <div>
+                            <h1 
+                                class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                onclick="adoptionModal.showModal()"
+                            >
+                                Adoption Lists
+                            </h1>
+                        </div>
+                    </div>
+                    <div class="bg-base-100 shadow-lg rounded-lg p-6">
+                        dito sana lalabas lahat ng posts nya, tsaka yung post-box:
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EZ MODAL WTF -->
+    <dialog id="adoptionModal" class="modal">
+        <div class="modal-box w-full max-w-6xl">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+        
+            <h3 class="text-lg font-bold mb-4">Adoption Requests</h3>
+        
+            <!-- Search and Filter Section -->
+            <div class="flex flex-wrap items-center justify-between mb-4">
+            <!-- Filter Button -->
+            <div>
+                <button class="btn btn-outline btn-primary">Filter</button>
+            </div>
+        
+            <!-- Search Input -->
+            <div class="form-control w-full max-w-xs">
+                <input type="text" placeholder="Search requests..." class="input input-bordered" />
+            </div>
+            </div>
+        
+            <!-- Table Section -->
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <!-- Table Head -->
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Sender</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+            
+                    <!-- Table Body -->
+                    <tbody v-for="(application, index) in userAdoptionForms" :key="index">
+                    <tr>
+                        <td>{{ application.adoption_code }}</td>
+                        <td>{{ application.adopter_account }}</td>
+                        <td>{{ application.status }}</td>
+                        <td>
+                            <button class="btn btn-xs btn-success" @click="openReviewModal(application)">Review</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- Review Modal -->
+                <dialog v-if="showFormModal" class="modal">
+                    <div class="modal-box w-full max-w-6xl">
+                        <h3 class="text-lg font-bold mb-4">Review Application</h3>
+                        <form>
+                        <div class="form-control">
+                            <label class="label">Adoption Code:</label>
+                            <input type="text" :value="selectedApplication.adoption_code" disabled />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">Adopter Account:</label>
+                            <input type="text" :value="selectedApplication.adopter_account" disabled />
+                        </div>
+                        <button class="btn btn-primary" @click="saveReview()">Save Review</button>
+                        <button class="btn btn-error" @click="closeReviewModal()">Cancel</button>
+                        </form>
+                    </div>
+                </dialog>
+            </div>
+        </div>
+    </dialog>          
+</template>
+<script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+export default {
+  data() {
+    return {
+      isEditing: false,
+      isModalOpen: false,
+      imagePreview: null,
+      selectedApplication: null,
+      userAdoptionForms: [],
+      showFormModal: false,
+
+      user: {
+        name: '',
+        username: '',
+        profile_picture: '',
+        role: '',
+        bio: '',
+      },
+    };
+  },
+  methods: {
+    openReviewModal(application) {
+        this.selectedApplication = application;
+        this.showFormModal = true;
+    },
+    closeReviewModal() {
+        this.showFormModal = false;
+        this.selectedApplication = null;
+    },
+    openModal() {
+      this.isModalOpen = true;
+    },
+    closeModal() {
+      this.isModalOpen = false;
+      this.imagePreview = null; // Reset image preview when closed
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          this.imagePreview = reader.result; // Set the preview image
+          this.selectedImage = file; // Store the selected image file
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    toggleEditing() {
+      this.isEditing = !this.isEditing;
+    },
+    async save() {
+      this.isEditing = false;  // Hide the input field after saving
+
+      const formData = new FormData();
+      formData.append('name', this.user.name);  // Append the updated name
+
+      try {
+        const response = await axios.put('/api/user/update/profile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        });
+
+        // On success, update the local user data
+        this.user.name = response.data.name;
+
+        Swal.fire({
+          position: "bottom-end",
+          icon: "success",
+          title: "Your profile has been updated successfully!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
+        });
+
+        this.fetchUserProfileInfo();  // Refresh user profile data
+        this.closeModal();  // Close the modal after saving
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        Swal.fire({
+          position: "bottom-end",
+          icon: "error",
+          title: "An error occurred. Please try again.",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
+        });
+      }
+    },
+    async fetchUserProfileInfo() {
+      try {
+        const response = await axios.get('/api/user/profile/info');
+        // Update the profile data with the response
+        this.user = response.data;
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    },
+    async fetchUserAdoptionApplications() {
+      try {
+        const response = await axios.get('/api/user/adoption');
+        // Update the profile data with the response
+        this.userAdoptionForms = response.data;
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    },
+  },
+  mounted() {
+    this.fetchUserProfileInfo();
+    this.fetchUserAdoptionApplications();
+  },
+};
+</script>
+<style>
+  /* Hide the scrollbar but allow scrolling */
+  .hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Hides scrollbar in WebKit browsers */
+  }
+
+  .hide-scrollbar {
+  -ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hides scrollbar in Firefox */
+  overflow: auto; /* Ensure scrolling is enabled */
+  }
+</style>

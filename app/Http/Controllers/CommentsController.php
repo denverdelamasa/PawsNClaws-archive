@@ -14,23 +14,23 @@ class CommentsController extends Controller
 {
     public function getCommentsByPost($postId)
     {
-        $comments = Comment::with('user')  // Eager load the user relationship
+        // Eager load comments with user relationship
+        $comments = Comment::with('user')
             ->where('post_comment_id', $postId)
+            ->latest() // Fetch latest comments first
             ->get();
     
-        // Format the created_at field for each comment
-        $comments->each(function ($comment) {
-            $comment->created_at = $comment->created_at->diffForHumans(); // Format created_at
-        });
-    
-        // Optionally include user_id in the response explicitly
+        // Format comments for API response
         $formattedComments = $comments->map(function ($comment) {
             return [
                 'comment_id' => $comment->comment_id,
-                'user_id' => $comment->user_id, // Include user_id
+                'user' => [
+                    'user_id' => $comment->user->user_id,
+                    'name' => $comment->user->name,
+                    'profile_picture' => $comment->user->profile_picture,
+                ],
                 'comment' => $comment->comment,
                 'created_at' => $comment->created_at->diffForHumans(),
-                'user' => $comment->user, // Include the user details
             ];
         });
     
