@@ -150,7 +150,7 @@
                         <div class="card-body">
                             <h2 class="card-title text-lg sm:text-xl mb-2">Is my personal information secure?</h2>
                             <p class="leading-relaxed mb-4">
-                                Paws N' Claws only collects personal information necessary for facilitating transactions, verifications, and communication. (Our <a href="#" class="text-primary underline">Privacy Policy</a> outlines how we collect, store, and use data.)
+                                Paws N' Claws only collects personal information necessary for facilitating transactions, verifications, and communication. (Our <a href="{{ url('/privacy-policy') }}" class="text-primary underline">Privacy Policy</a> outlines how we collect, store, and use data.)
                             </p>
                         </div>
                     </div>
