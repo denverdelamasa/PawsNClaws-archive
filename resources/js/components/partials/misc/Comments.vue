@@ -36,7 +36,7 @@
           <div v-else>
             <!-- If there are comments, loop through them -->
             <div v-if="comments.length > 0">
-              <div v-for="comment in comments" :key="comment.comment_id" class="mt-4 bg-base-300 p-4 rounded-r-xl rounded-b-xl my-4 relative">
+              <div v-for="comment in comments" :key="comment.comment_id" class="mt-4 bg-base-300 p-4 rounded-r-xl rounded-b-xl my-4 relative text-xs">
                 <!-- Dropdown Menu -->
                 <div v-if="isAuthenticated" class="dropdown dropdown-end absolute right-4 top-4" >
                   <label tabindex="0" class="btn btn-sm btn-ghost" >
@@ -93,7 +93,7 @@
 
                     <form @submit.prevent="submitReport(comment.comment_id)">
                       <!-- Predefined Report Reasons -->
-                      <div class="my-4">
+                      <div class="my-4 gap-y-2 flex flex-col">
                         <div>
                           <input
                             type="radio"

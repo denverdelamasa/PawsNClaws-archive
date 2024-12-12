@@ -1,10 +1,10 @@
 <template>
 <section class="body-font">
-    <div class="container px-5 py-24 mx-auto">
+    <div class="container px-5 py-12 mx-auto">
       <div class="flex flex-col text-center w-full mb-20">
         <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-primary">Site Metrics</h1>
-        <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-secondary">
-            Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them man bun deep jianbing selfies heirloom prism food truck ugh squid celiac humblebrag.
+        <p class="lg:w-3/4 mx-auto leading-relaxed text-base text-secondary">
+          Monitor the growth and engagement of our community with detailed, real-time site metrics and insights that reflect the performance and activity across the platform.
         </p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -346,8 +346,8 @@
     </div>
 </section>
 <section class="body-font">
-    <div class="container mx-auto">
-        <div class="card w-full m-4 bg-base-300 shadow-xl">
+    <div class="container mx-auto p-6">
+        <div class="card w-4/5 m-auto bg-base-300 shadow-xl">
             <div class="card-body w-full">
               <h2 class="card-title">Create Announcement</h2>
               <!-- Title Input -->
