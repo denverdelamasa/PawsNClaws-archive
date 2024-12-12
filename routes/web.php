@@ -79,7 +79,10 @@ Route::get('/events', [PageController::class, 'events'])->name('events');
 Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters'); 
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
+
 Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::get('/pages/others-profile', [PageController::class, 'others_profile'])->name('others-profile'); 
+
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
 
 Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');
