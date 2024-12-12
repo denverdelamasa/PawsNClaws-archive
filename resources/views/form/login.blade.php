@@ -60,11 +60,27 @@
                   </div>
 
                   <!-- Register Link -->
-                  <p class="mt-4 text-center">Don't have an account? <a href="{{ url('/form/signup') }}" class="link link-primary">Sign Up here</a></p>
+                  <p class="mt-4 text-center">Don't have an account? <a href="{{ url('/signup') }}" class="link link-primary">Sign Up here</a></p>
                 </form>
               </div>
             </div>
           </div>
+          @if(auth()->user() && auth()->user()->status === 'Suspended')
+            <div id="suspendModal" class="modal modal-open">
+                <div class="modal-box">
+                    <h2 class="text-xl font-bold">Your account is suspended</h2>
+                    <p>Your account is currently suspended until <span id="suspendUntilDate">{{ $suspended_until ?? 'Unknown' }}</span></p>
+                    <p>Please select how long you wish to extend your suspension:</p>
+                    <div class="my-4">
+                        <button class="btn btn-secondary" onclick="extendSuspension(1)">1 Day</button>
+                        <button class="btn btn-secondary" onclick="extendSuspension(7)">1 Week</button>
+                    </div>
+                    <div class="modal-action">
+                        <button class="btn" onclick="closeModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+          @endif
         </div>
     </body>
 
@@ -126,3 +142,31 @@
   overflow: auto; /* Ensure scrolling is enabled */
   }
 </style>
+
+<script>
+  function extendSuspension(days) {
+    // Extend the suspension for the selected duration (1 day or 7 days)
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    fetch('{{ route('suspend.user') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ days: days })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Suspension extended!');
+            // Update the modal with the new suspend_until value
+            const newSuspendUntil = data.new_suspend_until; // Assume this value comes back from the server
+            document.getElementById('suspendUntilDate').textContent = new Date(newSuspendUntil).toLocaleString();
+            closeModal();
+        } else {
+            alert('An error occurred!');
+        }
+    });
+}
+
+</script>

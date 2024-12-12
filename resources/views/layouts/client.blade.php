@@ -37,4 +37,25 @@
             </main>
         </div>
     </body>
+    <script>
+        let userId = {{ Auth::user()->user_id ?? 'null' }}; // Ensure user is authenticated before accessing userId
+
+        if (userId) {
+            // Send an AJAX request when the user closes the browser or goes inactive
+            window.onbeforeunload = function() {
+                fetch('/user/offline', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                });
+            };
+
+            // You can also use setInterval to check for activity and make the user offline after a certain period of inactivity
+        }
+    </script>
+
+
 </html>

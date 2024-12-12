@@ -19,13 +19,19 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'name',
         'username',
         'email',
         'password',
         'profile_picture',
-        'role'
+        'role',
+        'status'
     ];
 
+    protected $casts = [
+        'is_online' => 'boolean',
+        'suspended_until' => 'datetime',
+    ];
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -1,6 +1,6 @@
 <div class="flex flex-row gap-x-10 w-full p-auto justify-center">
   <!-- From Uiverse.io by MuhammadHasann TY SA BUTTONS OMG! -->
-  <a href="{{ url('/form/login') }}" class="flex justify-center items-center">
+  <a href="{{ url('/login') }}" class="flex justify-center items-center">
     <button class="GetStartedButton">
       Get Started
       <div class="star-1">

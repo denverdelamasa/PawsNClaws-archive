@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DoneAdoptionForm;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -32,20 +34,26 @@ class PostController extends Controller
             $isLiked = Like::where('posts_id', $post->post_id)
                             ->where('user_id', $userId)
                             ->exists();
+
+            $isDoneSendingAdoptionForm = DoneAdoptionForm::where('done_post_id', $post->post_id)
+                            ->where('done_user_id', $userId)
+                            ->exists();
     
             return [
                 'post_id' => $post->post_id,
                 'user_id' => $post->user_id,
+                'name' => $post->user ? $post->user->name : 'Unknown User',
                 'username' => $post->user ? $post->user->username : 'Unknown User', // Fetch username from the related user
                 'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg', // Use default if no profile picture
                 'image_path' => $post->image_path ? $post->image_path : null, // Ensure image path exists
                 'caption' => $post->caption,
-                'created_at' => $post->created_at->format('Y-m-d H:i:s'), // Format the created_at timestamp
-                'updated_at' => $post->updated_at->format('Y-m-d H:i:s'), // Format the updated_at timestamp
+                'created_at' => $post->created_at->diffForHumans(), // Format the created_at timestamp
+                'updated_at' => $post->updated_at->diffForHumans(), // Format the updated_at timestamp
                 'likes_count' => $likesCount,
                 'is_liked' => $isLiked, // Add the `is_liked` state for the current user
                 'comments_count' => $post->comments_count, // Include the count of comments from the `withCount` query
                 'is_adoptable' => $post->is_adoptable, // Include the adoptable status
+                'done_sending_adoption_form' => $isDoneSendingAdoptionForm
             ];
         });
     
@@ -54,7 +62,7 @@ class PostController extends Controller
     }
     
 
-    public function store(Request $request)
+    public function createPost(Request $request)
     {
         $request->validate([
             'caption' => 'required|string',
@@ -74,6 +82,7 @@ class PostController extends Controller
         }
         $post->user_id = Auth::id();
         $post->is_adoptable = $request->input('is_adoptable', false); // Default to false
+        $post->post_path = Str::random(15); // Generate post_path
         $post->save();
     
         return response()->json([
@@ -145,13 +154,14 @@ class PostController extends Controller
             // Check if the current user is not the post owner
             if ($userId !== $postOwner) {
                 // Get the username of the user who liked the post
-                $likingUser = User::find($userId)->username;
+                $likingUser = Auth::id();
     
                 // Create a notification for the post owner
                 Notification::create([
                     'user_id' => $postOwner, // The user who owns the post
-                    'type' => 'like', // Notification type, you can customize this
-                    'liked_by' => $likingUser, // Add the username of the user who liked the post
+                    'type' => 'liked your post', // Notification type, you can customize this
+                    'liked_by_user_id' => $likingUser, // Add the username of the user who liked the post
+                    'post_id' => $postId,
                     'read_at' => null, // Default is unread
                 ]);
             }
@@ -173,6 +183,7 @@ class PostController extends Controller
         return response()->json([
             'profile_picture' => $user->profile_picture, // Assuming `profile_picture` is a field in the users table
             'username' => $user->name, // Username or any identifier
+            'role' => $user->role
         ]);
     }
     

@@ -17,8 +17,9 @@ class AdoptionApplication extends Model
 
     // Define the fillable attributes (to protect against mass assignment)
     protected $fillable = [
-        'user_id',
+        'receiver_id',
         'post_id',
+        'sender_id',
         'adopter_name',
         'contact_info',
         'adopt_type',
@@ -29,6 +30,7 @@ class AdoptionApplication extends Model
         'reason',
         'current_pets',
         'gov_id',
+        'status'
     ];
 
     // Define the relationships

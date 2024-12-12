@@ -220,8 +220,8 @@
         <nav>
           <h6 class="footer-title text-xs">Site</h6>
             @guest
-                <a class="link link-hover" href="{{ url('form/login') }}">Log in</a>
-                <a class="link link-hover" href="{{ url('form/signup') }}>Sign Up</a>
+                <a class="link link-hover" href="{{ url('/login') }}">Log in</a>
+                <a class="link link-hover" href="{{ url('/signup') }}">Sign Up</a>
             @endguest
           <a class="link link-hover">About us</a>
           <a class="link link-hover">Contact</a>

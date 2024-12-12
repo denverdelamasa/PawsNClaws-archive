@@ -19,13 +19,29 @@ class Notification extends Model
         'user_id',   // Assuming the user associated with the notification
         'type',      // The type of the notification (e.g., 'info', 'warning', etc.
         'read_at',   // To mark the notification as read or unread (nullable)
-        'liked_by'
+        'post_id',
+        'liked_by_user_id',
+        'comment_by_user_id'
     ];
 
     // Optionally, you can define relationships if needed (e.g., a user has many notifications)
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function liker()
+    {
+        return $this->belongsTo(User::class, 'liked_by_user_id');
+    }
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function commenter() {
+        return $this->belongsTo(User::class, 'comment_by_user_id');
     }
 
     // Optionally, add any custom methods or accessor/mutators if needed

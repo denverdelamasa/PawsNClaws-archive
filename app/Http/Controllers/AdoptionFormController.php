@@ -11,7 +11,7 @@ class AdoptionFormController extends Controller
     public function submitAdoption(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,user_id',
+            'receiver_id' => 'required|exists:users,user_id',
             'post_id' => 'required|exists:posts,post_id',
             'adopter_name' => 'required|string|max:255',
             'contact_info' => 'required|string|max:255',
@@ -23,21 +23,22 @@ class AdoptionFormController extends Controller
             'reason' => 'required|string',
             'current_pets' => 'required|integer|min:0',
             'gov_id' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'sender_id' => 'required|exists:users,user_id',
         ]);
 
         // Handle the file upload
         if ($request->hasFile('gov_id')) {
-            $path = $request->file('gov_id')->store('uploads', 'public');
+            $path = $request->file('gov_id')->store('gov_ids', 'public');
             $validated['gov_id'] = $path;
         }
 
+        $validated['status'] = 'Pending';
         // Save to the database
         AdoptionApplication::create($validated);
 
         DoneAdoptionForm::create([
-            'done_user_id' => $validated['user_id'],
+            'done_user_id' => $validated['sender_id'],
             'done_post_id' => $validated['post_id'],
-            'status' => 'Done', // Default status
         ]);
 
         return response()->json(['message' => 'Application submitted successfully!'], 201);
