@@ -21,7 +21,8 @@ class Notification extends Model
         'read_at',   // To mark the notification as read or unread (nullable)
         'post_id',
         'liked_by_user_id',
-        'comment_by_user_id'
+        'comment_by_user_id',
+        'notif_from_receiver'
     ];
 
     // Optionally, you can define relationships if needed (e.g., a user has many notifications)
@@ -42,6 +43,11 @@ class Notification extends Model
 
     public function commenter() {
         return $this->belongsTo(User::class, 'comment_by_user_id');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'notif_from_receiver');
     }
 
     // Optionally, add any custom methods or accessor/mutators if needed

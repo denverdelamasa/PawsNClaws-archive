@@ -29,13 +29,16 @@
       <li v-for="(notification, index) in notifications" :key="index">
         <a href="#" :class="{'font-bold': !notification.read_at}"@click.prevent="markAsRead(notification)">
           <div>
-            <img :src="`/storage/${notification.liker_profile_picture || notification.commenter_profile_picture}`" class="w-8 h-8 rounded-full mr-2"/>
+            <img :src="`/storage/${notification.liker_profile_picture || notification.commenter_profile_picture || notification.receiver_profile_picture}`" class="w-8 h-8 rounded-full mr-2"/>
             <strong v-if="notification.liker_name">
             {{ notification.liker_name }}
             <span>{{ notification.type }}</span>
             </strong>
             <strong v-else-if="notification.commenter_name">
             {{ notification.commenter_name }} {{ notification.type }}
+            </strong>
+            <strong v-else="notification.receiver_name">
+            {{ notification.receiver_name }} {{ notification.type }}
             </strong>
             <br>
             <span class="text-gray-500">{{ notification.time_ago }}</span>

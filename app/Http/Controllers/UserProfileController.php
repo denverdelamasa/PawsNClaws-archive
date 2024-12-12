@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\DoneAdoptionForm;
 use App\Models\AdoptionApplication;
@@ -180,13 +181,26 @@ class UserProfileController extends Controller
     {
         // Find the adoption application by its ID
         $application = AdoptionApplication::findOrFail($id);
-
+    
         // Update the status to "Ongoing"
         $application->status = 'Ongoing';
-
+    
         // Save the application
         $application->save();
-
+    
+        // Create and send notification to the user who submitted the application
+        $notification = new Notification([
+            'user_id' => $application->sender_id,  // The user who submitted the application
+            'type' => 'confirmed your adoption request form',  // Type of notification (e.g., 'info', 'warning')
+            'post_id' => null, // Optional, set this if the notification is related to a post
+            'liked_by_user_id' => null,  // Optional, if this is a like-related notification
+            'comment_by_user_id' => null,  // Optional, if this is comment-related
+            'notif_from_receiver' => Auth::id()
+        ]);
+    
+        // Save the notification to the database
+        $notification->save();
+    
         // Optionally, you can return a response
         return response()->json([
             'message' => 'Adoption application status updated to Ongoing.',
