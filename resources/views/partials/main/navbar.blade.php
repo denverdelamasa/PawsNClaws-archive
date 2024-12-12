@@ -124,7 +124,7 @@
     <div class="navbar-end">
       <form method="POST" action="{{ route('set-theme') }}">
           @csrf
-          <select name="theme" onchange="this.form.submit()" class="select select-bordered">
+          <select name="theme" onchange="this.form.submit()" class="select select-bordered ">
               <option value="light" {{ session('theme') === 'light' ? 'selected' : '' }}>Light</option>
               <option value="dark" {{ session('theme') === 'dark' ? 'selected' : '' }}>Dark</option>
               <!-- Add other themes as needed -->
@@ -146,7 +146,7 @@
           <ul
             tabindex="0"
             class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow gap-y-2">
-            <li><a href="{{ route('client.profile.edit') }}">Profile</a></li>
+            <li><a href="pages/profile">Profile</a></li>
             <li><a href="#">Settings</a></li>
             <li>
               <!-- Authentication -->

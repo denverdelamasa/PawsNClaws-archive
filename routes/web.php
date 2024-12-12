@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServerController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\DashboardControllers;
 use App\Http\Middleware\TrackUserOnlineStatus;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdoptionFormController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ServerProfileController;
@@ -50,7 +52,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
     Route::get('/api/reports/lists', [ReportController::class, 'reportsList']);
 });
 
-Route::middleware(['auth', 'TrackUserOnlineStatus'])->group(function () {
+Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
@@ -68,6 +70,11 @@ Route::middleware(['auth', 'TrackUserOnlineStatus'])->group(function () {
     Route::delete('/api/comments/delete/{comment_id}', [CommentsController::class, 'deleteComment']);
     Route::post('/api/reports/submit/', [ReportController::class, 'submitReport']);
     Route::post('/api/adoption/submit', [AdoptionFormController::class, 'submitAdoption']);
+
+    //Profile
+    Route::get('/api/user/profile/info', [UserProfileController::class, 'getUserProfile']);
+    Route::get('/api/user/adoption', [UserProfileController::class, 'getAdoptionList']);
+    Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
