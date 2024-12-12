@@ -13,14 +13,14 @@
                             <div class="flex flex-col items-center">
                                 <img src="https://randomuser.me/api/portraits/men/94.jpg" class="w-32 h-32 bg-base-300 rounded-full mb-4" alt="User Avatar">
                                 <div class="flex flex-row gap-x-2 align-middle items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600 hover:cursor-pointer" viewBox="0 0 16 16">
                                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                     </svg>
                                     <h1 class="text-xl font-bold">*UserName*</h1>
                                 </div>
                                 
-                                <p class="text-base-content/70">Account Role</p>
+                                <p class="text-base-content/70">*Account Role*</p>
                             </div>
                             <hr class="my-6 border-t border-base-300">
                             <!-- -->
@@ -67,7 +67,7 @@
                         <div class="bg-base-100 shadow-lg rounded-lg p-6">
                             <div class="flex flex-row gap-x-2 align-middle items-center justify-left">
                                 <h1 class="text-xl font-bold">Bio</h1>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600 hover:cursor-pointer" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                     <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                 </svg>
@@ -76,24 +76,48 @@
                                 Animal lover and proud pet parent! Here to connect, share, and help find loving homes for our furry friends. Let’s make a difference together!                            
                             </p>
                         </div>
+                        <div class="bg-base-100 shadow-lg rounded-lg p-6">
+                            <div class="flex flex-row gap-x-2 align-middle items-center justify-left">
+                                <h1 class="text-xl font-bold">Information</h1>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600 hover:cursor-pointer" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                </svg>
+                            </div>
+                            <p class="text-base-content/70 text-sm">
+                                Contact:    <p class="text-base-content ">
+                                                0909-0909-0989
+                                            </p>
+                            </p>
+                            <p class="text-base-content/70 text-sm">
+                                Location:   <p class="text-base-content ">
+                                                123 Street, Yorker Town, Kansas, Sample City
+                                            </p>
+                            </p>
+                            <p class="text-base-content/70 text-sm">
+                                Socials:    <p class="text-base-content">
+                                                *Links*
+                                            </p>
+                            </p>
+                        </div>
                         <div class="p-2 flex flex-row gap-x-4">
                             <!-- mag cchange ng laman yung "div sa baba base sa pinindot dito" -->
                             <div class="flex flex-row border-r-2 border-accent pr-4 gap-x-4">        
-                                <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                                <h1 class="text-xl font-bold hover:scale-105 hover:text-primary hover:cursor-pointer transition-all duration-100">
                                     Posts
                                 </h1>
                                 <!-- If shelter Acooutt -->
-                                <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                                <h1 class="text-xl font-bold hover:scale-105 hover:text-primary hover:cursor-pointer transition-all duration-100">
                                     Announcements
                                 </h1>
-                                <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                                <h1 class="text-xl font-bold hover:scale-105 hover:text-primary hover:cursor-pointer transition-all duration-100">
                                     Events
                                 </h1>
                             </div>
                             <!-- Modal muna to -->
                             <div>
                                 <h1 
-                                    class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    class="text-xl font-bold hover:scale-105 hover:text-primary hover:cursor-pointer transition-all duration-100"
                                     onclick="adoptionModal.showModal()"
                                 >
                                     Adoption Lists

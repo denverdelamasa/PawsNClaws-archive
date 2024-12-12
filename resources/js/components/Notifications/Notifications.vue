@@ -4,7 +4,7 @@
       <div class="relative w-fit h-fit bg-transparent rounded-lg p-2 flex items-center justify-center cursor-pointer transition duration-200 hover:text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-gray-300 transition duration-200 transform hover:scale-110"
+          class="w-6 h-6 text-gray-500 transition duration-200 transform hover:scale-110"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
