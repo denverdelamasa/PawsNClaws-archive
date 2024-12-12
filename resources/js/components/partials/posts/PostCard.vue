@@ -170,7 +170,7 @@
           </div>
         </div>
         <div>
-          <p class="text-sm font-semibold font-medium">{{ post.name }}</p>
+          <p class="text-sm font-medium">{{ post.name }}</p>
           <div class="text-xs">
             <span class="font-small">{{ post.username }}</span>
             <br>
@@ -771,13 +771,13 @@ export default {
 </script>
 
 <style scoped>
-.line-clamp-none {
-  display: block;
-}
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
+  .line-clamp-none {
+    display: block;
+  }
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
 </style>
