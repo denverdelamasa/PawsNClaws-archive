@@ -66,3 +66,19 @@
     overflow: auto; /* Ensure scrolling is enabled */
     }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const uploadBox = document.getElementById('uploadBox');
+
+        // Toggle visibility on scroll
+        document.addEventListener('scroll', () => {
+            if (window.scrollY === 0) {
+                uploadBox.classList.add('hidden');
+                uploadBox.classList.remove('block');
+            } else {
+                uploadBox.classList.add('block');
+                uploadBox.classList.remove('hidden');
+            }
+        });
+    });
+</script>

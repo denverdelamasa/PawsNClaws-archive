@@ -136,9 +136,7 @@
 @include('partials.main.admin.AdminFooter')
 
 <style>
-    html {
-        scroll-behavior: smooth;
-    }
+
     /* Hide the scrollbar but allow scrolling */
     .hide-scrollbar::-webkit-scrollbar {
     display: none; /* Hides scrollbar in WebKit browsers */

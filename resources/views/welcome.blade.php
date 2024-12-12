@@ -29,7 +29,23 @@
                 Photographer: WildLittleThingsPhoto
             </div>
         </section>
-    
+
+        <section class="h-[80vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-300">
+            <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
+              <div class="md:flex md:flex-wrap w-1/2 m-auto gap-2 hidden"> <!-- Add gap property here -->
+                <div class="w-full h-[70vh] bg-base-100 overflow-auto hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
+                    @include('partials.containers.announcement.announcement-card')
+                </div>
+              </div>  
+              <div class="flex flex-col text-start justify-start w-1/2 m-auto p-2">
+                <h1 class="sm:text-5xl text-2xl font-medium title-font">See what's happening in our community!</h1>
+                <p class="leading-relaxed text-base">
+                    Stay up-to-date with the latest news and updates from the site, and discover what’s new in the community!
+                </p>
+              </div>                         
+            </div>
+        </section> 
+            
         <section id="LearnMoreSection" class="h-[90vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-200">
             <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
               <div class="flex flex-col text-start justify-start w-1/2 m-auto p-2">
@@ -116,21 +132,7 @@
               </div>                           
             </div>
         </section> 
-        <section class="h-[80vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-300">
-            <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
-              <div class="md:flex md:flex-wrap w-1/2 m-auto gap-2 hidden"> <!-- Add gap property here -->
-                <div class="w-full h-[70vh] bg-base-100 overflow-auto hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
-                    @include('partials.containers.announcement.announcement-card')
-                </div>
-              </div>  
-              <div class="flex flex-col text-start justify-start w-1/2 m-auto p-2">
-                <h1 class="sm:text-5xl text-2xl font-medium title-font">See what's happening in our community!</h1>
-                <p class="leading-relaxed text-base">
-                    Stay up-to-date with the latest news and updates from the site, and discover what’s new in the community!
-                </p>
-              </div>                         
-            </div>
-        </section> 
+
         <section class="text-base-content body-font bg-base-100">
             <div class="container px-5 py-24 mx-auto ">
                 <div class="flex flex-col text-center w-full mb-10">
@@ -166,6 +168,7 @@
                 </div>
             </div>
         </section>
+        <!-- Testimonials wag muna
         <section class="flex h-[80vh] bg-base-200 text-base-content">
             <div class="container m-auto">
               <h1 class="text-5xl font-medium title-font text-base-content mb-12 text-center">Testimonials</h1>
@@ -207,6 +210,8 @@
               </div>
             </div>
         </section>
+        -->
+        
     </body>
 
     <footer class="footer bg-base-300 text-base-content p-4 text-xs">
