@@ -41,6 +41,24 @@
                 });
             };
         }
+
+        // Function to set data-theme based on browser's light/dark mode
+        function setThemeBasedOnBrowser() {
+            const rootElement = document.documentElement;
+
+            // Detect the browser's theme preference
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            rootElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // Listen for changes in the browser's theme preference
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const newTheme = e.matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+        });
+
+        // Set the initial theme on page load
+        setThemeBasedOnBrowser();
     </script>
     <style>
         html {

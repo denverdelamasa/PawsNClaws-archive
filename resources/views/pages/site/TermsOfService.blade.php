@@ -120,14 +120,6 @@
           </ul>
         </div>
         <div class="navbar-end">
-          <form method="POST" action="{{ route('set-theme') }}">
-              @csrf
-              <select name="theme" onchange="this.form.submit()" class="select select-bordered hidden md:block">
-                  <option value="light" {{ session('theme') === 'light' ? 'selected' : '' }}>Light</option>
-                  <option value="dark" {{ session('theme') === 'dark' ? 'selected' : '' }}>Dark</option>
-                  <!-- Add other themes as needed -->
-              </select>
-          </form>
           @auth
             <!-- Notifications -->
             <div id="app">

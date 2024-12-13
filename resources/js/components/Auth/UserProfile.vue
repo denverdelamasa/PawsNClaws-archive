@@ -51,9 +51,19 @@
                             <p class="text-base-content/70">{{ user.role }}</p>
                         </div>
 
-
-
-
+                        <hr class="my-6 border-t border-base-300">
+                        <!-- -->
+                        <div class="flex flex-col">
+                            <ul class="flex flex-wrap gap-x-2 gap-y-2">
+                                <button class="GetVerifiedButton m-auto"  onclick="GetVerifiedModal.showModal()">
+                                    <span class="GetVerifiedShadow"></span>
+                                    <span class="GetVerifiedEdge"></span>
+                                    <span class="front text flex-col flex">
+                                        Get Verified
+                                    </span>
+                                </button>
+                            </ul>
+                        </div>
                         <hr class="my-6 border-t border-base-300">
                         <!-- -->
                         <div class="flex flex-col">
@@ -139,6 +149,67 @@
             </div>
         </div>
     </div>
+
+    <!-- Place Account Registration Form -->
+    <dialog id="GetVerifiedModal" class="modal">
+        <div class="modal-box bg-base-100 text-base-content max-w-3xl w-full">
+            <!-- Modal Header -->
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-3xl font-bold">Get Verified</h3>
+            <p class="py-2">
+                Complete the registration form to begin the verification process and become an official shelter, pet shop, or pet clinic partner. Once verified, you'll gain access to all the features and benefits available to verified organizations.
+            </p>
+
+            <!-- Form Inputs -->
+            <form method="POST" action="/register-verification" enctype="multipart/form-data">
+                <!-- Username (Autofilled, Read-only) -->
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Username</span>
+                    </label>
+                    <input type="text" name="username" value="{{ auth()->user()->username }} inde ko alam to" class="input input-bordered w-full" readonly>
+                </div>
+
+                <!-- Email (Autofilled, Editable) -->
+                <div class="form-control w-full mt-4">
+                    <label class="label">
+                        <span class="label-text">Email</span>
+                    </label>
+                    <input type="email" name="email" value="{{ auth()->user()->email }} auto filled, pero pwedeng mapalitan" class="input input-bordered w-full">
+                </div>
+
+                <!-- Dropdown -->
+                <div class="form-control w-full mt-4">
+                    <label class="label">
+                        <span class="label-text">Select Type of Organization:</span>
+                    </label>
+                    <select name="type" class="select select-bordered w-full">
+                        <option value="Pet Shelter">Pet Shelter</option>
+                        <option value="Pet Clinic">Pet Clinic</option>
+                        <option value="Pet Shop">Pet Shop</option>
+                    </select>
+                </div>
+
+                <!-- Media Input -->
+                <div class="form-control w-full mt-4">
+                    <label class="label">
+                        <span class="label-text">Upload Required Documents and Images for Verification...</span>
+                    </label>
+                    <input type="file" name="documents[]" class="file-input file-input-bordered w-full" accept="image/*,.pdf" multiple>
+                </div>
+
+                <!-- Buttons -->
+                <div class="modal-action">
+                    <button type="button" class="btn btn-ghost" formmethod="dialog">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+
 
     <!-- EZ MODAL WTF -->
     <dialog id="adoptionModal" class="modal">
@@ -496,6 +567,100 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+    /* From Uiverse.io by cssbuttons-io */ 
+    .GetVerifiedButton {
+        position: relative;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+        outline-offset: 4px;
+        transition: filter 250ms;
+        user-select: none;
+        touch-action: manipulation;
+    }
+
+    .GetVerifiedShadow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: hsl(0deg 0% 0% / 0.25);
+        will-change: transform;
+        transform: translateY(2px);
+        transition: transform
+            600ms
+            cubic-bezier(.3, .7, .4, 1);
+    }
+
+    .GetVerifiedEdge {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        background: linear-gradient(
+            to left,
+            hsl(220deg 100% 16%) 0%, 
+            hsl(220deg 100% 32%) 8%, 
+            hsl(220deg 100% 32%) 92%, 
+            hsl(220deg 100% 16%) 100%
+        );
+    }
+
+    .front {
+        display: block;
+        position: relative;
+        padding: 12px 27px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        color: white;
+        background: hsl(220deg 100% 47%);
+        will-change: transform;
+        transform: translateY(-4px);
+        transition: transform
+            600ms
+            cubic-bezier(.3, .7, .4, 1);
+    }
+
+    .GetVerifiedButton:hover {
+        filter: brightness(110%);
+    }
+
+    .GetVerifiedButton:hover .front {
+        transform: translateY(-6px);
+        transition: transform
+            250ms
+            cubic-bezier(.3, .7, .4, 1.5);
+    }
+
+    .GetVerifiedButton:active .front {
+        transform: translateY(-2px);
+        transition: transform 34ms;
+    }
+
+    .GetVerifiedButton:hover .shadow {
+        transform: translateY(4px);
+        transition: transform
+            250ms
+            cubic-bezier(.3, .7, .4, 1.5);
+    }
+
+    .GetVerifiedButton:active .shadow {
+        transform: translateY(1px);
+        transition: transform 34ms;
+    }
+
+    .GetVerifiedButton:focus:not(:focus-visible) {
+        outline: none;
+    }
+</style>
+
 <style>
   /* Hide the scrollbar but allow scrolling */
   .hide-scrollbar::-webkit-scrollbar {

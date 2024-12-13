@@ -1,13 +1,5 @@
 <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
 <ul id="SidebarPadding" class="menu bg-base-200 text-base-content min-h-full w-80 p-4 z-50 @auth pt-20 lg:pt-20 @endauth @guest pt-20 @endguest">
-  <form method="POST" action="{{ route('set-theme') }}" class="block md:hidden">
-    @csrf
-    <select name="theme" onchange="this.form.submit()" class="select select-bordered bg-base-200">
-        <option value="light" {{ session('theme') === 'light' ? 'selected' : '' }}>Light</option>
-        <option value="dark" {{ session('theme') === 'dark' ? 'selected' : '' }}>Dark</option>
-        <!-- Add other themes as needed -->
-    </select>
-  </form>
   @auth
     <a href="#">
       <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4 hidden" id="uploadBox">
