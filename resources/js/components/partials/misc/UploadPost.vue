@@ -15,16 +15,16 @@
           </svg>
           Share your thoughts!
         </div>
-        <div v-if="userProfile.role === 'Shelter' && 'Vet Clinic' && 'Admin'" class="border-b border-b-base-100 my-2 py-2"></div>
-        <div v-if="userProfile.role === 'Shelter' && 'Vet Clinic' && 'Admin'" class="mt-2 flex gap-2 flex-wrap">
-          <button class="btn btn-accent btn-sm">
+        <div v-if="['Shelter', 'Vet Clinic', 'Admin'].includes(userProfile.role)" class="border-b border-b-base-100 my-2 py-2"></div>
+        <div v-if="['Shelter', 'Vet Clinic', 'Admin'].includes(userProfile.role)" class="mt-2 flex gap-2 flex-wrap">
+          <button @click="openModal('announcement')" class="btn btn-accent btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
               <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
               <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
             </svg>
             Announcement
           </button>
-          <button class="btn btn-info btn-sm">
+          <button @click="openModal('event')" class="btn btn-info btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
               <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
               <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -36,10 +36,58 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Post Modal -->
   <dialog v-if="modalType" class="modal" :id="`${modalType}boxModal`">
     <div class="modal-box">
-      <form @submit.prevent="handleSubmit">
+      <form v-if="modalType === 'announcement'" @submit.prevent="handleSubmitAnnouncement">
+        <!-- Close Button -->
+        <button 
+          type="button" 
+          @click="closeModal" 
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+        >
+          ✕
+        </button>
+
+        <h3 v-if="modalType === 'announcement'" class="font-bold text-lg">Create Announcement</h3>
+
+        <div v-if="modalType === 'announcement'">
+          <input type="text" v-model="modalData.title" placeholder="Write a title...">
+        </div>
+
+        <!-- Description (Visible for announcement) -->
+        <div v-if="modalType === 'announcement'">
+          <textarea 
+            class="textarea textarea-bordered w-full" 
+            v-model="modalData.description" 
+            placeholder="Write a description" 
+            required
+          ></textarea>
+        </div>
+
+        <!-- Announcement Thumbnail -->
+        <div v-if="modalType === 'announcement'">
+          <button id="btnImage" type="button" class="btn btn-primary btn-sm mb-4" @click="triggerFileInput">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
+              <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+              <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z"/>
+            </svg> 
+            Add Thumbnail
+          </button>
+
+          <!-- Hidden File Input for Image -->
+          <input type="file" id="thumbnail" class="hidden" ref="imageInput" @change="handleImageChange" />
+
+          <!-- Image Preview -->
+          <div v-if="modalData.image_preview" class="my-4">
+            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-4">Submit</button>
+      </form>
+      <form v-if="modalType === 'post'" @submit.prevent="handleSubmitPost">
         <!-- Close Button -->
         <button 
           type="button" 
@@ -52,7 +100,7 @@
         <!-- Modal Title Based on Type -->
         <h3 v-if="modalType === 'post'" class="font-bold text-lg">Create Post</h3>
 
-        <!-- Caption (Visible only for 'post' type) -->
+        <!-- Caption (Visible for 'post', 'announcement', and 'event' types) -->
         <div v-if="modalType === 'post'">
           <textarea 
             class="textarea textarea-bordered w-full" 
@@ -60,34 +108,37 @@
             placeholder="Write a caption..." 
             required
           ></textarea>
+        </div>
 
-          <!-- Image Upload Button -->
-          <div v-if="modalType === 'post'">
-            <button id="btnImage" type="button" class="btn btn-primary btn-sm mb-4" @click="triggerFileInput">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
-                <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
-                <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z"/>
-              </svg> 
-              Add Image
-            </button>
+        <!-- Image Upload Button (Visible for 'post' and 'event' types) -->
+        <div v-if="modalType === 'post'">
+          <button id="btnImage" type="button" class="btn btn-primary btn-sm mb-4" @click="triggerFileInput">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
+              <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+              <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z"/>
+            </svg> 
+            Add Image
+          </button>
 
-            <label class="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                class="checkbox" 
-                v-model="modalData.is_adoptable"
-              />
-              <span>This post is for adoption</span>
-            </label>
+          <!-- Hidden File Input for Image -->
+          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" />
 
-            <!-- Hidden File Input for Image -->
-            <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" />
-
-            <!-- Image Preview -->
-            <div v-if="modalData.image_preview" class="my-4">
-              <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
-            </div>
+          <!-- Image Preview -->
+          <div v-if="modalData.image_preview" class="my-4">
+            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
           </div>
+        </div>
+
+        <!-- Checkbox for Adoption (Visible for 'post' type only) -->
+        <div v-if="modalType === 'post'">
+          <label class="flex items-center gap-2">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              v-model="modalData.is_adoptable"
+            />
+            <span>This post is for adoption</span>
+          </label>
         </div>
 
         <!-- Submit Button -->
@@ -95,6 +146,7 @@
       </form>
     </div>
   </dialog>
+
 </template>
 
 <script>
@@ -117,6 +169,9 @@ export default {
         image_path: null,
         image_preview: null,
         is_adoptable: false,
+        thumbnail: null,
+        title: "",
+        description: ""
       },
       userProfile: {
         profile_picture: "",
@@ -139,10 +194,11 @@ export default {
       const file = event.target.files[0];
       if (file) {
         this.modalData.image_path = file;
+        this.modalData.thumbnail = file;
         this.modalData.image_preview = URL.createObjectURL(file);
       }
     },
-    handleSubmit() {
+    handleSubmitPost() {
       const formData = new FormData();
       formData.append("caption", this.modalData.caption);
 
@@ -185,6 +241,47 @@ export default {
           });
         });
     },
+    handleSubmitAnnouncement() {
+      const formData = new FormData();
+      formData.append("title", this.modalData.title);
+      formData.append("description", this.modalData.description);
+
+      if (this.modalData.thumbnail) {
+        formData.append("thumbnail", this.modalData.thumbnail);
+      }
+
+      axios
+        .post("/api/announcement/upload", formData)
+        .then((response) => {
+          console.log("Post created:", response.data);
+          this.closeModal();
+          this.resetForm();
+          this.fetchPosts();
+
+          Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Your announcement has been uploaded successfully!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+          });
+        })
+        .catch((error) => {
+          console.error("Error creating post:", error);
+
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong while uploading your post!",
+            background: "#1e293b",
+            color: "#ffffff",
+          });
+        });
+    },
 
     fetchPosts() {
       axios
@@ -205,6 +302,9 @@ export default {
       this.modalData.image_path = null;
       this.modalData.image_preview = null;
       this.modalData.is_adoptable = false;
+      this.modalData.thumbnail = null;
+      this.modalData.title = "";
+      this.modalData.description = "";
     },
     fetchUserProfile() {
       axios

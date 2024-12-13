@@ -15,6 +15,7 @@ use App\Http\Controllers\AdoptionFormController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
+use App\Http\Controllers\AnnouncementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,6 +66,9 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/api/like-count/{post_id}', [PostController::class, 'getLikesCount']);
     Route::put('/api/post/edit/{post_id}', [PostController::class, 'updatePost']);
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
+
+    //Announcement Modifiers
+    Route::post('/api/announcement/upload', [PostController::class, 'createAnnouncement']);
     
     //Post Interactions
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
@@ -81,6 +85,7 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
+Route::get('/api/announcements/list', [AnnouncementController::class, 'announcementList']);
 Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
 
 // page controller paayos nalang jahefglkag

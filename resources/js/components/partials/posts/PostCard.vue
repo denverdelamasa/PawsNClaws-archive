@@ -1,6 +1,6 @@
 <template>
   <UploadPost v-if="isAuthenticated" :fetch-posts="fetchPosts" />
-  <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
+  <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-3/4 shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4 gap-x-2">
       <!-- Show "Open for Adoption" when is_adoptable is 1 -->

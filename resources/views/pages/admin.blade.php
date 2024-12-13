@@ -7,8 +7,8 @@
             @if(request()->is('admin/dashboard'))
                 @include('partials.main.admin.pages.Dashboard')
 
-            @elseif(request()->is('admin/dashboard/posts'))
-                @include('partials.main.admin.pages.PostManagement')
+            @elseif(request()->is('admin/dashboard/contents'))
+                @include('partials.main.admin.pages.ContentsManagement')
 
             @elseif(request()->is('admin/dashboard/stats'))
                 @include('partials.main.admin.pages.SiteStatistics')
@@ -59,11 +59,11 @@
                         </a></li>
                     </summary>
                     <div class="collapse-content ml-2 flex flex-col gap-y-2">
-                        <li><a href="{{ url('/admin/dashboard/posts') }}" class="{{ Request::is('admin/dashboard/posts') ? 'active' : '' }}">
+                        <li><a href="{{ url('/admin/dashboard/contents') }}" class="{{ Request::is('admin/dashboard/contents') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-view-list h-6 w-6" viewBox="0 0 16 16">
                                 <path d="M3 4.5h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM1 2a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 2m0 12a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 14"/>
                             </svg>
-                            Posts Management
+                            Contents Management
                         </a></li>
                         <li><a href="{{ url('/admin/dashboard/reports') }}" class="{{ Request::is('admin/dashboard/reports') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-house h-6 w-6" viewBox="0 0 16 16">

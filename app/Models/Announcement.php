@@ -1,5 +1,4 @@
 <?php
-
 // app/Models/Announcement.php
 
 namespace App\Models;
@@ -18,11 +17,17 @@ class Announcement extends Model
     protected $primaryKey = 'announcement_id';
 
     // Specify which columns are mass assignable (optional)
-    protected $fillable = ['shelter_id', 'announcement_title', 'announcement_description'];
+    protected $fillable = ['shelter_id', 'title', 'description', 'thumbnail'];
 
     // Define the relationship with the User model (shelter_id refers to user_id)
     public function shelter()
     {
         return $this->belongsTo(User::class, 'shelter_id', 'user_id');
+    }
+
+    // Define the relationship with the Comment model
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'announcement_comment_id', 'announcement_id');
     }
 }

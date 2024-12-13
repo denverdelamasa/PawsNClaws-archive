@@ -19,6 +19,7 @@ class Like extends Model
     protected $fillable = [
         'posts_id', // ID of the liked post
         'user_id',  // ID of the user who liked the post
+        'announcement_id'
     ];
 
     /**

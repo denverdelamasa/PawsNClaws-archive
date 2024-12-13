@@ -20,6 +20,7 @@ import AccountsManagement from './components/Admin/AccountsManagement.vue';
 import ReportsManagement from './components/Admin/ReportsManagement.vue';
 import Footer from './components/partials/misc/Footer.vue';
 import UserProfile from './components/Auth/UserProfile.vue';
+import Announcement from './components/partials/posts/Announcement.vue';
 
 // Create the Vue app
 const app1 = createApp({});
@@ -41,3 +42,7 @@ app2.component('user-profile', UserProfile);
 app2.component('profile-footer', Footer);
 
 app2.mount("#app2");
+
+const app3 = createApp({});
+app3.component('announcement-cards', Announcement);
+app3.mount("#app3")

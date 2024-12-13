@@ -337,6 +337,9 @@ export default {
         toast: true,  // Display as a toast
         timer: 3000,  // Time in milliseconds before the toast closes
         timerProgressBar: true,  // Optional, shows a progress bar
+        customClass: {
+            container: 'Comment_Toast'  // Apply the custom class here
+        },
         didOpen: () => {
           Swal.showLoading();  // Show loading indicator
         }
@@ -439,4 +442,6 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
+
