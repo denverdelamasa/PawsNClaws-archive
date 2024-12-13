@@ -45,7 +45,7 @@
         <div class="flex items-center space-x-3 mt-2">
             <div class="avatar">
                 <div class="w-12 h-12 rounded-full">
-                    <img src="https://picsum.photos/200" alt="User Avatar">
+                    <img :src="`/storage/${ announcement.profile_picture }`" alt="User Avatar">
                 </div>
             </div>
             <div>

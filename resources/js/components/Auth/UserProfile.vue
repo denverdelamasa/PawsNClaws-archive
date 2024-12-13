@@ -430,6 +430,7 @@ export default {
         .then((response) => {
             // Handle the success (e.g., show a success message, update UI, etc.)
             alert('Adoption application accepted!');
+            this.fetchUserAdoptionApplications();
             this.closeReviewModal(); // Close the modal after success
         })
         .catch((error) => {

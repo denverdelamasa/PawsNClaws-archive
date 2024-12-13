@@ -96,7 +96,7 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
             'description' => 'required|string',
         ]);
     

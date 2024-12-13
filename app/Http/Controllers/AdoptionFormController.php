@@ -23,7 +23,7 @@ class AdoptionFormController extends Controller
             'experience' => 'required|string',
             'reason' => 'required|string',
             'current_pets' => 'required|integer|min:0',
-            'gov_id' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'gov_id' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10000',
             'sender_id' => 'required|exists:users,user_id',
         ]);
     
