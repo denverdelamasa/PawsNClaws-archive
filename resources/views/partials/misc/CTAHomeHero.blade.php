@@ -130,9 +130,7 @@
   </a>
 </div>
 <style>
-    html {
-        scroll-behavior: smooth;
-    }
+
     /* From Uiverse.io by MuhammadHasann */ 
     .GetStartedButton {
       position: relative;

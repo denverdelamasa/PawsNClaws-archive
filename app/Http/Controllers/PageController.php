@@ -52,6 +52,10 @@ class PageController extends Controller
     {
         return view('pages.profile.profile'); // Return the view for the home page
     }
+    public function others_profile()
+    {
+        return view('pages.profile.others-profile'); // Return the view for the home page
+    }
     public function TermsOfService()
     {
         return view('pages.site.TermsOfService'); // Return the view for the home page

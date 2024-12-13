@@ -1,7 +1,7 @@
 @include('partials.main.admin.AdminNav')
     <div class="drawer lg:drawer-open z-1">
         <input id="AdminSideBar" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content flex flex-col items-center overflow-auto hide-scroll">
+        <div class="drawer-content flex flex-col items-center overflow-auto hide-scrollbar">
             @include('partials.main.admin.adminnavbar')
 
             @if(request()->is('admin/dashboard'))
@@ -19,6 +19,9 @@
             @elseif(request()->is('admin/dashboard/accounts'))
                 @include('partials.main.admin.pages.AccountsManagement')
 
+            @elseif(request()->is('admin/dashboard/adoptions'))
+                @include('partials.main.admin.pages.AdoptionListsManagement')
+
             @elseif(request()->is('admin/dashboard/monetization'))
                 @include('partials.main.admin.pages.SiteMonetization')
 
@@ -33,7 +36,7 @@
             @endif
 
         </div>
-        <div class="drawer-side">
+        <div class="drawer-side hide-scrollbar">
             <label for="AdminSideBar" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4 pt-20 lg:pt-4 overflow-auto hide-scrollbar z-100">
                 <h6 class="text-[2.0rem] my-4">Site Administration</h6>
@@ -75,6 +78,13 @@
                           </svg>
                           Accounts Management
                         </a></li>
+                        <li><a href="{{ url('/admin/dashboard/adoptions') }}" class="{{ Request::is('admin/dashboard/adoptions') ? 'active' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-gear w-6 h-6" viewBox="0 0 16 16">
+                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+                                <path d="M4.5 12.5A.5.5 0 0 1 5 12h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m0-2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m1.639-3.708 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V8.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8s1.54-1.274 1.639-1.208M6.25 6a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5"/>
+                            </svg>
+                            Adoption lists Management
+                        </a></li>
                     </div>
                 </details>
                 <details class="collapse bg-base-200" open>
@@ -87,13 +97,13 @@
                         </a></li>
                     </summary>
                     <div class="collapse-content ml-2 flex flex-col gap-y-2">
-                        <li><a href="{{ url('/admin/dashboard/privacy-policy') }}" class="{{ Request::is('admin/dashboard/monetization') ? 'active' : '' }}">
+                        <li><a href="{{ url('/admin/dashboard/privacy-policy') }}" class="{{ Request::is('admin/dashboard/privacy-policy') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-gear w-6 h-6" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5"/>
                             </svg>
                             Privacy Policy
                         </a></li>
-                        <li><a href="{{ url('/admin/dashboard/terms-of-service') }}" class="{{ Request::is('admin/dashboard/monetization') ? 'active' : '' }}">
+                        <li><a href="{{ url('/admin/dashboard/terms-of-service') }}" class="{{ Request::is('admin/dashboard/terms-of-service') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-gear w-6 h-6" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
                                 <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
@@ -126,9 +136,7 @@
 @include('partials.main.admin.AdminFooter')
 
 <style>
-    html {
-        scroll-behavior: smooth;
-    }
+
     /* Hide the scrollbar but allow scrolling */
     .hide-scrollbar::-webkit-scrollbar {
     display: none; /* Hides scrollbar in WebKit browsers */

@@ -17,7 +17,7 @@
               <li><a>Least Active</a></li>
             </ul>
           </div>
-          <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-xs" />
+          <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-md" />
         </div>
       </div>
       <div class="overflow-x-auto m-4">

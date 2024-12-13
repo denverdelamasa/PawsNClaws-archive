@@ -33,9 +33,11 @@ Route::post('/user/offline', function (Request $request) {
 });
 
 Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(function () {
+
     Route::get('/admin/{any}', function () {
         return view('pages.admin');
     })->where('any', '.*')->name('admin.any');
+    
     Route::get('/server/dashboard',[ServerController::class, 'dashboard'])->name('server.dashboard');
     Route::get('/server/profile', [ServerProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/server/profile', [ServerProfileController::class, 'update'])->name('profile.update');
@@ -88,7 +90,10 @@ Route::get('/events', [PageController::class, 'events'])->name('events');
 Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters'); 
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
+
 Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::get('/pages/others-profile', [PageController::class, 'others_profile'])->name('others-profile'); 
+
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
 
 Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');

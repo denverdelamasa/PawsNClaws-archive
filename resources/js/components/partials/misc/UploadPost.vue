@@ -1,6 +1,6 @@
 <template>
   <div class="card bg-base-200 shadow-md w-full max-w-full border border-base-300 p-4">
-    <div class="flex items-start gap-4" id="PostCardDivObserved">
+    <div class="flex items-start gap-4">
       <!-- Profile Picture -->
       <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />
       
@@ -224,16 +224,16 @@ export default {
 </script>
 
 <style scoped>
-.modal-box {
-  max-width: 500px;
-  padding: 20px;
-}
+  .modal-box {
+    max-width: 500px;
+    padding: 20px;
+  }
 
-textarea {
-  min-height: 150px;
-}
+  textarea {
+    min-height: 150px;
+  }
 
-input[type="file"] {
-  display: none;
-}
+  input[type="file"] {
+    display: none;
+  }
 </style>

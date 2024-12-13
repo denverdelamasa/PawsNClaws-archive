@@ -26,7 +26,11 @@
                 tabindex="0"
                 class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow gap-y-2">
                 <li><a href="{{ route('client.profile.edit') }}">Profile</a></li>
-                <li><a href="#">Settings</a></li>
+                @auth
+                  @if(Auth::user()->role === 'Admin')
+                    <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
+                  @endif
+                @endauth
                 <li>
                   <!-- Authentication -->
                   <form method="POST" action="{{ route('logout') }}" style="margin: 0;">

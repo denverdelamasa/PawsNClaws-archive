@@ -65,7 +65,7 @@
                                     </svg>
                                     100-Paws-t
                                 </div>
-                                <div class="badge badge-warning badge-outline">
+                                <div class="badge badge-warning badge-outline flex flex-row">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
                                         <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
                                     </svg>
@@ -108,9 +108,9 @@
                             Animal lover and proud pet parent! Here to connect, share, and help find loving homes for our furry friends. Let’s make a difference together!                            
                         </p>
                     </div>
-                    <div class="p-2 flex flex-row gap-x-4">
+                    <div class="p-2 flex flex-wrap gap-x-4">
                         <!-- mag cchange ng laman yung "div sa baba base sa pinindot dito" -->
-                        <div class="flex flex-row border-r-2 border-accent pr-4 gap-x-4">        
+                        <div class="flex flex-row md:border-r-2 md:border-accent pr-4 gap-x-4 gap-y-4">        
                             <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
                                 Posts
                             </h1>
@@ -157,7 +157,7 @@
             </div>
         
             <!-- Search Input -->
-            <div class="form-control w-full max-w-xs">
+            <div class="form-control w-full max-w-md">
                 <input type="text" placeholder="Search requests..." class="input input-bordered" />
             </div>
             </div>

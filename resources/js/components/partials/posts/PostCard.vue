@@ -23,7 +23,7 @@
       </div>
 
       <!-- Hide both if is_adoptable is null or not set -->
-      <div v-else class="badge badge-hidden"></div>
+      <div v-else class="hidden"></div>
       <!-- Dropdown Menu -->
       <div class="dropdown dropdown-end ">
         <label tabindex="0" class="btn btn-sm btn-ghost">
@@ -113,7 +113,7 @@
 
         <form @submit.prevent="submitReport(post.post_id)">
           <!-- Predefined Report Reasons -->
-          <div class="my-4">
+          <div class="my-4 gap-y-2 flex flex-col">
             <div>
               <input type="radio" id="troll" value="Troll" v-model="reportReason" class="radio"/>
               <label for="troll" class="ml-2">Troll</label>
@@ -170,7 +170,7 @@
           </div>
         </div>
         <div>
-          <p class="text-sm font-semibold font-medium">{{ post.name }}</p>
+          <p class="text-sm font-medium">{{ post.name }}</p>
           <div class="text-xs">
             <span class="font-small">{{ post.username }}</span>
             <br>
@@ -225,7 +225,7 @@
             d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </svg>
         <p>{{ post.likes_count }} Like</p>
-        </button>
+      </button>
 
       <!-- Comments Button -->
       <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(post.post_id)">
@@ -771,13 +771,13 @@ export default {
 </script>
 
 <style scoped>
-.line-clamp-none {
-  display: block;
-}
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
+  .line-clamp-none {
+    display: block;
+  }
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
 </style>
