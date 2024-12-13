@@ -39,7 +39,7 @@
   <!-- Post Modal -->
   <dialog v-if="modalType" class="modal" :id="`${modalType}boxModal`">
     <div class="modal-box">
-      <form v-if="modalType === 'announcement'" @submit.prevent="handleSubmitAnnouncement">
+      <form v-if="modalType === 'announcement'" @submit.prevent="handleSubmitAnnouncement" class="flex flex-col gap-y-2">
         <!-- Close Button -->
         <button 
           type="button" 
@@ -49,10 +49,15 @@
           ✕
         </button>
 
-        <h3 v-if="modalType === 'announcement'" class="font-bold text-lg">Create Announcement</h3>
+        <h3 v-if="modalType === 'announcement'" class="font-bold text-2xl">Create Announcement</h3>
 
         <div v-if="modalType === 'announcement'">
-          <input type="text" v-model="modalData.title" placeholder="Write a title...">
+          <textarea 
+            class="textarea textarea-bordered w-full" 
+            v-model="modalData.title"
+            placeholder="Write a title..." 
+            required
+          ></textarea>
         </div>
 
         <!-- Description (Visible for announcement) -->
