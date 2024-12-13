@@ -213,7 +213,7 @@
 
     <!-- EZ MODAL WTF -->
     <dialog id="adoptionModal" class="modal">
-        <div class="modal-box w-full max-w-6xl">
+        <div class="modal-box w-full max-w-5xl">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
@@ -268,77 +268,81 @@
             </div>
         </div>
         <div v-if="showFormModal" class="fixed inset-0 z-80 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6 relative">
-                <h3 class="text-lg font-bold mb-4"><img :src="`/storage/${ selectedApplication.adopter_profile}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt=""><strong>Review Adoption Application</strong></h3>
-                <div class="max-h-[400px] overflow-y-auto mb-4">  
+            <div class="bg-base-300 rounded-lg shadow-lg w-full max-w-4xl max-h-[800px] p-6 relative">
+                <h3 class="text-4xl font-bold mb-4 flex flex-row align-middle items-center gap-x-4">
+                    <img :src="`/storage/${ selectedApplication.adopter_profile}`" class="w-24 h-24 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="">
+                    <strong>Review Adoption Application</strong>
+                </h3>
+
+                <div class="max-h-[400px] overflow-y-scroll mb-4 mx-2">  
                     <form @submit.prevent="saveReview">
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Adoption Code:</strong>
-                                <span class="ml-2">{{ selectedApplication?.adoption_code || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.adoption_code || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Adopter Account:</strong>
-                                <span class="ml-2">{{ selectedApplication?.adopter_account || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.adopter_account || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Adopter Name:</strong>
-                                <span class="ml-2">{{ selectedApplication?.adopter_name || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.adopter_name || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Contact Info:</strong>
-                                <span class="ml-2">{{ selectedApplication?.contact_info || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.contact_info || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Adopt Type:</strong>
-                                <span class="ml-2 capitalize">{{ selectedApplication?.adopt_type || '' }}</span>
+                                <span class="ml-8 capitalize">{{ selectedApplication?.adopt_type || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Employment Status:</strong>
-                                <span class="ml-2 capitalize">{{ selectedApplication?.employment_status || '' }}</span>
+                                <span class="ml-8 capitalize">{{ selectedApplication?.employment_status || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Social Media Links:</strong>
-                                <span class="ml-2">{{ selectedApplication?.socmed || 'No Social Media Links' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.socmed || 'No Social Media Links' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Location:</strong>
-                                <span class="ml-2">{{ selectedApplication?.location || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.location || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Experience:</strong>
-                                <span class="ml-2">{{ selectedApplication?.experience || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.experience || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Reason:</strong>
-                                <span class="ml-2">{{ selectedApplication?.reason || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.reason || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p class="flex">
                                 <strong>Current Pets:</strong>
-                                <span class="ml-2">{{ selectedApplication?.current_pets || '' }}</span>
+                                <span class="ml-8">{{ selectedApplication?.current_pets || '' }}</span>
                             </p>
                         </div>
-                        <div class="form-control mb-4">
+                        <div class="form-control mb-4 text-xl">
                             <p>
                                 <strong>Government ID:</strong>
                                 <img :src="`/storage/${ selectedApplication.gov_id }`" alt="" class="rounded-lg">
@@ -352,7 +356,7 @@
                                 <strong>Accept</strong>
                             </button>
                             <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="changeStatusToFailed">
-                                <strong>Failed</strong>
+                                <strong>Reject</strong>
                             </button>
                             <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600" @click.prevent="changeStatusToComplete">
                                 <strong>Completed</strong>

@@ -261,7 +261,7 @@
         <span>Done Sending Adoption Form</span>
       </button>
       <dialog id="adoptionModal" class="modal">
-        <div class="modal-box w-96 h-auto max-w-6xl max-h-[80vh] hide-scrollbar">
+        <div class="modal-box h-auto max-w-6xl max-h-[80vh] hide-scrollbar">
           <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('adoptionModal').close()">✕</button>
           </form>

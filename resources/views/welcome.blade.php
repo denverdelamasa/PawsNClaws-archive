@@ -34,7 +34,9 @@
             <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
               <div class="md:flex md:flex-wrap w-1/2 m-auto gap-2 hidden"> <!-- Add gap property here -->
                 <div class="w-full h-[70vh] bg-base-100 overflow-auto hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
-                    @include('partials.containers.announcement.announcement-card')
+                    <div id="app3">
+                        <announcement-cards></announcement-cards> 
+                    </div>
                 </div>
               </div>  
               <div class="flex flex-col text-start justify-start w-1/2 m-auto p-2">
