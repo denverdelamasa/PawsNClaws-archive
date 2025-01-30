@@ -399,6 +399,10 @@ export default {
   data() {
     return {
       posts: [],
+      currentPage: 1, // Current page number
+      totalPages: 1, // Total number of pages
+      loading: false, // Loading state
+      noMorePosts: false, // Flag to check if there are no more posts
       expanded: false,
       isAuthenticated: false,
       currentUserId: null,
@@ -712,13 +716,38 @@ export default {
         }
     },
     async fetchPosts() {
+      if (this.loading || this.noMorePosts) return; // Prevent multiple requests
+
+      this.loading = true; // Set loading state
+
       try {
-        const response = await axios.get("/api/posts/list");
-        this.posts = response.data;
+        const response = await axios.get(`/api/posts/list?page=${this.currentPage}`);
+        const newPosts = response.data.posts;
+
+        if (newPosts.length > 0) {
+          this.posts = [...this.posts, ...newPosts]; // Append new posts to the existing list
+          this.currentPage++; // Increment page number
+        } else {
+          this.noMorePosts = true; // No more posts to load
+        }
       } catch (error) {
         console.error("Error fetching posts:", error);
+      } finally {
+        this.loading = false; // Reset loading state
       }
     },
+
+    // Check if the user has scrolled to the bottom
+    handleScroll() {
+      const bottomOfWindow =
+        document.documentElement.scrollTop + window.innerHeight >=
+        document.documentElement.offsetHeight - 100; // 100px buffer
+
+      if (bottomOfWindow && !this.loading && !this.noMorePosts) {
+        this.fetchPosts(); // Fetch more posts
+      }
+    },
+
     async likePost(postId) {
       try {
         const response = await axios.post(`/api/like/${postId}`);
@@ -765,7 +794,11 @@ export default {
   },
   mounted() {
     this.checkAuthentication();
-    this.fetchPosts();
+    this.fetchPosts(); // Fetch the first page of posts
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll); // Clean up scroll event listener
   },
 };
 </script>
@@ -779,5 +812,12 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+  }
+  .loading {
+    color: #4a5568; /* Customize spinner color */
+  }
+
+  .text-center {
+    text-align: center;
   }
 </style>

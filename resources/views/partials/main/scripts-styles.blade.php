@@ -26,11 +26,26 @@
     <script>
         // Ensure the user is authenticated before proceeding
         let userId = {{ Auth::user()->user_id ?? 'null' }}; // Ensure userId is available if the user is authenticated
-
+    
         if (userId) {
-            // Send an AJAX request when the user is about to leave the page
-            window.onbeforeunload = function () {
-                // Make sure to send a request to mark the user as offline
+            const heartbeatInterval = 5000; // 5 seconds for periodic updates
+    
+            // Function to notify the server that the user is active
+            function sendHeartbeat() {
+                fetch('/user/heartbeat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                }).catch((err) => {
+                    console.error('Error sending heartbeat:', err);
+                });
+            }
+    
+            // Function to mark the user as offline
+            function setUserOffline() {
                 fetch('/user/offline', {
                     method: 'POST',
                     headers: {
@@ -38,28 +53,44 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: JSON.stringify({ user_id: userId })
+                }).catch((err) => {
+                    console.error('Error marking user offline:', err);
                 });
+            }
+    
+            // Send heartbeat periodically
+            const heartbeatTimer = setInterval(sendHeartbeat, heartbeatInterval);
+    
+            // Handle user leaving the page
+            window.onbeforeunload = function () {
+                setUserOffline(); // Mark the user as offline
+                clearInterval(heartbeatTimer); // Stop heartbeat when user leaves
             };
+    
+            // Send an initial heartbeat when the page loads
+            sendHeartbeat();
         }
-
+    
         // Function to set data-theme based on browser's light/dark mode
         function setThemeBasedOnBrowser() {
             const rootElement = document.documentElement;
-
+    
             // Detect the browser's theme preference
             const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
             rootElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
         }
-
+    
         // Listen for changes in the browser's theme preference
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
             const newTheme = e.matches ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', newTheme);
         });
-
+    
         // Set the initial theme on page load
         setThemeBasedOnBrowser();
     </script>
+    
+    
     <style>
         html {
             scroll-behavior: smooth;

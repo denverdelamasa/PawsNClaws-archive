@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
@@ -19,6 +20,18 @@ use App\Http\Controllers\AnnouncementController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::post('/user/heartbeat', function (Request $request) {
+    if ($request->user_id) {
+        $user = User::find($request->user_id);
+        if ($user) {
+            $user->is_online = 1; // Set user as online
+            $user->last_online = now(); // Update last activity timestamp
+            $user->save();
+        }
+    }
+    return response()->json(['status' => 'online']);
 });
 
 Route::post('/user/offline', function (Request $request) {

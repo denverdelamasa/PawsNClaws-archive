@@ -18,13 +18,13 @@ class PostController extends Controller
 {
     public function postList()
     {
-        $userId = auth()->id(); // Get the current user's ID
+        $userId = Auth::id(); // Get the current user's ID
     
-        // Fetch posts with their associated user data and comment count
+        // Fetch posts with their associated user data and comment count, paginated by 10 posts per page
         $posts = Post::with('user') // Eager load the user relationship
             ->withCount('comments') // Eager load and count the number of comments using the defined relationship
             ->orderBy('created_at', 'desc') // Order by the latest posts
-            ->get();
+            ->paginate(3); // Paginate the results, 10 posts per page
     
         // Map through the posts and format the response
         $formattedPosts = $posts->map(function ($post) use ($userId) {
@@ -35,7 +35,7 @@ class PostController extends Controller
             $isLiked = Like::where('posts_id', $post->post_id)
                             ->where('user_id', $userId)
                             ->exists();
-
+    
             $isDoneSendingAdoptionForm = DoneAdoptionForm::where('done_post_id', $post->post_id)
                             ->where('done_user_id', $userId)
                             ->exists();
@@ -58,8 +58,18 @@ class PostController extends Controller
             ];
         });
     
-        // Return the formatted response as JSON
-        return response()->json($formattedPosts, 200);
+        // Return the formatted response as JSON with pagination metadata
+        return response()->json([
+            'posts' => $formattedPosts,
+            'pagination' => [
+                'current_page' => $posts->currentPage(),
+                'per_page' => $posts->perPage(),
+                'total' => $posts->total(),
+                'last_page' => $posts->lastPage(),
+                'next_page_url' => $posts->nextPageUrl(),
+                'prev_page_url' => $posts->previousPageUrl(),
+            ]
+        ], 200);
     }
     
 
@@ -149,7 +159,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         // Optional: Check if the authenticated user owns the post
-        if ($post->user_id !== auth()->id()) {
+        if ($post->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -159,7 +169,7 @@ class PostController extends Controller
     
     public function likePost($postId)
     {
-        $userId = auth()->id(); // Get the current user's ID
+        $userId = Auth::id(); // Get the current user's ID
         
         // Find the post owner
         $postOwner = Post::find($postId)->user_id;
