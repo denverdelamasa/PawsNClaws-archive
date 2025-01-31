@@ -20,6 +20,10 @@ class Post extends Model
     // Specify which columns are mass assignable (optional, for mass assignment protection)
     protected $fillable = ['user_id', 'image_path', 'caption', 'post_path'];
 
+    protected $casts = [
+        'image_path' => 'array', // Cast JSON column to an array
+    ];
+
     // Define the relationship with the User model
     public function user()
     {

@@ -46,7 +46,7 @@ class PostController extends Controller
                 'name' => $post->user ? $post->user->name : 'Unknown User',
                 'username' => $post->user ? $post->user->username : 'Unknown User', // Fetch username from the related user
                 'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg', // Use default if no profile picture
-                'image_path' => $post->image_path ? $post->image_path : null, // Ensure image path exists
+                'image_path' => $post->image_path ? json_decode($post->image_path, true) : [], // Ensure image_path is an array
                 'caption' => $post->caption,
                 'created_at' => $post->created_at->diffForHumans(), // Format the created_at timestamp
                 'updated_at' => $post->updated_at->diffForHumans(), // Format the updated_at timestamp
@@ -71,34 +71,40 @@ class PostController extends Controller
             ]
         ], 200);
     }
-    
 
     public function createPost(Request $request)
     {
+        // Validate the request
         $request->validate([
             'caption' => 'required|string',
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000', // Validate each image in the array
             'is_adoptable' => 'nullable|boolean',
         ]);
-    
-        $imagePath = null;
-        if ($request->hasFile('image_path') && $request->file('image_path')->isValid()) {
-            $imagePath = $request->file('image_path')->store('images/posts', 'public');
+
+        // Handle multiple image uploads
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                if ($image->isValid()) {
+                    // Store the image and get the path
+                    $imagePath = $image->store('images/posts', 'public');
+                    $imagePaths[] = $imagePath; // Add the path to the array
+                }
+            }
         }
-    
+
+        // Create the post
         $post = new Post();
         $post->caption = $request->input('caption');
-        if ($imagePath) {
-            $post->image_path = $imagePath;
-        }
         $post->user_id = Auth::id();
         $post->is_adoptable = $request->input('is_adoptable', false); // Default to false
         $post->post_path = Str::random(15); // Generate post_path
+        $post->image_path = json_encode($imagePaths); // Store image paths as a JSON array
         $post->save();
-    
+
         return response()->json([
             'message' => 'Post created successfully!',
-            'post' => $post
+            'post' => $post,
         ], 201);
     }
 

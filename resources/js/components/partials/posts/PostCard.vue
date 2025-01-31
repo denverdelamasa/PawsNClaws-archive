@@ -25,47 +25,55 @@
       <!-- Hide both if is_adoptable is null or not set -->
       <div v-else class="hidden"></div>
       <!-- Dropdown Menu -->
-      <div class="dropdown dropdown-end ">
-        <label tabindex="0" class="btn btn-sm btn-ghost">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+      <div class="dropdown dropdown-end">
+      <label tabindex="0" class="btn btn-sm btn-ghost">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+        </svg>
+      </label>
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-40">
+        <li v-if="post.user_id === currentUserId">
+          <a href="#" @click.prevent="editPost(post)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
             </svg>
-        </label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-40">
-            <li v-if="post.user_id === currentUserId">
-            <a href="#" @click.prevent="editPost(post)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                </svg>
-                Edit Post
-            </a>
-            </li>
-            <li v-if="post.user_id === currentUserId">
-                <a href="#" @click.prevent="openDeleteModal(post.post_id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                    </svg>
-                    Delete Post
-                </a>
-            </li>
-            <li v-if="post.user_id !== currentUserId">
-              <a href="#" @click.prevent="openReportModal(post.post_id)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
-                  <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z"/>
-                </svg>  
-                Report Post
-              </a>
-            </li>
-        </ul>
-      </div>
+            Edit Post
+          </a>
+        </li>
+        <li v-if="post.user_id === currentUserId">
+          <a href="#" @click.prevent="openDeleteModal(post.post_id)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+            </svg>
+            Delete Post
+          </a>
+        </li>
+        <li v-if="post.user_id !== currentUserId">
+          <a href="#" @click.prevent="openReportModal(post.post_id)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
+              <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z" />
+            </svg>
+            Report Post
+          </a>
+        </li>
+      </ul>
+    </div>
+
     </div>
 
     <!-- Thumbnail -->
-    <div v-if="post.image_path" class="px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
-      <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+    <div v-if="post.image_path && post.image_path.length > 0" class="relative px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
+      <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
+          alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+
+      <div v-if="Array.isArray(post.image_path) && post.image_path.length > 1" 
+          class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center rounded">
+        <span class="text-white text-lg font-semibold">+{{ post.image_path.length - 1 }}</span>
+      </div>
     </div>
+
 
     <!-- Edit Post Modal -->
     <dialog :id="`editPostModal-${post.post_id}`" class="modal">
@@ -96,13 +104,29 @@
     </dialog>
 
     <!-- Modal Thumbnail -->
-    <dialog :id="`thumbnailModal-${post.post_id}`" class="modal">
-        <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
-            <div class="flex justify-center items-center h-full">
-            <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
-            </div>
-        </div>
+    <dialog v-if="post.image_path" :id="'thumbnailModal-' + post.post_id" class="modal">
+      <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen relative">
+          <!-- Close Button -->
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
+
+          <!-- Image Carousel -->
+          <div class="flex justify-center items-center h-full relative">
+              <!-- Left Arrow (Only show if more than 1 image) -->
+              <button v-if="post.image_path.length > 1" class="absolute left-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
+                  @click="prevImage(post.post_id)">
+                  <
+              </button>
+
+              <!-- Image Display -->
+              <img :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
+
+              <!-- Right Arrow (Only show if more than 1 image) -->
+              <button v-if="post.image_path.length > 1" class="absolute right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
+                  @click="nextImage(post.post_id)">
+                  >
+              </button>
+          </div>
+      </div>
     </dialog>
 
     <!-- Report Post Modal -->
@@ -175,21 +199,19 @@
             <span class="font-small">{{ post.username }}</span>
             <br>
             <span>Posted: {{ post.created_at }}</span>
-            <span class="mx-1">|</span>
-            <span>Edited on: {{ post.updated_at }}</span>
+            
+            <template v-if="post.updated_at !== post.created_at">
+              <span class="mx-1">|</span>
+              <span>Edited on: {{ post.updated_at }}</span>
+            </template>
           </div>
         </div>
       </div>
       <div class="text-base mt-2">
-        <p>
-          <!-- Truncate the caption to 20 characters initially -->
-          {{ post.expanded ? post.caption : post.caption.substring(0, 135) }}
+        <p class="break-words whitespace-normal">
+          {{ post.expanded ? post.caption : (post.caption && post.caption.length > 135 ? post.caption.substring(0, 135) + '...' : post.caption) }}
         </p>
-        <button
-          v-if="post.caption.length > 125"
-          class="btn btn-link btn-xs text-sm mt-2 px-0"
-          @click="toggleDescription(post)"
-        >
+        <button v-if="post.caption && post.caption.length > 125" class="btn btn-link btn-xs text-sm mt-2 px-0" @click="toggleDescription(post)">
           {{ post.expanded ? 'See Less' : 'See More' }}
         </button>
       </div>
@@ -399,6 +421,7 @@ export default {
   data() {
     return {
       posts: [],
+      currentIndex: {},
       currentPage: 1, // Current page number
       totalPages: 1, // Total number of pages
       loading: false, // Loading state
@@ -701,19 +724,47 @@ export default {
         });
     },
     toggleDescription(post) {
+      if (!("expanded" in post)) {
+        post.expanded = false; // Initialize if it doesn't exist
+      }
       post.expanded = !post.expanded;
     },
     showModal(postId) {
-        const modal = document.getElementById(`thumbnailModal-${postId}`);
-        if (modal) {
+      console.log("Opening modal for post:", postId);
+
+      // Ensure the index is set to 0 if undefined
+      if (!(postId in this.currentIndex)) {
+        this.currentIndex[postId] = 0;
+      }
+
+      const modal = document.getElementById(`thumbnailModal-${postId}`);
+      if (modal) {
         modal.showModal();
-        }
+      } else {
+        console.log("Modal not found");
+      }
     },
     closeThumbnailModal(postId) {
         const modal = document.getElementById(`thumbnailModal-${postId}`);
         if (modal) {
         modal.close();
         }
+    },
+    nextImage(postId) {
+      const post = this.posts.find(post => post.post_id === postId);
+      if (post && post.image_path.length > 0) {
+        this.currentIndex[postId] = (this.currentIndex[postId] + 1) % post.image_path.length;
+      } else {
+        console.error("Post or image path not found for postId:", postId);
+      }
+    },
+    prevImage(postId) {
+      const post = this.posts.find(post => post.post_id === postId);
+      if (post && post.image_path.length > 0) {
+        this.currentIndex[postId] = (this.currentIndex[postId] - 1 + post.image_path.length) % post.image_path.length;
+      } else {
+        console.error("Post or image path not found for postId:", postId);
+      }
     },
     async fetchPosts() {
       if (this.loading || this.noMorePosts) return; // Prevent multiple requests

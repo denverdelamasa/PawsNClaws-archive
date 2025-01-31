@@ -90,7 +90,6 @@
         setThemeBasedOnBrowser();
     </script>
     
-    
     <style>
         html {
             scroll-behavior: smooth;

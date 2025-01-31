@@ -126,11 +126,22 @@
           </button>
 
           <!-- Hidden File Input for Image -->
-          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" />
+          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" multiple/>
 
           <!-- Image Preview -->
-          <div v-if="modalData.image_preview" class="my-4">
-            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
+          <div v-if="modalData.image_previews.length > 0" class="my-4">
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="(preview, index) in modalData.image_previews" :key="index" class="relative">
+                <img :src="preview" alt="Image Preview" class="w-full h-24 object-cover rounded-lg" />
+                <button 
+                  type="button" 
+                  @click="removeImage(index)" 
+                  class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -171,8 +182,8 @@ export default {
       modalType: null,
       modalData: {
         caption: "",
-        image_path: null,
-        image_preview: null,
+        image_path: [],
+        image_previews: [],
         is_adoptable: false,
         thumbnail: null,
         title: "",
@@ -196,20 +207,23 @@ export default {
       document.querySelector("dialog").close();
     },
     handleImageChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.modalData.image_path = file;
-        this.modalData.thumbnail = file;
-        this.modalData.image_preview = URL.createObjectURL(file);
+      const files = event.target.files;
+      if (files) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          this.modalData.image_path.push(file);
+          this.modalData.image_previews.push(URL.createObjectURL(file));
+        }
       }
     },
     handleSubmitPost() {
       const formData = new FormData();
       formData.append("caption", this.modalData.caption);
 
-      if (this.modalData.image_path) {
-        formData.append("image_path", this.modalData.image_path);
-      }
+      // Append each image to the form data
+      this.modalData.image_path.forEach((image, index) => {
+        formData.append(`images[${index}]`, image);
+      });
 
       // Convert the checkbox value to a boolean
       formData.append("is_adoptable", this.modalData.is_adoptable ? "1" : "0");
@@ -287,7 +301,10 @@ export default {
           });
         });
     },
-
+    removeImage(index) {
+      this.modalData.image_path.splice(index, 1);
+      this.modalData.image_previews.splice(index, 1);
+    },
     fetchPosts() {
       axios
         .get("/api/posts")
@@ -300,12 +317,13 @@ export default {
     },
     triggerFileInput() {
       this.$refs.imageInput.accept = 'image/*';
+      this.$refs.imageInput.multiple = true;
       this.$refs.imageInput.click();
     },
     resetForm() {
       this.modalData.caption = "";
-      this.modalData.image_path = null;
-      this.modalData.image_preview = null;
+      this.modalData.image_path = [];
+      this.modalData.image_preview = [];
       this.modalData.is_adoptable = false;
       this.modalData.thumbnail = null;
       this.modalData.title = "";
