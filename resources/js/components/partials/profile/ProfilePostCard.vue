@@ -54,8 +54,13 @@
     </div>
 
     <!-- Thumbnail -->
-    <div v-if="post.image_path" class="px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
-      <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+    <div v-if="post.image_path && post.image_path.trim() !== ''" class="relative px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
+      <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
+          alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+      <div v-if="Array.isArray(post.image_path) && post.image_path.length > 1" 
+          class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center rounded">
+        <span class="text-white text-lg font-semibold">+{{ post.image_path.length - 1 }}</span>
+      </div>
     </div>
 
     <!-- Edit Post Modal -->
@@ -183,8 +188,12 @@
     </div>
     </div>
   </div>
-  <div v-if="posts.length === 0">
-    No posts available.
+  <!-- Add loading indicator -->
+  <div v-if="loading" class="text-center my-4">
+    <span class="loading loading-dots loading-lg"></span>
+  </div>
+  <div v-else-if="!hasMorePosts" class="text-center my-4">
+    No more posts to load
   </div>
 </template>
 <script>
@@ -206,6 +215,10 @@ export default {
       isModalOpen: false,
       comments: [],  // Store comments here,
       selectedPostId: null,
+      currentPage: 1,
+      hasMorePosts: true,
+      loading: false,
+      scrollListener: null,
     };
   },
   methods: {
@@ -371,12 +384,37 @@ export default {
         modal.close();
         }
     },
-    async fetchPosts() {
+    async fetchPosts(initialLoad = false) {
+      if (this.loading || !this.hasMorePosts) return;
+      
+      this.loading = true;
       try {
-        const response = await axios.get("/api/user/posts/list");
-        this.posts = response.data;
+        const response = await axios.get(`/api/user/posts/list?page=${this.currentPage}`);
+        
+        if (initialLoad) {
+          this.posts = response.data.posts;
+        } else {
+          this.posts = [...this.posts, ...response.data.posts];
+        }
+
+        this.hasMorePosts = !!response.data.pagination.next_page_url;
+        this.currentPage++;
       } catch (error) {
         console.error("Error fetching posts:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    handleScroll() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const visibleHeight = window.innerHeight;
+      const pageHeight = document.documentElement.scrollHeight;
+      const bottomOffset = 100; // Load more when 100px from bottom
+
+      if (pageHeight - (scrollY + visibleHeight) < bottomOffset) {
+        if (!this.loading && this.hasMorePosts) {
+          this.fetchPosts();
+        }
       }
     },
     async likePost(postId) {
@@ -416,7 +454,14 @@ export default {
   },
   mounted() {
     this.checkAuthentication();
-    this.fetchPosts();
+    this.fetchPosts(true);
+    this.scrollListener = this.handleScroll.bind(this);
+    window.addEventListener('scroll', this.scrollListener);
+  },
+  beforeUnmount() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
   },
 };
 </script>
