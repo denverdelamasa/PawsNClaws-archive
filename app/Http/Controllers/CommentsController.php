@@ -14,11 +14,11 @@ class CommentsController extends Controller
 {
     public function getCommentsByPost($postId)
     {
-        // Eager load comments with user relationship
+        // Eager load comments with user relationship and paginate
         $comments = Comment::with('user')
             ->where('post_comment_id', $postId)
             ->latest() // Fetch latest comments first
-            ->get();
+            ->paginate(3); // Adjust the number of comments per page
     
         // Format comments for API response
         $formattedComments = $comments->map(function ($comment) {
@@ -34,8 +34,15 @@ class CommentsController extends Controller
             ];
         });
     
-        return response()->json($formattedComments);
-    }
+        // Include pagination info in the response
+        return response()->json([
+            'data' => $formattedComments,
+            'current_page' => $comments->currentPage(),
+            'last_page' => $comments->lastPage(),
+            'per_page' => $comments->perPage(),
+            'total' => $comments->total(),
+        ]);
+    }    
 
     public function postComment(Request $request) {
         $userId = Auth::id();
@@ -88,7 +95,7 @@ class CommentsController extends Controller
         }
 
         // Check if the authenticated user is the owner of the comment
-        if (auth()->id() !== $comment->user_id) {
+        if (Auth::id() !== $comment->user_id) {
             return response()->json([
                 'message' => 'Unauthorized to edit this comment.',
             ], 403);
@@ -109,7 +116,7 @@ class CommentsController extends Controller
         $comment = Comment::findOrFail($id);
 
         // Optional: Check if the authenticated user owns the post
-        if ($comment->user_id !== auth()->id()) {
+        if ($comment->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

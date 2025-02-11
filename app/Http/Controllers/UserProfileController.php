@@ -133,12 +133,12 @@ class UserProfileController extends Controller
     {
         $userId = auth()->id(); // Get the authenticated user's ID
     
-        // Fetch only the posts created by the authenticated user
+        // Fetch only the posts created by the authenticated user, paginated by 10 posts per page
         $posts = Post::with('user') // Eager load the user relationship
             ->withCount('comments') // Count the number of comments using the defined relationship
             ->where('user_id', $userId) // Filter posts by the authenticated user
             ->orderBy('created_at', 'desc') // Order posts by latest
-            ->get();
+            ->paginate(10); // Paginate the results, 10 posts per page
     
         // Format the response for each post
         $formattedPosts = $posts->map(function ($post) use ($userId) {
@@ -173,8 +173,18 @@ class UserProfileController extends Controller
             ];
         });
     
-        // Return the formatted response as JSON
-        return response()->json($formattedPosts, 200);
+        // Return the formatted response as JSON with pagination metadata
+        return response()->json([
+            'posts' => $formattedPosts,
+            'pagination' => [
+                'current_page' => $posts->currentPage(),
+                'per_page' => $posts->perPage(),
+                'total' => $posts->total(),
+                'last_page' => $posts->lastPage(),
+                'next_page_url' => $posts->nextPageUrl(),
+                'prev_page_url' => $posts->previousPageUrl(),
+            ]
+        ], 200);
     }
 
     public function acceptApplication($id)
@@ -213,13 +223,64 @@ class UserProfileController extends Controller
         // Find the adoption application by its ID
         $application = AdoptionApplication::findOrFail($id);
 
+        $application->status = 'Reject';
         // Save the application
         $application->save();
+
+        $notification = new Notification([
+            'user_id' => $application->sender_id,  // The user who submitted the application
+            'type' => 'rejected your adoption request form',  // Type of notification (e.g., 'info', 'warning')
+            'post_id' => null, // Optional, set this if the notification is related to a post
+            'liked_by_user_id' => null,  // Optional, if this is a like-related notification
+            'comment_by_user_id' => null,  // Optional, if this is comment-related
+            'notif_from_receiver' => Auth::id()
+        ]);
+
+        $notification->save();
 
         // Optionally, you can return a response
         return response()->json([
             'message' => 'Adoption application status updated to Ongoing.',
             'application' => $application
+        ]);
+    }
+
+    public function completeAdoption($id)
+    {
+        // Find the adoption application by its ID
+        $application = AdoptionApplication::findOrFail($id);
+    
+        // Update the status to "Complete"
+        $application->status = 'Complete';
+    
+        // Save the application
+        $application->save();
+    
+        // Update the related post's `is_adoptable` field to 2
+        $post = Post::find($application->post_id);
+        if ($post) {
+            $post->is_adoptable = 2; // Set is_adoptable to 2
+            $post->save();
+        }
+    
+        // Create and send notification to the user who submitted the application
+        $notification = new Notification([
+            'user_id' => $application->sender_id,  // The user who submitted the application
+            'type' => 'your adoption request is completed',  // Type of notification
+            'post_id' => null, // Optional, set this if the notification is related to a post
+            'liked_by_user_id' => null,  // Optional, if this is a like-related notification
+            'comment_by_user_id' => null,  // Optional, if this is comment-related
+            'notif_from_receiver' => Auth::id()  // The user who completed the adoption (current authenticated user)
+        ]);
+    
+        // Save the notification to the database
+        $notification->save();
+    
+        // Return a JSON response
+        return response()->json([
+            'message' => 'Adoption application status updated to Complete and post marked as adopted.',
+            'application' => $application,
+            'post' => $post
         ]);
     }
 }

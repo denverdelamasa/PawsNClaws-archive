@@ -177,9 +177,16 @@ class PostController extends Controller
     {
         $userId = Auth::id(); // Get the current user's ID
         
-        // Find the post owner
-        $postOwner = Post::find($postId)->user_id;
-        
+        // Find the post
+        $post = Post::find($postId);
+    
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+    
+        $postOwner = $post->user_id;
+        $postType = $post->type; // Assuming the 'type' field exists in the posts table
+    
         // Check if the user already liked this post
         $like = Like::where('posts_id', $postId)
                     ->where('user_id', $userId)
@@ -187,7 +194,7 @@ class PostController extends Controller
     
         if ($like) {
             // Remove like (unlike the post)
-            $like->delete(); // Ensure you're deleting the correct record
+            $like->delete();
             return response()->noContent(); // Return 204 No Content
         } else {
             // Add like
@@ -198,14 +205,18 @@ class PostController extends Controller
     
             // Check if the current user is not the post owner
             if ($userId !== $postOwner) {
-                // Get the username of the user who liked the post
-                $likingUser = Auth::id();
+                // Determine the notification message based on post type
+                $notificationType = match ($postType) {
+                    'announcement' => 'liked your announcement',
+                    'event' => 'liked your event',
+                    default => 'liked your post',
+                };
     
                 // Create a notification for the post owner
                 Notification::create([
                     'user_id' => $postOwner, // The user who owns the post
-                    'type' => 'liked your post', // Notification type, you can customize this
-                    'liked_by_user_id' => $likingUser, // Add the username of the user who liked the post
+                    'type' => $notificationType,
+                    'liked_by_user_id' => $userId, // The user who liked the post
                     'post_id' => $postId,
                     'read_at' => null, // Default is unread
                 ]);
@@ -217,9 +228,20 @@ class PostController extends Controller
     
     public function getLikesCount($postId)
     {
+        $post = Post::find($postId);
+    
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+    
         $likesCount = Like::where('posts_id', $postId)->count();
-        return response()->json(['likesCount' => $likesCount]);
+    
+        return response()->json([
+            'likesCount' => $likesCount,
+            'postType' => $post->type, // Include the post type in the response
+        ]);
     }
+    
 
     public function getUserProfile()
     {

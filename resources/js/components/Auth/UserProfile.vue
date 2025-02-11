@@ -247,8 +247,8 @@
                     </thead>
             
                     <!-- Table Body -->
-                    <tbody v-for="(application, index) in userAdoptionForms" :key="index">
-                        <tr>
+                    <tbody v-if="userAdoptionForms.length > 0">
+                        <tr v-for="(application, index) in userAdoptionForms" :key="index">
                             <td>{{ application.adoption_code }}</td>
                             <td>{{ application.adopter_account }}</td>
                             <td>{{ application.status }}</td>
@@ -260,10 +260,21 @@
                                 <button v-if="application.status === 'Ongoing'" class="btn btn-xs btn-primary text-white" @click.prevent="openReviewModal(application)">
                                     Review
                                 </button>
+
+                                <button v-if="application.status === 'Reject'" class="btn btn-xs btn-info text-white" disabled>
+                                    Rejected
+                                </button>
+
+                                <button v-if="application.status === 'Complete'" class="btn btn-xs btn-info text-white" disabled>
+                                    Completed
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="userAdoptionForms.length === 0" class="text-center py-2">
+                    <p class="text-gray-500">No adoption request available.</p>
+                </div>
                 <!-- Review Modal -->
             </div>
         </div>
@@ -345,11 +356,30 @@
                         <div class="form-control mb-4 text-xl">
                             <p>
                                 <strong>Government ID:</strong>
-                                <img :src="`/storage/${ selectedApplication.gov_id }`" alt="" class="rounded-lg">
+                                <div v-if="selectedApplication.gov_id">
+                                    <!-- Display PDF if the file is a PDF -->
+                                    <iframe
+                                        v-if="selectedApplication.gov_id.endsWith('.pdf')"
+                                        :src="`/storage/${selectedApplication.gov_id}`"
+                                        width="100%"
+                                        height="500px"
+                                        class="rounded-lg"
+                                        frameborder="0"
+                                    ></iframe>
+
+                                    <!-- Display image if the file is an image -->
+                                    <img
+                                        v-else
+                                        :src="`/storage/${selectedApplication.gov_id}`"
+                                        alt="Government ID"
+                                        class="rounded-lg"
+                                    />
+                                </div>
+                                <span v-else>No Government ID uploaded.</span>
                             </p>
                         </div>
                         <div class="flex justify-end gap-4 mt-6">
-                            <button v-if="selectedApplication.status === 'Pending'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="closeReviewModal">
+                            <button v-if="selectedApplication.status === 'Pending'" @click.prevent="rejectForm" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                                 <strong>Reject</strong>
                             </button>
                             <button v-if="selectedApplication.status === 'Pending'" @click.prevent="acceptForm" type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
@@ -429,7 +459,49 @@ export default {
         axios.put(`/api/user/adoption/accept/${applicationId}`)
         .then((response) => {
             // Handle the success (e.g., show a success message, update UI, etc.)
-            alert('Adoption application accepted!');
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Adoption Form Accepted!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+            });
+            this.fetchUserAdoptionApplications();
+            this.closeReviewModal(); // Close the modal after success
+        })
+        .catch((error) => {
+            // Handle the error (e.g., show an error message)
+            console.error('Error accepting application:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    },
+
+    rejectForm() {
+        // Ensure there is an application_id to update
+        const applicationId = this.selectedApplication?.application_id;
+        
+        if (!applicationId) {
+            // Show a message or alert if no application_id is available
+            return;
+        }
+
+        // Update the status of the adoption application (send a request to the backend)
+        axios.put(`/api/user/adoption/reject/${applicationId}`)
+        .then((response) => {
+            // Handle the success (e.g., show a success message, update UI, etc.)
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Adoption Form Rejected!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+            });
             this.fetchUserAdoptionApplications();
             this.closeReviewModal(); // Close the modal after success
         })

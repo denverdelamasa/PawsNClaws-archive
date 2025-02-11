@@ -94,6 +94,8 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/api/user/profile/info', [UserProfileController::class, 'getUserProfile']);
     Route::get('/api/user/adoption', [UserProfileController::class, 'getAdoptionList']);
     Route::put('/api/user/adoption/accept/{id}', [UserProfileController::class, 'acceptApplication']);
+    Route::put('/api/user/adoption/reject/{id}', [UserProfileController::class, 'rejectApplication']);
+    Route::put('/api/user/adoption/complete/{id}', [UserProfileController::class, 'completeAdoption']);
     Route::get('/api/user/posts/list',[UserProfileController::class, 'userPostList']);
     Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
 });

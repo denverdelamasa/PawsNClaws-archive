@@ -2,7 +2,7 @@
   <div class="card bg-base-200 shadow-md w-3/4 max-w-full border border-base-300 p-4">
     <div class="flex items-start gap-4">
       <!-- Profile Picture -->
-      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />
+      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : '/storage/images/defaultpics/default-profile.png'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />
       
       <!-- Input and Buttons -->
       <div class="flex-grow">
@@ -41,23 +41,14 @@
     <div class="modal-box">
       <form v-if="modalType === 'announcement'" @submit.prevent="handleSubmitAnnouncement" class="flex flex-col gap-y-2">
         <!-- Close Button -->
-        <button 
-          type="button" 
-          @click="closeModal" 
-          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        >
+        <button type="button" @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
         </button>
 
         <h3 v-if="modalType === 'announcement'" class="font-bold text-2xl">Create Announcement</h3>
 
         <div v-if="modalType === 'announcement'">
-          <textarea 
-            class="textarea textarea-bordered w-full" 
-            v-model="modalData.title"
-            placeholder="Write a title..." 
-            required
-          ></textarea>
+          <input type="text" class="textarea textarea-bordered w-full" v-model="modalData.title"placeholder="Write a title..." required></input>
         </div>
 
         <!-- Description (Visible for announcement) -->
@@ -216,49 +207,47 @@ export default {
         }
       }
     },
-    handleSubmitPost() {
+    async handleSubmitPost() {
       const formData = new FormData();
       formData.append("caption", this.modalData.caption);
 
-      // Append each image to the form data
       this.modalData.image_path.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
       });
 
-      // Convert the checkbox value to a boolean
       formData.append("is_adoptable", this.modalData.is_adoptable ? "1" : "0");
 
-      axios
-        .post("/api/posts/upload", formData)
-        .then((response) => {
-          console.log("Post created:", response.data);
-          this.closeModal();
-          this.resetForm();
-          this.fetchPosts();
+      try {
+        const response = await axios.post("/api/posts/upload", formData);
+        console.log("Post created:", response.data);
+        this.closeModal();
+        this.resetForm();
 
-          Swal.fire({
-            position: "bottom-end",
-            icon: "success",
-            title: "Your post has been uploaded successfully!",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: "#1e293b",
-            color: "#ffffff",
-            toast: true,
-          });
-        })
-        .catch((error) => {
-          console.error("Error creating post:", error);
+        // Fetch the latest posts after creating a new post
+        this.fetchPosts(true); // Reset and fetch latest posts
 
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong while uploading your post!",
-            background: "#1e293b",
-            color: "#ffffff",
-          });
+        Swal.fire({
+          position: "bottom-end",
+          icon: "success",
+          title: "Your post has been uploaded successfully!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
         });
+      } catch (error) {
+        console.error("Error creating post:", error);
+
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong while uploading your post!",
+          background: "#1e293b",
+          color: "#ffffff",
+        });
+      }
     },
     handleSubmitAnnouncement() {
       const formData = new FormData();

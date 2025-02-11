@@ -157,6 +157,16 @@
                   class="input input-bordered w-full"
                   required
                 />
+                <span
+                  v-if="form.password_confirmation"
+                  :class="{
+                    'text-success': passwordsMatch,
+                    'text-error': !passwordsMatch
+                  }"
+                  class="text-sm"
+                >
+                  {{ passwordsMatch ? "Passwords match!" : "Passwords do not match." }}
+                </span>
               </div>
               <div class="flex items-start">
                 <div class="flex items-center h-5">
@@ -185,7 +195,7 @@
               <p class="text-sm font-light text-secondary">
                 Already have an account?
                 <a
-                  href="/form/login"
+                  href="/login"
                   class="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >Login here</a
                 >
@@ -218,7 +228,14 @@ export default {
         username: null,
         password: null,
       },
+      showPassword: false,
     };
+  },
+  computed: {
+    // Computed property to check if passwords match
+    passwordsMatch() {
+      return this.form.password === this.form.password_confirmation;
+    },
   },
   methods: {
     toggleShowPassword() {

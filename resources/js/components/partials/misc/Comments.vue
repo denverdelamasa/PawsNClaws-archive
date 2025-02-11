@@ -6,12 +6,7 @@
         <h3 class="text-xl font-bold my-4">Comments</h3>
         
         <!-- Comment Input -->
-        <textarea
-            v-model="newComment" 
-            placeholder="Write a comment..." 
-            class="textarea textarea-bordered w-full resize-y" 
-            rows="2">
-        </textarea>
+        <textarea v-model="newComment" placeholder="Write a comment..." class="textarea textarea-bordered w-full resize-y" rows="2"></textarea>
         <button @click="postComment" class="btn btn-primary mt-4 btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
@@ -241,6 +236,8 @@ export default {
       isEditing: false,
       reportReason: '',
       customReason: '',
+      currentPage: 1, // Current page number
+      totalPages: 1, // Total number of pages
     };
   },
   methods: {
@@ -293,20 +290,60 @@ export default {
       this.$refs.commentsDialog.close(); // Close the dialog using its method
       this.comments = [];
     },
-    fetchComments() {
-        this.isLoading = true; // Set loading state to true when fetching comments
-        console.log("Fetching comments, isLoading:", this.isLoading);
-        axios.get(`/api/comments/post/${this.postId}`)
+    async fetchComments() {
+      if (this.isLoading || this.currentPage > this.totalPages) return; // Prevent multiple requests if already loading or no more pages
+
+      this.isLoading = true; // Set loading state to true
+      console.log("Fetching comments, isLoading:", this.isLoading);
+
+      axios.get(`/api/comments/post/${this.postId}?page=${this.currentPage}`)
         .then(response => {
-            this.comments = response.data;
-            this.isLoading = false; // Set loading state to false when finished
+          const data = response.data;
+
+          // Append new comments instead of replacing the existing ones
+          this.comments.push(...data.data);
+
+          // Update pagination info
+          this.currentPage = data.current_page + 1; // Move to the next page
+          this.totalPages = data.last_page; // Set the total pages
+
+          this.isLoading = false; // Set loading state to false
         })
         .catch(error => {
-            console.error("Error fetching comments:", error);
-            this.isLoading = false; // Set loading state to false on error
+          console.error("Error fetching comments:", error);
+          this.isLoading = false; // Set loading state to false on error
         });
     },
     postComment() {
+      // Check if the user is authenticated
+      if (!this.isAuthenticated) {
+        // Show a message prompting the user to log in
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'You need to log in to post a comment.',
+          showConfirmButton: true,
+          confirmButtonText: 'Log In',
+          background: '#2c2f36',
+          color: '#fff',
+          confirmButtonColor: '#3085d6',
+          toast: true,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            container: 'swal2-container',
+            container: 'Comment_Toast' // Apply the custom class here
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to the login page or open the login modal
+            window.location.href = '/login'; // Adjust the URL as needed
+          }
+        });
+        return; // Exit the method early if the user is not authenticated
+      }
+
+      // Proceed with posting the comment if the user is authenticated
       if (!this.newComment.trim()) {
         alert("Comment cannot be empty!");
         return;
@@ -320,29 +357,22 @@ export default {
       .then(response => {
         this.comments.push(response.data);
         this.newComment = '';
-        this.fetchComments();
+        this.fetchComments(true);
         this.fetchPost();
       })
       .catch(error => {
         console.error("Error posting comment:", error);
         Swal.fire({
-        position: 'center',  // Positions it in the center of the screen
-        icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-        title: 'You need to sign in first to comment',  // Customize your message
-        showConfirmButton: true,  // Show the OK button
-        confirmButtonText: 'OK',  // Text of the button
-        background: '#2c2f36',  // Dark background color
-        color: '#fff',  // White text color
-        confirmButtonColor: '#3085d6',  // Blue color for the button
-        toast: true,  // Display as a toast
-        timer: 3000,  // Time in milliseconds before the toast closes
-        timerProgressBar: true,  // Optional, shows a progress bar
-        customClass: {
-            container: 'Comment_Toast'  // Apply the custom class here
-        },
-        didOpen: () => {
-          Swal.showLoading();  // Show loading indicator
-        }
+          position: 'center',
+          icon: 'error',
+          title: 'Something went wrong!',
+          text: error.response ? error.response.data.message : 'Try again later.',
+          showConfirmButton: false,
+          toast: true,
+          timer: 3000,
+          timerProgressBar: true,
+          background: '#2c2f36',
+          color: '#fff',
         });
       });
     },
@@ -398,6 +428,7 @@ export default {
             timer: 3000,  // Time in milliseconds before the toast closes
             timerProgressBar: true,  // Optional, shows a progress bar
             didOpen: () => {
+              document.querySelector('.swal2-container').style.zIndex = '9999';
               Swal.showLoading();  // Show loading indicator
             }
           });
@@ -417,7 +448,7 @@ export default {
           background: '#2c2f36',
           color: '#fff',
         });
-        });
+      });
     },
     
   },
@@ -442,6 +473,8 @@ export default {
 </script>
 
 <style scoped>
-
+.swal2-container {
+  z-index: 9999 !important;
+}
 </style>
 

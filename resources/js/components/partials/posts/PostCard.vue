@@ -25,42 +25,41 @@
       <!-- Hide both if is_adoptable is null or not set -->
       <div v-else class="hidden"></div>
       <!-- Dropdown Menu -->
-      <div class="dropdown dropdown-end">
-      <label tabindex="0" class="btn btn-sm btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
-        </svg>
-      </label>
-      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-40">
-        <li v-if="post.user_id === currentUserId">
-          <a href="#" @click.prevent="editPost(post)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-            </svg>
-            Edit Post
-          </a>
-        </li>
-        <li v-if="post.user_id === currentUserId">
-          <a href="#" @click.prevent="openDeleteModal(post.post_id)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-            </svg>
-            Delete Post
-          </a>
-        </li>
-        <li v-if="post.user_id !== currentUserId">
-          <a href="#" @click.prevent="openReportModal(post.post_id)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
-              <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z" />
-            </svg>
-            Report Post
-          </a>
-        </li>
-      </ul>
-    </div>
-
+      <div class="dropdown dropdown-end z-[100]">
+        <label tabindex="0" class="btn btn-sm btn-ghost">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+          </svg>
+        </label>
+        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-40">
+          <li v-if="post.user_id === currentUserId">
+            <a href="#" @click.prevent="editPost(post)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+              </svg>
+              Edit Post
+            </a>
+          </li>
+          <li v-if="post.user_id === currentUserId">
+            <a href="#" @click.prevent="openDeleteModal(post.post_id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+              </svg>
+              Delete Post
+            </a>
+          </li>
+          <li v-if="post.user_id !== currentUserId">
+            <a href="#" @click.prevent="openReportModal(post.post_id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
+                <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z" />
+              </svg>
+              Report Post
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!-- Thumbnail -->
@@ -106,26 +105,32 @@
     <!-- Modal Thumbnail -->
     <dialog v-if="post.image_path" :id="'thumbnailModal-' + post.post_id" class="modal">
       <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen relative">
-          <!-- Close Button -->
-          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
+        <!-- Close Button -->
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
 
-          <!-- Image Carousel -->
-          <div class="flex justify-center items-center h-full relative">
-              <!-- Left Arrow (Only show if more than 1 image) -->
-              <button v-if="post.image_path.length > 1" class="absolute left-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
-                  @click="prevImage(post.post_id)">
-                  <
-              </button>
+        <!-- Image Carousel -->
+        <div class="flex justify-center items-center h-full relative">
+          <!-- Left Arrow (Only show if NOT on the first image) -->
+          <button 
+            v-if="post.image_path.length > 1 && currentIndex[post.post_id] > 0"
+            class="absolute left-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
+            @click="prevImage(post.post_id)"
+          >
+            &lt;
+          </button>
 
-              <!-- Image Display -->
-              <img :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
+          <!-- Image Display -->
+          <img :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
 
-              <!-- Right Arrow (Only show if more than 1 image) -->
-              <button v-if="post.image_path.length > 1" class="absolute right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
-                  @click="nextImage(post.post_id)">
-                  >
-              </button>
-          </div>
+          <!-- Right Arrow (Only show if NOT on the last image) -->
+          <button 
+            v-if="post.image_path.length > 1 && currentIndex[post.post_id] < post.image_path.length - 1"
+            class="absolute right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
+            @click="nextImage(post.post_id)"
+          >
+            &gt;
+          </button>
+        </div>
       </div>
     </dialog>
 
@@ -202,7 +207,7 @@
             
             <template v-if="post.updated_at !== post.created_at">
               <span class="mx-1">|</span>
-              <span>Edited on: {{ post.updated_at }}</span>
+              <span>Edited</span>
             </template>
           </div>
         </div>
@@ -276,7 +281,7 @@
         <span>Send Adoption Form</span>
       </button>
       <!-- Apply Adopt Button -->
-      <button v-if="post.done_sending_adoption_form === true" class="btn btn-outline btn-active btn-warning btn-sm flex items-center gap-2">
+      <button v-if="post.done_sending_adoption_form === true && post.is_adoptable !== 2" class="btn btn-outline btn-active btn-warning btn-sm flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-paper-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="m3 7.5 3.5 2L8 8.75l1.5.75 3.5-2v-6A1.5 1.5 0 0 0 11.5 0h-7A1.5 1.5 0 0 0 3 1.5zM2 3.133l-.941.502A2 2 0 0 0 0 5.4v.313l2 1.173zm12 3.753 2-1.173V5.4a2 2 0 0 0-1.059-1.765L14 3.133zm-3.693 3.324L16 6.873v6.5zm5.634 4.274L8 10.072.059 14.484A2 2 0 0 0 2 16h12a2 2 0 0 0 1.941-1.516M5.693 10.21 0 13.372v-6.5zM8 1.982C9.664.309 13.825 3.236 8 7 2.175 3.236 6.336.31 8 1.982"/>
         </svg>
@@ -352,7 +357,7 @@
 
             <!-- 5. Experience with Pets -->
             <div class="mb-4">
-              <label for="experience" class="block text-sm font-medium">Pet Experience Pet</label>
+              <label for="experience" class="block text-sm font-medium">Experience with Pets</label>
               <p class="m-2 text-xs text-secondary">Any pets you have taken care of?</p>
               <textarea id="experience" v-model="formData.experience" name="experience" rows="4" class="textarea textarea-bordered w-full" required></textarea>
             </div>
@@ -386,7 +391,7 @@
             <!-- Submit Button -->
             <div class="mb-4 flex flex-col justify-center items-center">
               <!-- Apply Adopt Button -->
-              <button type="submit" onclick="document.getElementById('adoptionModal').showModal()" class="btn btn-outline btn-warning btn-md flex items-center gap-2 m-4">
+              <button type="submit" onclick="document.getElementById('confirmAdoptionModal').showModal()" class="btn btn-outline btn-warning btn-md flex items-center gap-2 m-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-paper-heart" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1.133l.941.502A2 2 0 0 1 16 5.4V14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5.4a2 2 0 0 1 1.059-1.765L2 3.133zm0 2.267-.47.25A1 1 0 0 0 1 5.4v.817l1 .6zm1 3.15 3.75 2.25L8 8.917l1.25.75L13 7.417V2a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zm11-.6 1-.6V5.4a1 1 0 0 0-.53-.882L14 4.267zM8 2.982C9.664 1.309 13.825 4.236 8 8 2.175 4.236 6.336 1.31 8 2.982m7 4.401-4.778 2.867L15 13.117zm-.035 6.88L8 10.082l-6.965 4.18A1 1 0 0 0 2 15h12a1 1 0 0 0 .965-.738ZM1 13.116l4.778-2.867L1 7.383v5.734Z"/>
                 </svg>
@@ -398,11 +403,35 @@
               </p>
             </div>
           </form>
+
+          <!-- Adoption Confirmation Modal -->
+          <dialog id="confirmAdoptionModal" class="modal">
+            <div class="modal-box">
+              <h3 class="text-lg font-bold">Confirm Adoption Application</h3>
+              <p class="py-4">Are you sure you want to submit your adoption application?</p>
+              
+              <div class="modal-action">
+                <!-- Cancel Button -->
+                <button class="btn btn-outline" onclick="document.getElementById('confirmAdoptionModal').close()">Cancel</button>
+
+                <!-- Confirm Submit Button -->
+                <button class="btn btn-warning" @click="confirmSubmit">Yes, Submit</button>
+              </div>
+            </div>
+          </dialog>
+          
         </div>
       </dialog>
     </div>
     </div>
   </div>
+
+  <!-- Display "No more posts available" when noMorePosts is true -->
+  <div v-if="noMorePosts && posts.length > 0" class="text-center py-4 text-gray-500">
+    No more posts available.
+  </div>
+
+  <!-- Display "No posts available" when there are no posts at all -->
   <div v-if="posts.length === 0">
     No posts available.
   </div>
@@ -452,6 +481,31 @@ export default {
   },
   methods: {
     openAdoptionModal(postId, userId) {
+      // Check if the user is authenticated
+      if (!this.isAuthenticated) {
+        // Show a message prompting the user to log in
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'You need to log in to send an adoption application.',
+          showConfirmButton: true,
+          confirmButtonText: 'Log In',
+          background: '#2c2f36',
+          color: '#fff',
+          confirmButtonColor: '#3085d6',
+          toast: true,
+          timer: 3000,
+          timerProgressBar: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to the login page or open the login modal
+            window.location.href = '/login'; // Adjust the URL as needed
+          }
+        });
+        return; // Exit the method early if the user is not authenticated
+      }
+
+      // If the user is authenticated, proceed to open the modal
       this.adoptionPostId = postId; // Set the post_id
       this.receiverUserId = userId;
       document.getElementById('adoptionModal').showModal(); // Open the modal
@@ -468,7 +522,13 @@ export default {
         this.formData.govIdFile = null;
       }
     },
-    async submitAdoptionForm() {
+    submitAdoptionForm() {
+      document.getElementById('confirmAdoptionModal').showModal(); // Open confirmation modal
+    },
+    
+    async confirmSubmit() {
+      document.getElementById('confirmAdoptionModal').close();
+
       const formData = new FormData();
             
       // Append data to FormData
@@ -509,7 +569,7 @@ export default {
             }
           });
           this.closeModal();
-          this.fetchPosts();
+          this.fetchPosts(true);
           // Reset the form data
           this.resetForm();
           } catch (error) {
@@ -527,7 +587,7 @@ export default {
       this.comments = [];  // Clear comments when modal is closed
       this.fetchPost();
     },
-    fetchComments(postId) {
+    async fetchComments(postId) {
       axios.get(`/api/comments/post/${postId}`)
         .then(response => {
           this.comments = response.data;  // Store fetched comments
@@ -611,7 +671,7 @@ export default {
         })
         .then(response => {
             this.$emit('post-updated', response.data);  // Emit event to parent if needed
-            this.fetchPosts();  // Refresh the posts list
+            this.fetchPosts(true);  // Refresh the posts list
             this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
             
             Swal.fire({
@@ -766,25 +826,38 @@ export default {
         console.error("Post or image path not found for postId:", postId);
       }
     },
-    async fetchPosts() {
-      if (this.loading || this.noMorePosts) return; // Prevent multiple requests
+    async fetchPosts(reset = false) {
+      if (this.loading || (this.noMorePosts && !reset)) return; // Prevent multiple requests unless resetting
 
-      this.loading = true; // Set loading state
+      this.loading = true;
 
       try {
+        if (reset) {
+          // Reset the posts array and current page if reset is true
+          this.posts = [];
+          this.currentPage = 1;
+          this.noMorePosts = false;
+        }
+
         const response = await axios.get(`/api/posts/list?page=${this.currentPage}`);
         const newPosts = response.data.posts;
 
         if (newPosts.length > 0) {
-          this.posts = [...this.posts, ...newPosts]; // Append new posts to the existing list
-          this.currentPage++; // Increment page number
+          if (reset) {
+            // Replace the posts array with the new posts
+            this.posts = newPosts;
+          } else {
+            // Append new posts to the existing list
+            this.posts = [...this.posts, ...newPosts];
+          }
+          this.currentPage++;
         } else {
           this.noMorePosts = true; // No more posts to load
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
-        this.loading = false; // Reset loading state
+        this.loading = false;
       }
     },
 
@@ -846,6 +919,7 @@ export default {
   mounted() {
     this.checkAuthentication();
     this.fetchPosts(); // Fetch the first page of posts
+    this.fetchComments();
     window.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
@@ -870,5 +944,13 @@ export default {
 
   .text-center {
     text-align: center;
+  }
+
+  .text-gray-500 {
+    color: #6b7280; /* Adjust the color as needed */
+  }
+  .py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 </style>

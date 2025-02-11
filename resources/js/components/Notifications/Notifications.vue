@@ -31,8 +31,7 @@
           <div>
             <img :src="`/storage/${notification.liker_profile_picture || notification.commenter_profile_picture || notification.receiver_profile_picture}`" class="w-8 h-8 rounded-full mr-2"/>
             <strong v-if="notification.liker_name">
-            {{ notification.liker_name }}
-            <span>{{ notification.type }}</span>
+            {{ notification.liker_name }} {{ notification.type }}
             </strong>
             <strong v-else-if="notification.commenter_name">
             {{ notification.commenter_name }} {{ notification.type }}
