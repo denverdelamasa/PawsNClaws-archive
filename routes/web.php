@@ -17,6 +17,7 @@ use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
 use App\Http\Controllers\AnnouncementController;
+use App\Models\Announcement;
 
 Route::get('/', function () {
     return view('welcome');
@@ -101,6 +102,7 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 Route::get('/api/announcements/list', [AnnouncementController::class, 'announcementList']);
+Route::get('/api/announcement/welcome', [AnnouncementController::class, 'announcementWelcome']);
 Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
 
 // page controller paayos nalang jahefglkag

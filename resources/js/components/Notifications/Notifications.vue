@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown dropdown-end">
-    <button tabindex="0" class="btn btn-ghost btn-circle mx-2">
+    <button tabindex="0" class="btn btn-ghost btn-circle mx-2" @click="showDropdown = !showDropdown">
       <div class="relative w-fit h-fit bg-transparent rounded-lg p-2 flex items-center justify-center cursor-pointer transition duration-200 hover:text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -17,34 +17,58 @@
           />
         </svg>
         <!-- Notification point indicator -->
-        <div v-if="notifications.filter(n => !n.read_at).length > 0" class="absolute bottom-1 left-1 w-1.5 h-1.5 bg-green-500 rounded-full flex items-center justify-center">
+        <div v-if="unreadCount > 0" class="absolute bottom-1 left-1 w-1.5 h-1.5 bg-green-500 rounded-full flex items-center justify-center">
           <div class="absolute w-px h-px bg-green-500 rounded-full animate-ping"></div>
         </div>
       </div>
     </button>
-    <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-80 z-50">
-      <li v-if="notifications.length === 0">
-        <a href="#">No notifications</a>
-      </li>
-      <li v-for="(notification, index) in notifications" :key="index">
-        <a href="#" :class="{'font-bold': !notification.read_at}"@click.prevent="markAsRead(notification)">
-          <div>
-            <img :src="`/storage/${notification.liker_profile_picture || notification.commenter_profile_picture || notification.receiver_profile_picture}`" class="w-8 h-8 rounded-full mr-2"/>
-            <strong v-if="notification.liker_name">
-            {{ notification.liker_name }} {{ notification.type }}
-            </strong>
-            <strong v-else-if="notification.commenter_name">
-            {{ notification.commenter_name }} {{ notification.type }}
-            </strong>
-            <strong v-else="notification.receiver_name">
-            {{ notification.receiver_name }} {{ notification.type }}
-            </strong>
-            <br>
-            <span class="text-gray-500">{{ notification.time_ago }}</span>
+    <div
+      v-show="showDropdown"
+      tabindex="0" 
+      class="dropdown-content p-2 shadow bg-base-100 rounded-box w-80 z-50 overflow-y-auto max-h-80" 
+      @scroll="handleScroll"
+    >
+      <!-- No Notifications -->
+      <div v-if="notifications.length === 0" class="text-center p-2">
+        <span class="text-gray-500">No notifications</span>
+      </div>
+      <!-- Notifications List -->
+      <div v-for="(notification, index) in notifications" :key="notification.notification_id" class="p-2 hover:bg-gray-100 rounded-lg">
+        <a 
+          href="#" 
+          :class="{'font-bold': !notification.read_at}" 
+          @click.prevent="markAsRead(notification)"
+        >
+          <div class="flex items-center">
+            <img 
+              :src="`/storage/${notification.liker_profile_picture || notification.commenter_profile_picture || notification.receiver_profile_picture || 'default-profile.jpg'}`" 
+              class="w-8 h-8 rounded-full mr-2"
+            />
+            <div>
+              <strong v-if="notification.liker_name">
+                <span className="font-bold">{{notification.liker_name}}</span> <span className="font-normal">{{notification.type}}</span>
+              </strong>
+              <strong v-else-if="notification.commenter_name">
+                <span class="font-bold">{{ notification.commenter_name }}</span> <span class="font-normal">{{ notification.type }}</span>
+              </strong>
+              <strong v-else>
+                <span class="font-bold">{{ notification.receiver_name }}</span> <span class="font-normal">{{ notification.type }}</span>
+              </strong>
+              <br />
+              <span class="text-gray-500 text-sm">{{ notification.time_ago }}</span>
+            </div>
           </div>
         </a>
-      </li>
-    </ul>
+      </div>
+      <!-- Load More Button -->
+      <div v-if="nextPageUrl && !loading && !isInfiniteScroll" class="text-center p-2">
+        <button class="btn btn-sm btn-ghost" @click.stop="enableInfiniteScroll">See More</button>
+      </div>
+      <!-- Loading Indicator -->
+      <div v-if="loading" class="text-center p-2">
+        <span class="text-gray-500">Loading more...</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -56,34 +80,63 @@ export default {
   data() {
     return {
       notifications: [],
+      nextPageUrl: "/api/notifications", // API endpoint for notifications
+      loading: false, // Track loading state
+      isInfiniteScroll: false, // Track if infinite scrolling is enabled
+      showDropdown: false,
     };
+  },
+  computed: {
+    unreadCount() {
+      return this.notifications.filter(n => !n.read_at).length;
+    }
   },
   mounted() {
     this.fetchNotifications();
   },
   methods: {
     async fetchNotifications() {
+      if (!this.nextPageUrl || this.loading) return;
+
+      this.loading = true;
+
       try {
-        const response = await axios.get('/api/notifications');
-        this.notifications = response.data;
+        const response = await axios.get(this.nextPageUrl);
+        const { notifications, pagination } = response.data;
+
+        // Append new notifications to the existing list
+        this.notifications = [...this.notifications, ...notifications];
+        this.nextPageUrl = pagination.next_page_url; // Update next page URL
       } catch (error) {
         console.error('Error fetching notifications:', error);
+      } finally {
+        this.loading = false;
       }
     },
     async markAsRead(notification) {
       if (!notification.read_at) {
         try {
-          const response = await axios.post(`/api/notifications/mark-as-read/${notification.notification_id}`);
-          console.log(response.data.message); // Optionally log server confirmation
-
-          // Update the notification's read status in the local state
-          notification.read_at = new Date().toISOString(); // Set `read_at` timestamp
+          await axios.post(`/api/notifications/mark-as-read/${notification.notification_id}`);
+          notification.read_at = new Date().toISOString(); // Update read status locally
         } catch (error) {
           console.error('Error marking notification as read:', error);
         }
       }
     },
-  },
+    handleScroll(event) {
+      if (!this.isInfiniteScroll) return; // Only trigger if infinite scrolling is enabled
+
+      const { scrollTop, scrollHeight, clientHeight } = event.target;
+
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        this.fetchNotifications(); // Load more when scrolled to bottom
+      }
+    },
+    enableInfiniteScroll() {
+      this.isInfiniteScroll = true; // Enable infinite scrolling
+      this.fetchNotifications(); // Fetch the next set of notifications
+    }
+  }
 };
 </script>
 
@@ -92,17 +145,13 @@ export default {
   font-weight: bold;
 }
 
-.dropdown-end {
-  position: relative; /* Ensures it can be positioned in relation to its parent */
-  z-index: 10; /* Set a lower z-index to make it appear behind other elements */
-}
-
-.indicator {
-  z-index: 20; /* Ensure that the notification indicator (badge) stays visible */
-}
-
 .dropdown-content {
-  position: absolute; /* Position it within the dropdown container */
-  z-index: 5; /* A lower z-index to place it behind other elements */
+  max-height: 320px; /* Set max height for scrolling */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+/* List-style hover effect */
+.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6;
 }
 </style>

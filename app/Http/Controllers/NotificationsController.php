@@ -14,34 +14,54 @@ class NotificationsController extends Controller
 {
     public function notif() {
         $userId = Auth::id();
+        
+        // Fetch notifications for the user, ordered by latest, and paginate the results
         $notifications = Notification::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($notification) {
-                $notification->time_ago = Carbon::parse($notification->created_at)->diffForHumans();
-                
-                // If the notification has a liker, get their info
-                if ($notification->liker) {
-                    $notification->liker_name = $notification->liker->name;
-                    $notification->liker_profile_picture = $notification->liker->profile_picture;
-                }
-                // If the notification has a commenter, get their info
-                elseif ($notification->commenter) {
-                    $notification->commenter_name = $notification->commenter->name;
-                    $notification->commenter_profile_picture = $notification->commenter->profile_picture;
-                }
-                // If there's a receiver (notif_from_receiver), fetch their info
-                elseif ($notification->notif_from_receiver) {
-                    $receiver = $notification->receiver; // This will use the `receiver` method we added in the model
-                    $notification->receiver_name = $receiver ? $receiver->name : null;
-                    $notification->receiver_profile_picture = $receiver ? $receiver->profile_picture : null;
-                }
+            ->paginate(3); // Paginate with 10 notifications per page
     
-                return $notification;
-            });
-        
-        return response()->json($notifications);
-    }
+        // Map through notifications and format the response
+        $formattedNotifications = $notifications->map(function ($notification) {
+            $notificationData = [
+                'notification_id' => $notification->notification_id, // Use notification_id instead of id
+                'user_id' => $notification->user_id,
+                'type' => $notification->type,
+                'time_ago' => Carbon::parse($notification->created_at)->diffForHumans(),
+            ];
+    
+            // If the notification has a liker, get their info
+            if ($notification->liker) {
+                $notificationData['liker_name'] = $notification->liker->name;
+                $notificationData['liker_profile_picture'] = $notification->liker->profile_picture;
+            }
+            // If the notification has a commenter, get their info
+            elseif ($notification->commenter) {
+                $notificationData['commenter_name'] = $notification->commenter->name;
+                $notificationData['commenter_profile_picture'] = $notification->commenter->profile_picture;
+            }
+            // If there's a receiver (notif_from_receiver), fetch their info
+            elseif ($notification->notif_from_receiver) {
+                $receiver = $notification->receiver; // Use the `receiver` relationship
+                $notificationData['receiver_name'] = $receiver ? $receiver->name : null;
+                $notificationData['receiver_profile_picture'] = $receiver ? $receiver->profile_picture : null;
+            }
+    
+            return $notificationData;
+        });
+    
+        // Return JSON response with paginated metadata
+        return response()->json([
+            'notifications' => $formattedNotifications,
+            'pagination' => [
+                'current_page' => $notifications->currentPage(),
+                'per_page' => $notifications->perPage(),
+                'total' => $notifications->total(),
+                'last_page' => $notifications->lastPage(),
+                'next_page_url' => $notifications->nextPageUrl(),
+                'prev_page_url' => $notifications->previousPageUrl(),
+            ]
+        ], 200);
+    }    
 
     public function markAsRead($notification_id)
     {

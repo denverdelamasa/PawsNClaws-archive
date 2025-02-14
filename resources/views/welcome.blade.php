@@ -16,7 +16,7 @@
             <div class="hero-overlay bg-opacity-60"></div>
             <div class="hero-content text-neutral-content text-center">
                 <div class="max-w-full">
-                    <h1 class="mb-5 text-7xl font-bold">Discover, Share, and Connect – All in One Place!</h1>
+                    <h1 class="mb-5 text-5xl font-bold">Discover, Share, and Connect – All in One Place!</h1>
                     <p class="mb-5">
                         Join a thriving community of pet lovers. Share your stories, find your next furry friend, or connect with shelters near you!
                     </p>
@@ -33,9 +33,9 @@
         <section class="h-[80vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-300">
             <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
               <div class="md:flex md:flex-wrap w-1/2 m-auto gap-2 hidden"> <!-- Add gap property here -->
-                <div class="w-full h-[70vh] bg-base-100 overflow-auto hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
+                <div class="w-full max-h-[50vh] bg-base-100 overflow-auto hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
                     <div id="app3">
-                        <announcement-cards></announcement-cards> 
+                        <announcement-welcome></announcement-welcome> 
                     </div>
                 </div>
               </div>  
@@ -177,7 +177,7 @@
               <div class="flex flex-wrap">
                 <div class="p-4 md:w-1/2 w-full">
                   <div class="h-full bg-base-200 p-8 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="block w-5 h-5 text-base-content/50 mb-4" viewBox="0 0 975.036 975.036">
+                    <svg xmlns="https://www.w3.org/2000/svg" fill="currentColor" class="block w-5 h-5 text-base-content/50 mb-4" viewBox="0 0 975.036 975.036">
                       <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                     </svg>
                     <p class="leading-relaxed mb-6">
@@ -194,7 +194,7 @@
                 </div>
                 <div class="p-4 md:w-1/2 w-full">
                   <div class="h-full bg-base-200 p-8 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="block w-5 h-5 text-base-content/50 mb-4" viewBox="0 0 975.036 975.036">
+                    <svg xmlns="https://www.w3.org/2000/svg" fill="currentColor" class="block w-5 h-5 text-base-content/50 mb-4" viewBox="0 0 975.036 975.036">
                       <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                     </svg>
                     <p class="leading-relaxed mb-6">
@@ -250,12 +250,12 @@
         <nav class="md:place-self-center md:justify-self-end">
             <div class="grid grid-flow-col gap-4">
             <a>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
+                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
                 <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
                 </svg>
             </a>
             <a>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
+                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current">
                     <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
                 </svg>
             </a>

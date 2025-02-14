@@ -1,5 +1,5 @@
 <template>
-  <div class="card bg-base-200 shadow-md w-3/4 max-w-full border border-base-300 p-4">
+  <div class="card bg-base-200 shadow-md max-w-full border border-base-300 p-4">
     <div class="flex items-start gap-4">
       <!-- Profile Picture -->
       <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : '/storage/images/defaultpics/default-profile.png'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />

@@ -25,6 +25,13 @@ export default {
         forms
     ],
     daisyui: {
+        darkTheme: "dark", // Ensures it uses a valid dark theme class
+        base: true,
+        styled: true,
+        themes: true,
+        utils: true,
+        logs: false, // Disable DaisyUI logs to clean up console output
+
         themes: [
             "light",
             "dark",

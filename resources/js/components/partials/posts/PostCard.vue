@@ -1,6 +1,6 @@
 <template>
   <UploadPost v-if="isAuthenticated" :fetch-posts="fetchPosts" />
-  <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-3/4 shadow-xl my-4 border border-base-300">
+  <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4 gap-x-2">
       <!-- Show "Open for Adoption" when is_adoptable is 1 -->
@@ -63,15 +63,24 @@
     </div>
 
     <!-- Thumbnail -->
-    <div v-if="post.image_path && post.image_path.length > 0" class="relative px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
-      <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
-          alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+    <div v-if="post.image_path && post.image_path.length > 0" 
+        class="relative px-4 hover:cursor-pointer" 
+        @click="showModal(post.post_id)">
+      
+      <!-- Image Display -->
+      <div class="w-full h-[300px] sm:h-[250px] md:h-[280px] lg:h-[300px] overflow-hidden rounded">
+        <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
+            alt="Thumbnail" 
+            class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110" />
+      </div>
 
+      <!-- Overlay for Multiple Images -->
       <div v-if="Array.isArray(post.image_path) && post.image_path.length > 1" 
           class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center rounded">
         <span class="text-white text-lg font-semibold">+{{ post.image_path.length - 1 }}</span>
       </div>
     </div>
+
 
 
     <!-- Edit Post Modal -->
@@ -212,11 +221,13 @@
           </div>
         </div>
       </div>
-      <div class="text-base mt-2">
-        <p class="break-words whitespace-normal">
+      <div class="text-base mt-2 max-w-[100vh]">
+        <p class="break-words whitespace-normal text-sm sm:text-base">
           {{ post.expanded ? post.caption : (post.caption && post.caption.length > 135 ? post.caption.substring(0, 135) + '...' : post.caption) }}
         </p>
-        <button v-if="post.caption && post.caption.length > 125" class="btn btn-link btn-xs text-sm mt-2 px-0" @click="toggleDescription(post)">
+        <button v-if="post.caption && post.caption.length > 125" 
+                class="btn btn-link btn-xs text-sm mt-2"
+                @click="toggleDescription(post)">
           {{ post.expanded ? 'See Less' : 'See More' }}
         </button>
       </div>

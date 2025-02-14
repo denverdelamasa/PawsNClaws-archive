@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Announcement;
 use App\Models\Like;
 
@@ -10,7 +11,7 @@ class AnnouncementController extends Controller
 {
     public function announcementList()
     {
-        $userId = auth()->id(); // Get the current user's ID
+        $userId = Auth::id(); // Get the current user's ID
 
         // Fetch announcements with their associated user data and comment count
         $announcements = Announcement::with('shelter') // Eager load the shelter relationship
@@ -49,5 +50,49 @@ class AnnouncementController extends Controller
 
         // Return the formatted response as JSON
         return response()->json($formattedAnnouncements, 200);
+    }
+
+    public function announcementWelcome()
+    {
+        $userId = Auth::id(); // Get the current user's ID
+    
+        // Fetch the latest announcement with its associated shelter data and comment count
+        $announcement = Announcement::with('shelter')
+            ->withCount('comments')
+            ->latest('created_at')
+            ->first(); // Get only the latest announcement
+    
+        if (!$announcement) {
+            return response()->json(['message' => 'No announcements available'], 404);
+        }
+    
+        // Count the number of likes for the announcement
+        $likesCount = Like::where('announcement_id', $announcement->announcement_id)->count();
+    
+        // Check if the current user has liked the announcement
+        $isLiked = Like::where('announcement_id', $announcement->announcement_id)
+                        ->where('user_id', $userId)
+                        ->exists();
+    
+        // Format the response
+        $formattedAnnouncement = [
+            'announcement_id' => $announcement->announcement_id,
+            'shelter_id' => $announcement->shelter_id,
+            'name' => $announcement->shelter ? $announcement->shelter->name : 'Unknown Shelter',
+            'username' => $announcement->shelter ? $announcement->shelter->username : 'Unknown Shelter',
+            'profile_picture' => $announcement->shelter && $announcement->shelter->profile_picture ? $announcement->shelter->profile_picture : 'default-profile.jpg',
+            'thumbnail' => $announcement->thumbnail ? $announcement->thumbnail : null,
+            'title' => $announcement->title,
+            'description' => $announcement->description,
+            'created_at' => $announcement->created_at->diffForHumans(),
+            'updated_at' => $announcement->updated_at->diffForHumans(),
+            'likes_count' => $likesCount,
+            'is_liked' => $isLiked,
+            'comments_count' => $announcement->comments_count,
+            'is_adoptable' => $announcement->is_adoptable,
+        ];
+    
+        // Return the formatted response as JSON
+        return response()->json($formattedAnnouncement, 200);
     }
 }

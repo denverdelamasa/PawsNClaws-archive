@@ -12,7 +12,18 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      vue: 'vue/dist/vue.esm-bundler.js', // This line ensures Vue uses the full build
+      vue: 'vue/dist/vue.esm-bundler.js',
     },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'axios', 'lodash'], // Separate large libraries
+          daisyui: ['daisyui'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase limit to suppress warnings
   },
 });
