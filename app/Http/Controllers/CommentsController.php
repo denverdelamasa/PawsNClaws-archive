@@ -12,18 +12,32 @@ use App\Models\Notification;
 
 class CommentsController extends Controller
 {
-    public function getCommentsByPost($postId)
+    public function getComments($id, $type)
     {
-        // Eager load comments with user relationship and paginate
-        $comments = Comment::with('user')
-            ->where('post_comment_id', $postId)
-            ->latest() // Fetch latest comments first
-            ->paginate(3); // Adjust the number of comments per page
+        \Log::info("Fetching Comments for ID: $id, Type: $type");
+        // Determine the type of comment to fetch
+        if ($type === 'announcement') {
+            $comments = Comment::with('user')
+                ->where('announcement_comment_id', $id)
+                ->latest()
+                ->paginate(10);
+        } elseif ($type === 'post') {
+            $comments = Comment::with('user')
+                ->where('post_comment_id', $id)
+                ->latest()
+                ->paginate(5);
+        } else {
+            return response()->json(['error' => 'Invalid comment type'], 400);
+        }
+
+        \Log::info("Comments fetched: " . json_encode($comments));
     
         // Format comments for API response
         $formattedComments = $comments->map(function ($comment) {
             return [
                 'comment_id' => $comment->comment_id,
+                'announcement_comment_id' => $comment->announcement_comment_id,
+                'post_comment_id' => $comment->post_comment_id,
                 'user' => [
                     'user_id' => $comment->user->user_id,
                     'name' => $comment->user->name,
@@ -42,37 +56,68 @@ class CommentsController extends Controller
             'per_page' => $comments->perPage(),
             'total' => $comments->total(),
         ]);
-    }    
-
+    }
     public function postComment(Request $request) {
         $userId = Auth::id();
-
+    
+        // Validate the request
         $request->validate([
-            'post_comment_id' => 'required|exists:posts,post_id',
             'comment' => 'required|string|max:1000',
+            'post_comment_id' => 'nullable|exists:posts,post_id',
+            'announcement_comment_id' => 'nullable|exists:announcements,announcement_id',
         ]);
     
+        // Ensure only one of post_comment_id or announcement_comment_id is provided
+        if ($request->has('post_comment_id') && $request->has('announcement_comment_id')) {
+            return response()->json(['error' => 'Only one of post_comment_id or announcement_comment_id can be provided.'], 400);
+        }
+    
+        if (!$request->has('post_comment_id') && !$request->has('announcement_comment_id')) {
+            return response()->json(['error' => 'Either post_comment_id or announcement_comment_id must be provided.'], 400);
+        }
+    
+        // Create the comment
         $comment = Comment::create([
             'post_comment_id' => $request->post_comment_id,
+            'announcement_comment_id' => $request->announcement_comment_id,
             'user_id' => $userId,
             'comment' => $request->comment,
         ]);
     
+        // Load the user relationship
         $comment->load('user');
     
-        // Get the post owner
-        $postOwner = Post::find($request->post_comment_id)->user_id;
+        // Handle notifications
+        if ($request->has('post_comment_id')) {
+            // Get the post owner
+            $postOwner = Post::find($request->post_comment_id)->user_id;
     
-        // Check if the commenter is not the post owner
-        if (Auth::id() !== $postOwner) {
-            // Create a notification for the post owner
-            Notification::create([
-                'user_id' => $postOwner,
-                'type' => 'commented on your post',
-                'comment_by_user_id' => $userId,
-                'post_id' => $request->post_comment_id,
-                'read_at' => null,
-            ]);
+            // Check if the commenter is not the post owner
+            if ($userId !== $postOwner) {
+                // Create a notification for the post owner
+                Notification::create([
+                    'user_id' => $postOwner,
+                    'type' => 'commented on your post',
+                    'comment_by_user_id' => $userId,
+                    'post_id' => $request->post_comment_id,
+                    'read_at' => null,
+                ]);
+            }
+        } elseif ($request->has('announcement_comment_id')) {
+            // Get the announcement owner
+            $announcementOwner = Announcement::find($request->announcement_comment_id)->shelter_id;
+    
+            // Check if the commenter is not the announcement owner
+            if ($userId !== $announcementOwner) {
+                // Create a notification for the announcement owner
+                Notification::create([
+                    'user_id' => $announcementOwner,
+                    'type' => 'commented on your announcement',
+                    'comment_by_user_id' => $userId,
+                    'announcement_id' => $request->announcement_comment_id,
+                    'read_at' => null,
+                ]);
+            }
         }
     
         return response()->json($comment, 201);

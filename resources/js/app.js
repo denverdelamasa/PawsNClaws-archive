@@ -41,10 +41,11 @@ app2.component('accounts-management', AccountsManagement);
 app2.component('reports-management', ReportsManagement);
 app2.component('user-profile', UserProfile);
 app2.component('profile-footer', Footer);
+app2.component('announcement-cards', Announcement);
 
 app2.mount("#app2");
 
 const app3 = createApp({});
-app3.component('announcement-cards', Announcement);
+
 app3.component('announcement-welcome', AnnouncementWelcome);
 app3.mount("#app3")

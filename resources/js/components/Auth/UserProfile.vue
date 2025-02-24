@@ -386,7 +386,7 @@
                                 <strong>Accept</strong>
                             </button>
                             <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="changeStatusToFailed">
-                                <strong>Reject</strong>
+                                <strong>Failed</strong>
                             </button>
                             <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600" @click.prevent="changeStatusToComplete">
                                 <strong>Completed</strong>

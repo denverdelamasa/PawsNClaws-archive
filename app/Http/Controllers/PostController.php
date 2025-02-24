@@ -20,19 +20,24 @@ class PostController extends Controller
     {
         $userId = Auth::id(); // Get the current user's ID
     
-        // Fetch posts with their associated user data and comment count, paginated by 10 posts per page
+        // Fetch posts with their associated user data and comment count, paginated by 3 posts per page
         $posts = Post::with('user') // Eager load the user relationship
-            ->withCount('comments') // Eager load and count the number of comments using the defined relationship
+            ->withCount('comments') // Count the number of comments using the defined relationship
             ->orderBy('created_at', 'desc') // Order by the latest posts
-            ->paginate(3); // Paginate the results, 10 posts per page
+            ->paginate(3); // Paginate the results, 3 posts per page
     
         // Map through the posts and format the response
         $formattedPosts = $posts->map(function ($post) use ($userId) {
             // Count the number of likes for each post
-            $likesCount = Like::where('posts_id', $post->post_id)->count();
+            $postLikesCount = Like::where('post_id', $post->post_id)->count();
+            $announcementLikesCount = Like::where('announcement_id', $post->post_id)->count(); // Assuming announcement_id can be stored in post_id
     
             // Check if the current user has liked the post
-            $isLiked = Like::where('posts_id', $post->post_id)
+            $isLikedPost = Like::where('post_id', $post->post_id)
+                            ->where('user_id', $userId)
+                            ->exists();
+    
+            $isLikedAnnouncement = Like::where('announcement_id', $post->post_id)
                             ->where('user_id', $userId)
                             ->exists();
     
@@ -44,16 +49,16 @@ class PostController extends Controller
                 'post_id' => $post->post_id,
                 'user_id' => $post->user_id,
                 'name' => $post->user ? $post->user->name : 'Unknown User',
-                'username' => $post->user ? $post->user->username : 'Unknown User', // Fetch username from the related user
-                'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg', // Use default if no profile picture
-                'image_path' => $post->image_path ? json_decode($post->image_path, true) : [], // Ensure image_path is an array
+                'username' => $post->user ? $post->user->username : 'Unknown User',
+                'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg',
+                'image_path' => $post->image_path ? json_decode($post->image_path, true) : [],
                 'caption' => $post->caption,
-                'created_at' => $post->created_at->diffForHumans(), // Format the created_at timestamp
-                'updated_at' => $post->updated_at->diffForHumans(), // Format the updated_at timestamp
-                'likes_count' => $likesCount,
-                'is_liked' => $isLiked, // Add the `is_liked` state for the current user
-                'comments_count' => $post->comments_count, // Include the count of comments from the `withCount` query
-                'is_adoptable' => $post->is_adoptable, // Include the adoptable status
+                'created_at' => $post->created_at->diffForHumans(),
+                'updated_at' => $post->updated_at->diffForHumans(),
+                'likes_count' => $postLikesCount + $announcementLikesCount, // Combined likes for post and announcement
+                'is_liked' => $isLikedPost || $isLikedAnnouncement, // If the user liked either, set to true
+                'comments_count' => $post->comments_count,
+                'is_adoptable' => $post->is_adoptable,
                 'done_sending_adoption_form' => $isDoneSendingAdoptionForm
             ];
         });
@@ -71,7 +76,7 @@ class PostController extends Controller
             ]
         ], 200);
     }
-
+    
     public function createPost(Request $request)
     {
         // Validate the request
@@ -98,7 +103,7 @@ class PostController extends Controller
         $post->caption = $request->input('caption');
         $post->user_id = Auth::id();
         $post->is_adoptable = $request->input('is_adoptable', false); // Default to false
-        $post->post_path = Str::random(15); // Generate post_path
+        $post->post_path = Str::random(15   ); // Generate post_path
         $post->image_path = json_encode($imagePaths); // Store image paths as a JSON array
         $post->save();
 
@@ -173,75 +178,112 @@ class PostController extends Controller
         return response()->json(['message' => 'Post deleted successfully']);
     }
     
-    public function likePost($postId)
+    public function likePost($itemId, $type)
     {
         $userId = Auth::id(); // Get the current user's ID
-        
-        // Find the post
-        $post = Post::find($postId);
     
-        if (!$post) {
-            return response()->json(['error' => 'Post not found'], 404);
+        // Determine if it's a post or an announcement
+        if ($type === 'post') {
+            $post = Post::find($itemId);
+            if (!$post) {
+                return response()->json(['error' => 'Post not found'], 404);
+            }
+            $postOwner = $post->user_id;
+        } elseif ($type === 'announcement') {
+            $announcement = Announcement::find($itemId);
+            if (!$announcement) {
+                return response()->json(['error' => 'Announcement not found'], 404);
+            }
+            $postOwner = $announcement->shelter_id;
+        } else {
+            return response()->json(['error' => 'Invalid type specified'], 400);
         }
     
-        $postOwner = $post->user_id;
-        $postType = $post->type; // Assuming the 'type' field exists in the posts table
+        // Check if the user already liked this post/announcement
+        $likeQuery = Like::where('user_id', $userId);
     
-        // Check if the user already liked this post
-        $like = Like::where('posts_id', $postId)
-                    ->where('user_id', $userId)
-                    ->first();
+        if ($type === 'post') {
+            $likeQuery->where('post_id', $itemId);
+        } elseif ($type === 'announcement') {
+            $likeQuery->where('announcement_id', $itemId);
+        }
+    
+        $like = $likeQuery->first();
     
         if ($like) {
-            // Remove like (unlike the post)
+            // Unlike (Remove like)
             $like->delete();
             return response()->noContent(); // Return 204 No Content
         } else {
             // Add like
-            Like::create([
-                'posts_id' => $postId,
+            $likeData = [
                 'user_id' => $userId,
-            ]);
+            ];
     
-            // Check if the current user is not the post owner
+            if ($type === 'post') {
+                $likeData['post_id'] = $itemId;
+            } elseif ($type === 'announcement') {
+                $likeData['announcement_id'] = $itemId;
+            }
+    
+            Like::create($likeData);
+    
+            // **Check if the current user is not the post/announcement owner before creating notification**
             if ($userId !== $postOwner) {
-                // Determine the notification message based on post type
-                $notificationType = match ($postType) {
-                    'announcement' => 'liked your announcement',
-                    'event' => 'liked your event',
-                    default => 'liked your post',
-                };
+                // Determine the notification message
+                $notificationType = $type === 'post' ? 'liked your post' : 'liked your announcement';
     
-                // Create a notification for the post owner
-                Notification::create([
-                    'user_id' => $postOwner, // The user who owns the post
+                // Create notification
+                $notificationData = [
+                    'user_id' => $postOwner, // Owner of the post/announcement
                     'type' => $notificationType,
-                    'liked_by_user_id' => $userId, // The user who liked the post
-                    'post_id' => $postId,
+                    'liked_by_user_id' => $userId, // Who liked it
                     'read_at' => null, // Default is unread
-                ]);
+                ];
+    
+                if ($type === 'post') {
+                    $notificationData['post_id'] = $itemId;
+                } elseif ($type === 'announcement') {
+                    $notificationData['announcement_id'] = $itemId;
+                }
+    
+                Notification::create($notificationData);
             }
     
             return response()->noContent(); // Return 204 No Content
         }
     }    
     
-    public function getLikesCount($postId)
+    public function getLikesCount($id, $type)
     {
-        $post = Post::find($postId);
+        if ($type === 'post') {
+            $post = Post::find($id);
+            if (!$post) {
+                return response()->json(['error' => 'Post not found'], 404);
+            }
     
-        if (!$post) {
-            return response()->json(['error' => 'Post not found'], 404);
+            $likesCount = Like::where('post_id', $id)->count();
+    
+            return response()->json([
+                'likesCount' => $likesCount,
+                'postType' => $post->type,
+            ]);
+        } elseif ($type === 'announcement') {
+            $announcement = Announcement::find($id);
+            if (!$announcement) {
+                return response()->json(['error' => 'Announcement not found'], 404);
+            }
+    
+            $likesCount = Like::where('announcement_id', $id)->count();
+    
+            return response()->json([
+                'likesCount' => $likesCount,
+                'announcementType' => $announcement->type,
+            ]);
         }
     
-        $likesCount = Like::where('posts_id', $postId)->count();
-    
-        return response()->json([
-            'likesCount' => $likesCount,
-            'postType' => $post->type, // Include the post type in the response
-        ]);
-    }
-    
+        return response()->json(['error' => 'Invalid type specified'], 400);
+    }    
 
     public function getUserProfile()
     {

@@ -73,30 +73,47 @@
         <!-- Buttons -->
         <div class="flex gap-2 flex-wrap">
             <!-- Upvote Button -->
-            <button class="btn bg-primary btn-sm text-base-300">
-                <svg
+            <button 
+              class="btn bg-primary btn-sm text-base-300" 
+              @click="likeAnnouncement(announcement.announcement_id)">
+              <svg
+                  v-if="announcement.is_liked"
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   stroke="currentColor">
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-                <p>4.5k</p>
-                Likes
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <svg
+                  v-else
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+              <p>{{ announcement.likes_count }} Like</p>
             </button>
       
             <!-- Comments Button -->
-            <button id="commentsBtn" class="btn btn-outline btn-sm flex gap-1 items-center" onclick="commentsModal.showModal()">
+            <button id="commentsBtn" class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(announcement.announcement_id)">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
               </svg>
-              <span>Comments</span>
+              <span>{{ announcement.comments_count}} Comments</span>
             </button>
+
+            <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :announcementId="selectedAnnouncementId"/>
       
             <!-- Bookmark Button -->
             <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -112,25 +129,127 @@
 </template>
 <script>
 import axios from 'axios';
+import Comments from '../misc/Comments.vue';
 
 export default {
+  components: {
+    Comments
+  },
   data() {
     return {
       announcements: [],
+      comments: [],
+      isModalOpen: false,
+      selectedAnnouncementId: null,
+      currentPage: 1,
+      totalPages: 1,
+      loading: false,
+      noMoreAnnouncements: false,
     };
   },
   methods: {
-    async fetchAnnouncements() {
+    async fetchAnnouncements(reset=false) {
+      if(this.loading || (this.noMoreAnnouncements && !reset)) return;
+
+      this.loading = true;
+
       try {
-        const response = await axios.get('/api/announcements/list');
-        this.announcements = response.data;
+        if (reset){
+          this.announcements = [];
+          this.currentPage = 1;
+          this.noMoreAnnouncements = false;
+        }
+
+        const response = await axios.get(`/api/announcements/list?page=${this.currentPage}`);
+        const newAnnnouncements = response.data.announcements;
+
+        if (newAnnnouncements.length > 0) {
+          if (reset) {
+            this.announcements = newAnnnouncements;
+          } else {
+            this.announcements = [...this.announcements, ...newAnnnouncements];
+          }
+          this.currentPage++;
+        } else {
+          this.noMoreAnnouncements = true;
+        }
       } catch (error) {
-        console.error('Error fetching announcements:', error);
+        console.error("Error Fetching posts:", error);
+      } finally {
+        this.loading = false
+      }
+    },
+
+    handleScroll() {
+      const bottomOfWindow =
+        document.documentElement.scrollTop + window.innerHeight >=
+        document.documentElement.offsetHeight - 100;
+
+      if (bottomOfWindow && !this.loading && !this.noMoreAnnouncements) {
+        this.fetchAnnouncements();
+      }
+    },
+    
+    async likeAnnouncement(announcementId) {
+      try {
+        await axios.post(`/api/like/${announcementId}/announcement`);
+
+        // Find the announcement and update its like state
+        const announcement = this.announcements.find(ann => ann.announcement_id === announcementId);
+        if (announcement) {
+          announcement.is_liked = !announcement.is_liked; // Toggle like state
+        }
+
+        // Fetch the updated likes count
+        await this.fetchLikesCount(announcementId, 'announcement');
+      } catch (error) {
+        console.error("Error liking/unliking announcement:", error);
+      }
+    },
+    async fetchLikesCount(announcementId, type = 'announcement') {
+      try {
+        const response = await axios.get(`/api/like-count/${announcementId}/${type}`);
+        const announcement = this.announcements.find(ann => ann.announcement_id === announcementId);
+        if (announcement) {
+          announcement.likes_count = response.data.likesCount; // Update likes count
+        }
+      } catch (error) {
+        console.error("Error fetching likes count:", error);
+      }
+    },
+    openModal(announcementId) {
+      this.isModalOpen = true;
+      console.log('ID: ', announcementId);
+      this.fetchComments(announcementId);  // Fetch comments for the selected post  
+      this.selectedAnnouncementId = announcementId;
+    },
+    closeCommentsModal() {
+      this.isModalOpen = false;
+      this.comments = [];  // Clear comments when modal is closed
+      this.fetchAnnouncements();
+    },
+    async fetchComments(announcementId) {
+      try {
+        const response = await axios.get(`/api/comments/${announcementId}/announcement`);
+        this.comments = response.data.data;  // Access the 'data' array from the API response
+        this.pagination = {
+          current_page: response.data.current_page,
+          last_page: response.data.last_page,
+          per_page: response.data.per_page,
+          total: response.data.total
+        };
+      } catch (error) {
+        console.error("Error fetching comments:", error);
       }
     },
   },
   mounted() {
+    this.fetchComments();
     this.fetchAnnouncements();
+    window.addEventListener('scroll', this.handleScroll);
   },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll)
+  }
 };
 </script>

@@ -213,6 +213,9 @@
           <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
       </div>
+      <div v-if="noMoreComments && comments.length > 0" class="text-center py-4 text-gray-500">
+        No more comments available.
+      </div>
     </dialog>
   </div>
 </template>
@@ -224,13 +227,32 @@ import Swal from 'sweetalert2';
 
 export default {
   name: 'CommentsModal',
-  props: ['isModalOpen', 'postId'],
+  props: {
+    isModalOpen: {
+      type: Boolean,
+      required: true
+    },
+    postId: {
+      type: [String, Number],
+      required: false
+    },
+    announcementId: {
+      type: [String, Number],
+      required: false
+    },
+    commentList: {
+      type: Array,
+      default: () => []
+    }
+  },
+  emits: ['close'],
   data() {
     return {
       selectedComment: {},
       comments: [],  // Array to store fetched comments
       newComment: '',
       isLoading: false,
+      loading: false,
       currentUserId: null,
       isAuthenticated: false,
       isEditing: false,
@@ -238,6 +260,7 @@ export default {
       customReason: '',
       currentPage: 1, // Current page number
       totalPages: 1, // Total number of pages
+      noMoreComments: false,
     };
   },
   methods: {
@@ -291,91 +314,129 @@ export default {
       this.comments = [];
     },
     async fetchComments() {
-      if (this.isLoading || this.currentPage > this.totalPages) return; // Prevent multiple requests if already loading or no more pages
+      if (this.isLoading || this.currentPage > this.totalPages) return;
 
-      this.isLoading = true; // Set loading state to true
-      console.log("Fetching comments, isLoading:", this.isLoading);
+      this.isLoading = true;
 
-      axios.get(`/api/comments/post/${this.postId}?page=${this.currentPage}`)
-        .then(response => {
+      let url = '';
+      if (this.postId) {
+          url = `/api/comments/${this.postId}/post?page=${this.currentPage}`;
+      } else if (this.announcementId) {
+          url = `/api/comments/${this.announcementId}/announcement?page=${this.currentPage}`;
+      } else {
+          console.error("No postId or announcementId provided");
+          this.isLoading = false;
+          return;
+      }
+
+      try {
+          const response = await axios.get(url);
           const data = response.data;
 
-          // Append new comments instead of replacing the existing ones
-          this.comments.push(...data.data);
-
-          // Update pagination info
-          this.currentPage = data.current_page + 1; // Move to the next page
-          this.totalPages = data.last_page; // Set the total pages
-
-          this.isLoading = false; // Set loading state to false
-        })
-        .catch(error => {
-          console.error("Error fetching comments:", error);
-          this.isLoading = false; // Set loading state to false on error
-        });
-    },
-    postComment() {
-      // Check if the user is authenticated
-      if (!this.isAuthenticated) {
-        // Show a message prompting the user to log in
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'You need to log in to post a comment.',
-          showConfirmButton: true,
-          confirmButtonText: 'Log In',
-          background: '#2c2f36',
-          color: '#fff',
-          confirmButtonColor: '#3085d6',
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-          customClass: {
-            container: 'swal2-container',
-            container: 'Comment_Toast' // Apply the custom class here
-          },
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Redirect to the login page or open the login modal
-            window.location.href = '/login'; // Adjust the URL as needed
+          if (this.currentPage === 1) {
+              this.comments = data.data;  // Reset comments on first page
+          } else {
+              this.comments = [...this.comments, ...data.data];  // Append if paginating
           }
-        });
-        return; // Exit the method early if the user is not authenticated
-      }
 
-      // Proceed with posting the comment if the user is authenticated
-      if (!this.newComment.trim()) {
-        alert("Comment cannot be empty!");
-        return;
-      }
+          this.currentPage++;
+          this.totalPages = data.last_page;
 
-      console.log("Post ID:", this.postId); // Debugging log
-      axios.post('/api/comments/submit', {
-        post_comment_id: this.postId,
-        comment: this.newComment,
-      })
-      .then(response => {
-        this.comments.push(response.data);
-        this.newComment = '';
-        this.fetchComments(true);
-        this.fetchPost();
-      })
-      .catch(error => {
-        console.error("Error posting comment:", error);
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Something went wrong!',
-          text: error.response ? error.response.data.message : 'Try again later.',
-          showConfirmButton: false,
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-          background: '#2c2f36',
-          color: '#fff',
-        });
-      });
+          if (this.currentPage > this.totalPages) {
+              this.noMoreComments = true;
+          }
+      } catch (error) {
+          console.error("Error fetching comments:", error);
+      } finally {
+          this.isLoading = false;
+      }
     },
+
+
+    handleCommentsScroll() {
+      const modal = this.$refs.commentsDialog;
+      if (modal) {
+        const bottomOfModal = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 100;
+        if (bottomOfModal && !this.isLoading && !this.noMoreComments) {
+          this.fetchComments();
+        }
+      }
+    },
+
+    postComment() {
+      if (!this.isAuthenticated) {
+          Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'You need to log in to post a comment.',
+              showConfirmButton: true,
+              confirmButtonText: 'Log In',
+              background: '#2c2f36',
+              color: '#fff',
+              confirmButtonColor: '#3085d6',
+              toast: true,
+              timer: 3000,
+              timerProgressBar: true,
+              customClass: {
+                  container: 'swal2-container',
+                  container: 'Comment_Toast'
+              },
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.href = '/login';
+              }
+          });
+          return;
+      }
+
+      if (!this.newComment.trim()) {
+          alert("Comment cannot be empty!");
+          return;
+      }
+
+      let commentData = {
+          comment: this.newComment,
+      };
+
+      if (this.announcementId) {
+          commentData.announcement_comment_id = this.announcementId;
+      } else if (this.postId) {
+          commentData.post_comment_id = this.postId;
+      } else {
+          console.error("No postId or announcementId provided");
+          return;
+      }
+
+      axios.post('/api/comments/submit', commentData)
+          .then(response => {
+              this.comments.unshift(response.data);
+              this.newComment = '';
+
+              // Reset pagination and comments
+              this.comments = [];
+              this.currentPage = 1;
+              this.noMoreComments = false;
+
+              // Fetch fresh comments
+              this.fetchComments();
+          })
+          .catch(error => {
+              console.error("Error posting comment:", error);
+              Swal.fire({
+                  position: 'center',
+                  icon: 'error',
+                  title: 'Something went wrong!',
+                  text: error.response ? error.response.data.message : 'Try again later.',
+                  showConfirmButton: false,
+                  toast: true,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  background: '#2c2f36',
+                  color: '#fff',
+              });
+          });
+    },
+
     async checkAuthentication() {
       try {
           const response = await axios.get('/api/auth/status');
@@ -465,9 +526,18 @@ export default {
   mounted(){
     this.checkAuthentication();
     window.addEventListener('keydown', this.handleEscKey);
+    
+    const modal = this.$refs.commentsDialog;
+    if (modal) {
+      modal.addEventListener('scroll', this.handleCommentsScroll);
+    }
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleEscKey); // Clean up the event listener
+    const modal = this.$refs.commentsDialog;
+    if (modal) {
+      modal.removeEventListener('scroll', this.handleCommentsScroll);
+    }
   }
 };
 </script>
@@ -475,6 +545,11 @@ export default {
 <style scoped>
 .swal2-container {
   z-index: 9999 !important;
+}
+
+.modal-box {
+  overflow-y: auto;
+  max-height: 80vh; /* Adjust as needed */
 }
 </style>
 

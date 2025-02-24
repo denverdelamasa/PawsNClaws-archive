@@ -2,34 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
+use App\Models\Post;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Announcement;
-use App\Models\Like;
 
 class AnnouncementController extends Controller
 {
     public function announcementList()
     {
         $userId = Auth::id(); // Get the current user's ID
-
-        // Fetch announcements with their associated user data and comment count
+    
+        // Fetch announcements with their associated user data, comment count, and likes count
         $announcements = Announcement::with('shelter') // Eager load the shelter relationship
             ->withCount('comments') // Eager load and count the number of comments using the defined relationship
             ->orderBy('created_at', 'desc') // Order by the latest announcements
-            ->get();
-
+            ->paginate(3);
+    
         // Map through the announcements and format the response
         $formattedAnnouncements = $announcements->map(function ($announcement) use ($userId) {
             // Count the number of likes for each announcement
             $likesCount = Like::where('announcement_id', $announcement->announcement_id)->count();
-
+    
             // Check if the current user has liked the announcement
             $isLiked = Like::where('announcement_id', $announcement->announcement_id)
                             ->where('user_id', $userId)
                             ->exists();
-
-
+    
+            // Return the formatted announcement data
             return [
                 'announcement_id' => $announcement->announcement_id,
                 'shelter_id' => $announcement->shelter_id,
@@ -41,15 +42,25 @@ class AnnouncementController extends Controller
                 'description' => $announcement->description,
                 'created_at' => $announcement->created_at->diffForHumans(), // Format the created_at timestamp
                 'updated_at' => $announcement->updated_at->diffForHumans(), // Format the updated_at timestamp
-                'likes_count' => $likesCount,
-                'is_liked' => $isLiked, // Add the `is_liked` state for the current user
+                'likes_count' => $likesCount, // Include likes count for the announcement
+                'is_liked' => $isLiked, // Include the `is_liked` state for the current user
                 'comments_count' => $announcement->comments_count, // Include the count of comments from the `withCount` query
                 'is_adoptable' => $announcement->is_adoptable, // Include the adoptable status
             ];
         });
-
+    
         // Return the formatted response as JSON
-        return response()->json($formattedAnnouncements, 200);
+        return response()->json([
+            'announcements' => $formattedAnnouncements,
+            'pagination' => [
+                'current_page' => $announcements->currentPage(),
+                'per_page' => $announcements->perPage(),
+                'total' => $announcements->total(),
+                'last_page' => $announcements->lastPage(),
+                'next_page_url' => $announcements->nextPageUrl(),
+                'prev_page_url' => $announcements->previousPageUrl(),
+            ]
+        ],200);
     }
 
     public function announcementWelcome()

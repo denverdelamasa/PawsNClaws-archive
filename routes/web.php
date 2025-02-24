@@ -76,8 +76,8 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
 
     //Post Modifiers
     Route::post('/api/posts/upload', [PostController::class, 'createPost']);
-    Route::post('/api/like/{post_id}', [PostController::class, 'likePost']);
-    Route::get('/api/like-count/{post_id}', [PostController::class, 'getLikesCount']);
+    Route::post('/api/like/{id}/{type}', [PostController::class, 'likePost']);
+    Route::get('/api/like-count/{post_id}/{type}', [PostController::class, 'getLikesCount']);
     Route::put('/api/post/edit/{post_id}', [PostController::class, 'updatePost']);
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
 
@@ -103,7 +103,8 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 Route::get('/api/announcements/list', [AnnouncementController::class, 'announcementList']);
 Route::get('/api/announcement/welcome', [AnnouncementController::class, 'announcementWelcome']);
-Route::get('/api/comments/post/{post_id}', [CommentsController::class, 'getCommentsByPost']);
+Route::get('/api/comments/{id}/{type}', [CommentsController::class, 'getComments'])
+    ->where(['id' => '[0-9]+', 'type' => 'post|announcement']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');

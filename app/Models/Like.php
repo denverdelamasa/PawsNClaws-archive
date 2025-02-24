@@ -17,7 +17,7 @@ class Like extends Model
 
     protected $primaryKey = 'like_id';
     protected $fillable = [
-        'posts_id', // ID of the liked post
+        'post_id', // ID of the liked post
         'user_id',  // ID of the user who liked the post
         'announcement_id'
     ];
@@ -30,6 +30,16 @@ class Like extends Model
     public function post()
     {
         return $this->belongsTo(Post::class, 'post_id');
+    }
+
+    /**
+     * Define the relationship to the `Post` model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function announcement()
+    {
+        return $this->belongsTo(Announcement::class, 'announcement_id');
     }
 
     /**

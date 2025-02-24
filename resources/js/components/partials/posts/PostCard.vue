@@ -1,5 +1,5 @@
 <template>
-  <UploadPost v-if="isAuthenticated" :fetch-posts="fetchPosts" />
+  <UploadPost v-if="isAuthenticated" :fetchPostsProp="fetchPosts" />
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4 gap-x-2">
@@ -13,7 +13,7 @@
         Open for Adoption
       </div>
 
-      <!-- Show "Adopted" when is_adoptable is 3 -->
+      <!-- Show "Adopted" when is_adoptable is 2 -->
       <div v-else-if="post.is_adoptable === 2" class="badge badge-info badge-outline gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart-fill" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
@@ -267,13 +267,13 @@
 
       <!-- Comments Button -->
       <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(post.post_id)">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
-      </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
+        </svg>
       <span>{{ post.comments_count}} Comments</span>
     </button>
 
-    <Comments :isModalOpen="isModalOpen" :comments="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
+    <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
 
       <!-- Bookmark Button -->
       <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -599,13 +599,18 @@ export default {
       this.fetchPost();
     },
     async fetchComments(postId) {
-      axios.get(`/api/comments/post/${postId}`)
-        .then(response => {
-          this.comments = response.data;  // Store fetched comments
-        })
-        .catch(error => {
-          console.error("Error fetching comments:", error);
-        });
+      try {
+        const response = await axios.get(`/api/comments/${postId}/post`);
+        this.comments = response.data.data;  // Access the 'data' array from the API response
+        this.pagination = {
+          current_page: response.data.current_page,
+          last_page: response.data.last_page,
+          per_page: response.data.per_page,
+          total: response.data.total
+        };
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
     },
     openDeleteModal(postId) {
       const modal = document.getElementById(`deletePostModal-${postId}`);
@@ -885,24 +890,26 @@ export default {
 
     async likePost(postId) {
       try {
-        const response = await axios.post(`/api/like/${postId}`);
+        await axios.post(`/api/like/${postId}/post`);
         
-        // After liking/unliking the post, update the likes count and state
+        // Find the post and update its like state
         const post = this.posts.find(post => post.post_id === postId);
         if (post) {
           post.is_liked = !post.is_liked; // Toggle like state
-          await this.fetchLikesCount(postId); // Fetch updated likes count after liking/unliking
         }
+
+        // Fetch the updated likes count
+        await this.fetchLikesCount(postId);
       } catch (error) {
         console.error("Error liking/unliking post:", error);
       }
     },
     async fetchLikesCount(postId) {
       try {
-        const response = await axios.get(`/api/like-count/${postId}`);
+        const response = await axios.get(`/api/like-count/${postId}/post`);
         const post = this.posts.find(post => post.post_id === postId);
         if (post) {
-          post.likes_count = response.data.likesCount; // Update likes count
+          post.likes_count = response.data.likesCount; // Update only post likes count
         }
       } catch (error) {
         console.error("Error fetching likes count:", error);
