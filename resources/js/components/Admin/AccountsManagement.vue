@@ -20,7 +20,7 @@
           <input type="text" placeholder="Search here..." class="input input-bordered w-full max-w-md" />
         </div>
       </div>
-      <div class="overflow-x-auto m-4">
+      <div class="overflow-x-auto m-4 w-full">
         <table class="table table-m w-full">
           <thead>
             <tr>
@@ -36,9 +36,10 @@
           <tbody>
             <tr v-for="(user, index) in users" :key="user.user_id" class="text-center">
               <th>{{ index + 1 }}</th>
-              <td><img :src="user.profile_picture ? '/storage/' + user.profile_picture : defaultProfilePicture" 
-                         alt="Profile Picture" 
-                         class="w-10 h-10 rounded-full object-cover transition-transform duration-200 ease-in-out transform hover:scale-125 cursor-pointer">
+              <td>
+                <img :src="user.profile_picture ? '/storage/' + user.profile_picture : defaultProfilePicture" 
+                    alt="Profile Picture" 
+                    class="w-10 h-10 rounded-full object-cover aspect-square transition-transform duration-200 ease-in-out transform hover:scale-125 cursor-pointer">
               </td>
               <td>
                 {{ user.name }}
@@ -66,14 +67,17 @@
               </td>
               <td>
                 <!-- Actions with icons -->
-                <button class="btn btn-sm bg-red-500 text-white px-4 py-2 rounded mr-2" @click="checkAdminAndOpenSuspendUserModal(user)">
-                  <i class="fas fa-ban"></i> Suspend
+                <button class="btn btn-sm bg-red-500 text-white px-4 py-2 rounded m-1" @click="checkAdminAndOpenSuspendUserModal(user)">
+                  <i class="fas fa-ban"></i> 
+                  <span class="hidden xl:inline"> Suspend</span>
                 </button>
-                <button class="btn btn-sm bg-yellow-500 text-white px-4 py-2 rounded mr-2" @click="warnUser(user.user_id)">
-                  <i class="fas fa-exclamation-triangle"></i> Warn
+                <button class="btn btn-sm bg-yellow-500 text-white px-4 py-2 rounded m-1" @click="warnUser(user.user_id)">
+                  <i class="fas fa-exclamation-triangle"></i> 
+                  <span class="hidden xl:inline"> Warn</span>
                 </button>
-                <button class="btn btn-sm bg-red-700 text-white px-4 py-2 rounded" @click="checkAdminAndOpenDeleteModal(user)">
-                  <i class="fas fa-trash"></i> Delete
+                <button class="btn btn-sm bg-red-700 text-white px-4 py-2 rounded m-1" @click="checkAdminAndOpenDeleteModal(user)">
+                  <i class="fas fa-trash"></i>
+                  <span class="hidden xl:inline"> Delete</span>
                 </button>
               </td>
             </tr>
