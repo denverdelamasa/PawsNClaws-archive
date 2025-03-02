@@ -54,9 +54,18 @@
     </div>
 
     <!-- Thumbnail -->
-    <div v-if="post.image_path && post.image_path.trim() !== ''" class="relative px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
-      <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
-          alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+    <div v-if="post.image_path && post.image_path.length > 0" 
+        class="relative px-4 hover:cursor-pointer" 
+        @click="showModal(post.post_id)">
+      
+      <!-- Image Display -->
+      <div class="w-full h-[300px] sm:h-[250px] md:h-[280px] lg:h-[300px] overflow-hidden rounded">
+        <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
+            alt="Thumbnail" 
+            class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110" />
+      </div>
+
+      <!-- Overlay for Multiple Images -->
       <div v-if="Array.isArray(post.image_path) && post.image_path.length > 1" 
           class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center rounded">
         <span class="text-white text-lg font-semibold">+{{ post.image_path.length - 1 }}</span>
@@ -120,14 +129,13 @@
           </div>
         </div>
       </div>
-      <div class="text-base mt-2">
-        <p>
-          <!-- Truncate the caption to 20 characters initially -->
-          {{ post.expanded ? post.caption : post.caption.substring(0, 135) }}
+      <div class="text-base mt-2 w-full">
+        <p class="break-words whitespace-normal text-sm sm:text-base">
+          {{ post.expanded ? post.caption : (post.caption && post.caption.length > 135 ? post.caption.substring(0, 135) + '...' : post.caption) }}
         </p>
-        <button
-          v-if="post.caption.length > 125"
-          class="btn btn-link btn-xs text-sm mt-2 px-0"
+        <button 
+          v-if="post.caption && post.caption.length > 125" 
+          class="btn btn-link btn-xs text-sm mt-2"
           @click="toggleDescription(post)"
         >
           {{ post.expanded ? 'See Less' : 'See More' }}
@@ -175,7 +183,7 @@
       <span>{{ post.comments_count}} Comments</span>
     </button>
 
-    <Comments :isModalOpen="isModalOpen" :comments="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
+    <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
 
       <!-- Bookmark Button -->
       <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -419,24 +427,26 @@ export default {
     },
     async likePost(postId) {
       try {
-        const response = await axios.post(`/api/like/${postId}`);
+        await axios.post(`/api/like/${postId}/post`);
         
-        // After liking/unliking the post, update the likes count and state
+        // Find the post and update its like state
         const post = this.posts.find(post => post.post_id === postId);
         if (post) {
           post.is_liked = !post.is_liked; // Toggle like state
-          await this.fetchLikesCount(postId); // Fetch updated likes count after liking/unliking
         }
+
+        // Fetch the updated likes count
+        await this.fetchLikesCount(postId);
       } catch (error) {
         console.error("Error liking/unliking post:", error);
       }
     },
     async fetchLikesCount(postId) {
       try {
-        const response = await axios.get(`/api/like-count/${postId}`);
+        const response = await axios.get(`/api/like-count/${postId}/post`);
         const post = this.posts.find(post => post.post_id === postId);
         if (post) {
-          post.likes_count = response.data.likesCount; // Update likes count
+          post.likes_count = response.data.likesCount; // Update only post likes count
         }
       } catch (error) {
         console.error("Error fetching likes count:", error);

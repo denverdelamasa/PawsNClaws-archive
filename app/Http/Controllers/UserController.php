@@ -27,6 +27,7 @@ class UserController extends Controller
         // Return the users as a JSON response
         return response()->json($users);
     }
+    
     public function updateRole(Request $request, $user_id)
     {
         // Check if the currently authenticated user is an Admin

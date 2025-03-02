@@ -21,11 +21,13 @@ class CommentsController extends Controller
                 ->where('announcement_comment_id', $id)
                 ->latest()
                 ->paginate(10);
+                $commentsCount = Comment::where('announcement_comment_id', $id)->count();
         } elseif ($type === 'post') {
             $comments = Comment::with('user')
                 ->where('post_comment_id', $id)
                 ->latest()
-                ->paginate(5);
+                ->paginate(10);
+                $commentsCount = Comment::where('post_comment_id', $id)->count();
         } else {
             return response()->json(['error' => 'Invalid comment type'], 400);
         }
@@ -36,6 +38,7 @@ class CommentsController extends Controller
         $formattedComments = $comments->map(function ($comment) {
             return [
                 'comment_id' => $comment->comment_id,
+                'user_id' => $comment->user_id,
                 'announcement_comment_id' => $comment->announcement_comment_id,
                 'post_comment_id' => $comment->post_comment_id,
                 'user' => [
@@ -55,6 +58,7 @@ class CommentsController extends Controller
             'last_page' => $comments->lastPage(),
             'per_page' => $comments->perPage(),
             'total' => $comments->total(),
+            'comments_count' => $commentsCount,
         ]);
     }
     public function postComment(Request $request) {

@@ -221,13 +221,15 @@
           </div>
         </div>
       </div>
-      <div class="text-base mt-2 max-w-[100vh]">
+      <div class="text-base mt-2 w-full">
         <p class="break-words whitespace-normal text-sm sm:text-base">
           {{ post.expanded ? post.caption : (post.caption && post.caption.length > 135 ? post.caption.substring(0, 135) + '...' : post.caption) }}
         </p>
-        <button v-if="post.caption && post.caption.length > 125" 
-                class="btn btn-link btn-xs text-sm mt-2"
-                @click="toggleDescription(post)">
+        <button 
+          v-if="post.caption && post.caption.length > 125" 
+          class="btn btn-link btn-xs text-sm mt-2"
+          @click="toggleDescription(post)"
+        >
           {{ post.expanded ? 'See Less' : 'See More' }}
         </button>
       </div>
@@ -628,7 +630,6 @@ export default {
       axios.delete(`/api/posts/delete/${postId}`)
         .then(response => {
           this.posts = this.posts.filter(post => post.post_id !== postId);
-          console.log("Post deleted successfully");
           this.closeDeleteModal(postId);
 
             Swal.fire({
@@ -971,4 +972,5 @@ export default {
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
+  
 </style>

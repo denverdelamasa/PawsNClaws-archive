@@ -3,16 +3,18 @@
     <!-- Comments Modal -->
     <dialog ref="commentsDialog" class="modal">
       <div class="modal-box relative max-w-full w-9/12 h-screen p-8 scrollbar-hidden overflow-auto">
-        <h3 class="text-xl font-bold my-4">Comments</h3>
+        <h3 class="text-xl font-bold my-4">{{ commentsCount }} {{ commentsCount === 1 ? 'Comment' : 'Comments' }}</h3>
         
         <!-- Comment Input -->
-        <textarea v-model="newComment" placeholder="Write a comment..." class="textarea textarea-bordered w-full resize-y" rows="2"></textarea>
+        <textarea v-model="newComment" placeholder="Write a comment..." class="textarea textarea-bordered w-full resize-y" rows="1"></textarea>
         <button @click="postComment" class="btn btn-primary mt-4 btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
             </svg>
             Post Comment
         </button>
+
+        
 
         <!-- Comment Section -->
         <div class="comment-section mt-4">
@@ -40,7 +42,7 @@
                     </svg>
                   </label>
                   <ul tabindex="0" class="dropdown-content menu shadow bg-base-300 rounded-box w-45 z-40">
-                    <li v-if="comment.user_id === currentUserId">
+                    <li v-if="comment.user_id === commentUserId">
                       <a href="#" @click.prevent="openEditCommentModal(comment)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
@@ -49,7 +51,7 @@
                         Edit Comment
                       </a>
                     </li>
-                    <li v-if="comment.user_id === currentUserId">
+                    <li v-if="comment.user_id === commentUserId">
                       <a href="#" @click.prevent="openDeleteCommentModal(comment.comment_id)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
@@ -58,7 +60,7 @@
                         Delete Comment
                       </a>
                     </li>
-                    <li v-if="comment.user_id !== currentUserId">
+                    <li v-if="comment.user_id !== commentUserId">
                       <a href="#" @click.prevent="openReportModal(comment.comment_id)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
                           <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z"/>
@@ -217,6 +219,16 @@
         No more comments available.
       </div>
     </dialog>
+    <!-- Custom Success Modal -->
+    <dialog ref="successModal" class="modal">
+      <div class="report-modal-box">
+        <h3 class="text-lg font-bold">Report Submitted Successfully!</h3>
+        <p class="py-4">Your report has been submitted successfully.</p>
+        <div class="modal-action">
+          <button class="btn btn-primary" @click="closeSuccessModal">OK</button>
+        </div>
+      </div>
+    </dialog>
   </div>
 </template>
 
@@ -253,7 +265,7 @@ export default {
       newComment: '',
       isLoading: false,
       loading: false,
-      currentUserId: null,
+      commentUserId: null,
       isAuthenticated: false,
       isEditing: false,
       reportReason: '',
@@ -261,6 +273,7 @@ export default {
       currentPage: 1, // Current page number
       totalPages: 1, // Total number of pages
       noMoreComments: false,
+      commentsCount: 0,
     };
   },
   methods: {
@@ -335,6 +348,7 @@ export default {
 
           if (this.currentPage === 1) {
               this.comments = data.data;  // Reset comments on first page
+              this.commentsCount = data.comments_count; // Store comments count
           } else {
               this.comments = [...this.comments, ...data.data];  // Append if paginating
           }
@@ -352,11 +366,11 @@ export default {
       }
     },
 
-
     handleCommentsScroll() {
       const modal = this.$refs.commentsDialog;
       if (modal) {
         const bottomOfModal = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 100;
+        console.log('Scroll event triggered', bottomOfModal, this.isLoading, this.noMoreComments);
         if (bottomOfModal && !this.isLoading && !this.noMoreComments) {
           this.fetchComments();
         }
@@ -441,7 +455,7 @@ export default {
       try {
           const response = await axios.get('/api/auth/status');
           this.isAuthenticated = response.data.authenticated;
-          this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
+          this.commentUserId = response.data.user_id; // Fetch the authenticated user's ID
       } catch (error) {
           console.error("Error checking authentication status:", error);
       }
@@ -465,7 +479,7 @@ export default {
     },
     submitReport(commentId) {
       const reportData = {
-        user_id: this.currentUserId,  // The user reporting the post/comment
+        user_id: this.commentUserId,  // The user reporting the post/comment
         reason: this.reportReason,
         type: "comment",
         comment_id: commentId,
@@ -475,24 +489,7 @@ export default {
       axios.post('/api/reports/submit', reportData)
         .then(response => {
           this.closeReportModal(commentId);
-          
-          Swal.fire({
-            position: 'center',  // Positions it in the center of the screen
-            icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-            title: 'Your report has been submitted successfully!',  // Customize your message
-            showConfirmButton: true,  // Show the OK button
-            confirmButtonText: 'OK',  // Text of the button
-            background: '#2c2f36',  // Dark background color
-            color: '#fff',  // White text color
-            confirmButtonColor: '#3085d6',  // Blue color for the button
-            toast: true,  // Display as a toast
-            timer: 3000,  // Time in milliseconds before the toast closes
-            timerProgressBar: true,  // Optional, shows a progress bar
-            didOpen: () => {
-              document.querySelector('.swal2-container').style.zIndex = '9999';
-              Swal.showLoading();  // Show loading indicator
-            }
-          });
+          this.openSuccessModal();
         })
         .catch(error => {
           console.error('Error submitting report:', error);
@@ -511,6 +508,13 @@ export default {
         });
       });
     },
+    openSuccessModal() {
+      this.$refs.successModal.showModal(); // Open the success modal
+    },
+
+    closeSuccessModal() {
+      this.$refs.successModal.close(); // Close the success modal
+    },
     
   },
   watch: {
@@ -518,8 +522,18 @@ export default {
       if (newVal) {
         this.$refs.commentsDialog.showModal(); // Open the dialog when the prop is true
         this.fetchComments();  // Fetch comments when modal opens
+        // Attach the scroll event listener when the modal opens
+        const modal = this.$refs.commentsDialog;
+        if (modal) {
+          modal.addEventListener('scroll', this.handleCommentsScroll);
+        }
       } else {
         this.$refs.commentsDialog.close(); // Close the modal when the prop is false
+        // Remove the scroll event listener when the modal closes
+        const modal = this.$refs.commentsDialog;
+        if (modal) {
+          modal.removeEventListener('scroll', this.handleCommentsScroll);
+        }
       }
     }
   },
@@ -534,6 +548,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleEscKey); // Clean up the event listener
+    
     const modal = this.$refs.commentsDialog;
     if (modal) {
       modal.removeEventListener('scroll', this.handleCommentsScroll);
@@ -551,5 +566,31 @@ export default {
   overflow-y: auto;
   max-height: 80vh; /* Adjust as needed */
 }
+
+.report-modal-box {
+  background-color: #2c2f36;
+  color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 400px;
+}
+.modal-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #3085d6;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1c6aa8;
+} 
 </style>
 

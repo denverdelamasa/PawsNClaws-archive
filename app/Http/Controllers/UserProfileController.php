@@ -52,28 +52,53 @@ class UserProfileController extends Controller
     
         return response()->json($adoptionApplications);
     }
+
     public function updateUser(Request $request)
     {
         // Validate the incoming request
         $validated = $request->validate([
             'name' => 'nullable|string|max:255', // 'name' is nullable
+            'bio' => 'nullable|string|max:1000', // 'bio' is nullable and not unique
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Allow image upload
         ]);
     
         // Get the authenticated user
         $user = auth()->user();
     
-        // Update the user's name only if it exists in the request
+        // Update the user's name if it exists in the request
         if (array_key_exists('name', $validated) && $validated['name'] !== null) {
             $user->name = $validated['name'];
         }
     
-        // Save the user with the updated name (if provided)
+        // Update the user's bio if it exists in the request
+        if (array_key_exists('bio', $validated) && $validated['bio'] !== null) {
+            $user->bio = $validated['bio'];
+        }
+    
+        // Update the user's profile picture if it exists in the request
+        if ($request->hasFile('profile_picture')) {
+            // Check if the file is valid
+            if ($request->file('profile_picture')->isValid()) {
+                // Delete the old profile picture if it exists
+                if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                    Storage::disk('public')->delete($user->profile_picture);
+                }
+    
+                // Store the new profile picture and update profile picture path
+                $imagePath = $request->file('profile_picture')->store('images/profile_pictures', 'public');
+                $user->profile_picture = $imagePath;
+            }
+        }
+    
+        // Save the user with the updated fields (if provided)
         $user->save();
     
         // Return a success response with the updated user data
         return response()->json([
             'message' => 'Profile updated successfully',
             'name' => $user->name,
+            'bio' => $user->bio,
+            'profile_picture' => $user->profile_picture ? asset('storage/' . $user->profile_picture) : null, // Return the full URL of the profile picture
         ]);
     }
     
@@ -131,22 +156,22 @@ class UserProfileController extends Controller
 
     public function userPostList()
     {
-        $userId = auth()->id(); // Get the authenticated user's ID
+        $userId = Auth::id(); // Get the authenticated user's ID
     
         // Fetch only the posts created by the authenticated user, paginated by 10 posts per page
         $posts = Post::with('user') // Eager load the user relationship
             ->withCount('comments') // Count the number of comments using the defined relationship
             ->where('user_id', $userId) // Filter posts by the authenticated user
             ->orderBy('created_at', 'desc') // Order posts by latest
-            ->paginate(10); // Paginate the results, 10 posts per page
+            ->paginate(3); // Paginate the results, 10 posts per page
     
         // Format the response for each post
         $formattedPosts = $posts->map(function ($post) use ($userId) {
             // Count the number of likes for each post
-            $likesCount = Like::where('posts_id', $post->post_id)->count();
+            $likesCount = Like::where('post_id', $post->post_id)->count();
     
             // Check if the current user has liked the post
-            $isLiked = Like::where('posts_id', $post->post_id)
+            $isLiked = Like::where('post_id', $post->post_id)
                             ->where('user_id', $userId)
                             ->exists();
     
@@ -161,7 +186,7 @@ class UserProfileController extends Controller
                 'name' => $post->user ? $post->user->name : 'Unknown User',
                 'username' => $post->user ? $post->user->username : 'Unknown User', // Fetch username from the related user
                 'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg', // Use default if no profile picture
-                'image_path' => $post->image_path ? $post->image_path : null, // Ensure image path exists
+                'image_path' => $post->image_path ? json_decode($post->image_path, true) : [],
                 'caption' => $post->caption,
                 'created_at' => $post->created_at->diffForHumans(), // Format the created_at timestamp
                 'updated_at' => $post->updated_at->diffForHumans(), // Format the updated_at timestamp
@@ -266,7 +291,7 @@ class UserProfileController extends Controller
         // Create and send notification to the user who submitted the application
         $notification = new Notification([
             'user_id' => $application->sender_id,  // The user who submitted the application
-            'type' => 'your adoption request is completed',  // Type of notification
+            'type' => 'your adoption process is completed',  // Type of notification
             'post_id' => null, // Optional, set this if the notification is related to a post
             'liked_by_user_id' => null,  // Optional, if this is a like-related notification
             'comment_by_user_id' => null,  // Optional, if this is comment-related
@@ -281,6 +306,33 @@ class UserProfileController extends Controller
             'message' => 'Adoption application status updated to Complete and post marked as adopted.',
             'application' => $application,
             'post' => $post
+        ]);
+    }
+
+    public function failAdoption($id)
+    {
+        // Find the adoption application by its ID
+        $application = AdoptionApplication::findOrFail($id);
+
+        $application->status = 'Failed';
+        // Save the application
+        $application->save();
+
+        $notification = new Notification([
+            'user_id' => $application->sender_id,  // The user who submitted the application
+            'type' => 'your adoption process is failed',  // Type of notification (e.g., 'info', 'warning')
+            'post_id' => null, // Optional, set this if the notification is related to a post
+            'liked_by_user_id' => null,  // Optional, if this is a like-related notification
+            'comment_by_user_id' => null,  // Optional, if this is comment-related
+            'notif_from_receiver' => Auth::id()
+        ]);
+
+        $notification->save();
+
+        // Optionally, you can return a response
+        return response()->json([
+            'message' => 'Adoption application status updated to Failed.',
+            'application' => $application
         ]);
     }
 }

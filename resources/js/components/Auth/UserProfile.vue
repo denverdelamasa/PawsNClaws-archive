@@ -10,15 +10,15 @@
                             <img :src="`/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
 
                             <!-- Camera Icon inside the Profile Picture, only shown when hovering over the image -->
-                            <i class="fas fa-camera w-8 h-8 absolute top-0 bottom-0 left-0 right-0 m-auto opacity-0 hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
+                            <i class="fas fa-camera w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
 
-                            <!-- Modal for Image Preview -->
+                            <!-- Modal for Image Cropping -->
                             <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
                                 <div class="bg-white p-6 rounded-lg w-80">
-                                    <h2 class="text-xl font-bold mb-4">Choose Profile Picture</h2>
+                                    <h2 class="text-xl font-bold mb-4">Crop Profile Picture</h2>
                                     <!-- Image Preview -->
                                     <div class="mb-4">
-                                        <img :src="imagePreview" v-if="imagePreview" class="w-full h-40 object-cover rounded-lg"/>
+                                        <img id="cropper-image" :src="imagePreview" v-if="imagePreview" class="w-full h-40 object-cover rounded-lg"/>
                                         <p v-if="!imagePreview" class="text-gray-500">No image selected</p>
                                     </div>
 
@@ -50,7 +50,6 @@
                             <span class="text-sm">{{ user.username }}</span>
                             <p class="text-base-content/70">{{ user.role }}</p>
                         </div>
-
                         <hr class="my-6 border-t border-base-300">
                         <!-- -->
                         <div class="flex flex-col">
@@ -109,15 +108,44 @@
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
                         <div class="flex flex-row gap-x-2 align-middle items-center justify-left">
                             <h1 class="text-xl font-bold">Bio</h1>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" @click="openBioModal" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                             </svg>
                         </div>
-                        <p class="text-base-content/70">
-                            Animal lover and proud pet parent! Here to connect, share, and help find loving homes for our furry friends. Let’s make a difference together!                            
+                        <p class="text-base-content/70" :class="{ 'italic text-gray-400': !user.bio }">
+                            {{ user.bio || 'Put something in here...' }}
                         </p>
                     </div>
+
+                    <!-- Bio Modal -->
+                    <dialog id="bioModal" class="modal">
+                        <div class="modal-box bg-base-100 text-base-content max-w-3xl w-full">
+                            <!-- Modal Header -->
+                            <form method="dialog">
+                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                            </form>
+                            <h3 class="text-3xl font-bold">Edit Bio</h3>
+                            <p class="py-2">
+                                Update your bio to share more about yourself with the community.
+                            </p>
+
+                            <!-- Bio Input -->
+                            <div class="form-control w-full mt-4">
+                                <label class="label">
+                                    <span class="label-text">Bio</span>
+                                </label>
+                                <textarea v-model="user.bio" class="textarea textarea-bordered h-24" placeholder="Write something about yourself..."></textarea>
+                            </div>
+
+                            <!-- Save and Cancel Buttons -->
+                            <div class="modal-action">
+                                <button @click="closeBioModal" class="btn btn-ghost">Cancel</button>
+                                <button @click="save" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </dialog>
+
                     <div class="p-2 flex flex-wrap gap-x-4">
                         <!-- mag cchange ng laman yung "div sa baba base sa pinindot dito" -->
                         <div class="flex flex-row md:border-r-2 md:border-accent pr-4 gap-x-4 gap-y-4">        
@@ -169,7 +197,7 @@
                     <label class="label">
                         <span class="label-text">Username</span>
                     </label>
-                    <input type="text" name="username" value="{{ auth()->user()->username }} inde ko alam to" class="input input-bordered w-full" readonly>
+                    <input type="text" name="username" value="{{ auth()->user()->username }}" class="input input-bordered w-full" readonly>
                 </div>
 
                 <!-- Email (Autofilled, Editable) -->
@@ -208,8 +236,6 @@
             </form>
         </div>
     </dialog>
-
-
 
     <!-- EZ MODAL WTF -->
     <dialog id="adoptionModal" class="modal">
@@ -263,6 +289,10 @@
 
                                 <button v-if="application.status === 'Reject'" class="btn btn-xs btn-info text-white" disabled>
                                     Rejected
+                                </button>
+
+                                <button v-if="application.status === 'Failed'" class="btn btn-xs btn-info text-white" disabled>
+                                    Failed
                                 </button>
 
                                 <button v-if="application.status === 'Complete'" class="btn btn-xs btn-info text-white" disabled>
@@ -385,10 +415,10 @@
                             <button v-if="selectedApplication.status === 'Pending'" @click.prevent="acceptForm" type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                                 <strong>Accept</strong>
                             </button>
-                            <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="changeStatusToFailed">
+                            <button v-if="selectedApplication.status === 'Ongoing'" @click.prevent="changeStatusToFailed" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" >
                                 <strong>Failed</strong>
                             </button>
-                            <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600" @click.prevent="changeStatusToComplete">
+                            <button v-if="selectedApplication.status === 'Ongoing'" @click.prevent="changeStatusToComplete" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
                                 <strong>Completed</strong>
                             </button>
                             
@@ -413,6 +443,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ProfilePostCard from '../partials/profile/ProfilePostCard.vue';
+import Cropper from 'cropperjs';
 
 export default {
   components: {
@@ -423,9 +454,14 @@ export default {
       isEditing: false,
       isModalOpen: false,
       imagePreview: null,
+      cropper: null,
+      selectedImage: null,
+      imagePreview: null,
       userAdoptionForms: [],
       showFormModal: false,
       selectedApplication: null,
+      bioInput: '', // Temporary storage for bio input
+      isBioModalOpen: false, // Controls the visibility of the bio modal
       user: {
         name: '',
         username: '',
@@ -436,6 +472,17 @@ export default {
     };
   },
   methods: {
+    // Open the bio modal and populate the textarea with the current bio
+    openBioModal() {
+        this.bio = this.user.bio; // Set the input to the current bio
+        this.isBioModalOpen = true;
+        document.getElementById('bioModal').showModal(); // Open the modal
+    },
+    // Close the bio modal
+    closeBioModal() {
+        this.isBioModalOpen = false;
+        document.getElementById('bioModal').close(); // Close the modal
+    },
     openReviewModal(application) {
         console.log(application);
         this.selectedApplication = application; // Clone the application object
@@ -520,6 +567,7 @@ export default {
         .put(`/api/user/adoption/complete/${applicationId}`)
         .then((response) => {
             alert('Adoption application completed!');
+            this.fetchUserAdoptionApplications();
             this.closeReviewModal();
         })
         .catch((error) => {
@@ -536,7 +584,17 @@ export default {
         axios
         .put(`/api/user/adoption/fail/${applicationId}`)
         .then((response) => {
-            alert('Adoption application marked as failed!');
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Adoption Process Failed!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+            });
+            this.fetchUserAdoptionApplications();
             this.closeReviewModal();
         })
         .catch((error) => {
@@ -550,18 +608,43 @@ export default {
     },
     closeModal() {
       this.isModalOpen = false;
-      this.imagePreview = null; // Reset image preview when closed
-    },
-    handleFileChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          this.imagePreview = reader.result; // Set the preview image
-          this.selectedImage = file; // Store the selected image file
-        };
-        reader.readAsDataURL(file);
+      this.imagePreview = null;
+      if (this.cropper) {
+        this.cropper.destroy();
+        this.cropper = null;
       }
+    },
+    
+    handleFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                this.imagePreview = reader.result;
+                this.$nextTick(() => {
+                    this.initializeCropper(); // Initialize the cropper after the image is loaded
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    },
+    initializeCropper() {
+        const image = document.getElementById('cropper-image');
+        if (image) {
+            // Destroy the existing cropper instance if it exists
+            if (this.cropper) {
+                this.cropper.destroy();
+            }
+
+            // Initialize a new cropper instance
+            this.cropper = new Cropper(image, {
+                aspectRatio: 1, // Set aspect ratio to 1:1 for a square crop
+                viewMode: 1, // Restrict the crop box to not exceed the size of the image
+                autoCropArea: 1, // Automatically set the crop area to the entire image
+            });
+            console.log('Cropper initialized:', this.cropper);
+        }
+        
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
@@ -570,26 +653,73 @@ export default {
         this.isEditing = false; // Hide the input field after saving
 
         const formData = new FormData();
+        formData.append('_method', 'PUT'); // Laravel will interpret this as a PUT request
         formData.append('name', this.user.name); // Append the updated name
+        formData.append('bio', this.user.bio); // Append the updated bio
+
+        // Append the cropped profile picture if it exists
+        if (this.cropper) {
+            const croppedCanvas = this.cropper.getCroppedCanvas();
+            if (croppedCanvas) {
+                // Wrap toBlob in a Promise to handle it asynchronously
+                const blob = await new Promise((resolve) => {
+                    croppedCanvas.toBlob((blob) => {
+                        resolve(blob);
+                    });
+                });
+
+                if (blob) {
+                    formData.append('profile_picture', blob, 'profile-picture.png');
+                }
+            }
+        }
 
         try {
-            const response = await axios.put('/api/user/update/profile', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            const response = await axios.post('/api/user/update/profile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Ensure you're sending the correct token
+                },
             });
 
             // Log server response for debugging
             console.log('Server Response:', response.data);
 
             // On success, update the local user data
-            if (response.data.name) {
-            this.user.name = response.data.name;
+            if (response.data.name && response.data.bio) {
+                this.user.name = response.data.name;
+                this.user.bio = response.data.bio;
+
+                // Update the profile picture if it was returned in the response
+                if (response.data.profile_picture) {
+                    this.user.profile_picture = response.data.profile_picture;
+                }
+
+                Swal.fire({
+                    position: "bottom-end",
+                    icon: "success",
+                    title: "Your profile has been updated successfully!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: "#1e293b",
+                    color: "#ffffff",
+                    toast: true,
+                });
+
+                this.closeBioModal();
+                this.closeModal(); // Close the modal after saving
+                this.fetchUserProfileInfo(); // Refresh user profile data
+            } else {
+                throw new Error('Name not updated in server response.');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
 
             Swal.fire({
                 position: "bottom-end",
-                icon: "success",
-                title: "Your profile has been updated successfully!",
+                icon: "error",
+                title: "An error occurred. Please try again.",
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -597,28 +727,8 @@ export default {
                 color: "#ffffff",
                 toast: true,
             });
-
-            this.fetchUserProfileInfo(); // Refresh user profile data
-            this.closeModal(); // Close the modal after saving
-            } else {
-            throw new Error('Name not updated in server response.');
-            }
-        } catch (error) {
-            console.error('Error updating profile:', error);
-
-            Swal.fire({
-            position: "bottom-end",
-            icon: "error",
-            title: "An error occurred. Please try again.",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: "#1e293b",
-            color: "#ffffff",
-            toast: true,
-            });
         }
-        },
+    },
     async fetchUserProfileInfo() {
       try {
         const response = await axios.get('/api/user/profile/info');
@@ -739,14 +849,23 @@ export default {
 </style>
 
 <style>
-  /* Hide the scrollbar but allow scrolling */
-  .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Hides scrollbar in WebKit browsers */
-  }
+/* Hide the scrollbar but allow scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+display: none; /* Hides scrollbar in WebKit browsers */
+}
 
-  .hide-scrollbar {
-  -ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
-  scrollbar-width: none; /* Hides scrollbar in Firefox */
-  overflow: auto; /* Ensure scrolling is enabled */
-  }
+.hide-scrollbar {
+-ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
+scrollbar-width: none; /* Hides scrollbar in Firefox */
+overflow: auto; /* Ensure scrolling is enabled */
+}
+
+#cropper-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.cropper-container {
+  margin: 0 auto;
+}
 </style>

@@ -138,7 +138,6 @@ export default {
   data() {
     return {
       announcements: [],
-      comments: [],
       isModalOpen: false,
       selectedAnnouncementId: null,
       currentPage: 1,
