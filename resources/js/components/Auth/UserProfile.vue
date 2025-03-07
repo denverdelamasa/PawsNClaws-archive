@@ -171,7 +171,7 @@
                         </div>
                     </div>
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
-                        <ProfilePostCard/>
+                        <ProfileAnnouncement/>
                     </div>
                 </div>
             </div>
@@ -443,11 +443,13 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ProfilePostCard from '../partials/profile/ProfilePostCard.vue';
+import ProfileAnnouncement from '../partials/profile/ProfileAnnouncement.vue';
 import Cropper from 'cropperjs';
 
 export default {
   components: {
-    ProfilePostCard
+    ProfilePostCard,
+    ProfileAnnouncement
   },
   data() {
     return {
