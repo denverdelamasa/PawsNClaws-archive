@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @include('partials.main.data-theme')>
 @include('partials.main.scripts-styles')
-    <body class="font-sans antialiased">
+    <body class="font-sans">
       <div class="navbar bg-base-300 sticky top-0 z-20">
         <div class="navbar-start">
           <div class="dropdown">
@@ -163,7 +163,7 @@
 
     </body>
 
-    <footer class="footer bg-base-300 text-base-content p-4 text-xs">
+    <footer class="footer bg-base-300 text-base-content p-4 text-xs p-12">
         <nav>
           <h6 class="footer-title text-xs">Contents</h6>
           <a class="link link-hover">Posts</a>
