@@ -19,7 +19,7 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
         </script>
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans">
         <div class="min-h-screen  dark:">
             @include('layouts.navigation')
 

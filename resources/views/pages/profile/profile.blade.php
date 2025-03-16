@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @include('partials.main.data-theme')>
 @include('partials.main.scripts-styles')    
-    <body class="font-sans antialiased">
+    <body class="font-sans">
         @include('partials.main.navbar')      
         <div id="app2">
             <user-profile></user-profile>

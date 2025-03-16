@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @include('partials.main.data-theme')>
     @include('partials.main.scripts-styles')
-    <body class="font-sans antialiased">
+    <body class="font-sans">
         @include('partials.main.navbar')
       
         <div id="app2">
             <browse></browse> <!-- Vue component will be rendered here -->
         </div>
 
-    <footer class="footer bg-base-300 text-base-content p-4 text-xs">
+    <footer class="footer bg-base-300 text-base-content p-4 text-xs p-12">
         <nav>
           <h6 class="footer-title text-xs">Contents</h6>
           <a class="link link-hover">Posts</a>

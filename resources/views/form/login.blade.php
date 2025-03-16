@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @include('partials.main.data-theme')>
 @include('partials.main.scripts-styles')
-    <body class="font-sans antialiased">
+    <body class="font-sans">
         <div id="app2">
           <div class="hero bg-base-200 min-h-screen">
             <div class="hero-content flex-col lg:flex-row-reverse justify-center items-center w-full">
