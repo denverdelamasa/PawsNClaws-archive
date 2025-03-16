@@ -112,34 +112,6 @@ class PostController extends Controller
             'post' => $post,
         ], 201);
     }
-
-    public function createAnnouncement(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
-            'description' => 'required|string',
-        ]);
-    
-        $thumbnail = null;
-        if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
-            $thumbnail = $request->file('thumbnail')->store('images/posts', 'public');
-        }
-    
-        $announcement = new Announcement();
-        $announcement->title = $request->input('title');
-        $announcement->description = $request->input('description');
-        if ($thumbnail) {
-            $announcement->thumbnail = $thumbnail;
-        }
-        $announcement->shelter_id = Auth::id();
-        $announcement->save();
-    
-        return response()->json([
-            'message' => 'Post created successfully!',
-            'announcement' => $announcement
-        ], 201);
-    }
     
     
     public function updatePost(Request $request, $postId)

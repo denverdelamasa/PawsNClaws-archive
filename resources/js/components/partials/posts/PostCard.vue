@@ -674,10 +674,10 @@ export default {
 
       // Close the edit modal
       closeEditModal(postId) {
-          const modal = document.getElementById(`editPostModal-${postId}`);
-          if (modal) {
-              modal.close();  // This will close the modal
-          }
+        const modal = document.getElementById(`editPostModal-${postId}`);
+        if (modal) {
+            modal.close();  // This will close the modal
+        }
       },
 
     // Submit the edit form

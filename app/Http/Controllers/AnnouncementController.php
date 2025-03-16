@@ -106,4 +106,70 @@ class AnnouncementController extends Controller
         // Return the formatted response as JSON
         return response()->json($formattedAnnouncement, 200);
     }
+
+    public function createAnnouncement(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000',
+            'description' => 'required|string',
+        ]);
+    
+        $thumbnail = null;
+        if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
+            $thumbnail = $request->file('thumbnail')->store('images/posts', 'public');
+        }
+    
+        $announcement = new Announcement();
+        $announcement->title = $request->input('title');
+        $announcement->description = $request->input('description');
+        if ($thumbnail) {
+            $announcement->thumbnail = $thumbnail;
+        }
+        $announcement->shelter_id = Auth::id();
+        $announcement->save();
+    
+        return response()->json([
+            'message' => 'Post created successfully!',
+            'announcement' => $announcement
+        ], 201);
+    }
+
+    public function updateAnnouncement(Request $request, $announcementId)
+    {
+        // Find the post by ID
+        $announcement = Announcement::findOrFail($announcementId);
+    
+        // Validate the incoming data (no image validation)
+        $validated = $request->validate([
+            'title' => 'required|string',
+            'description' => 'required|string'
+        ]);
+    
+        // Update the caption
+        $announcement->title = $validated['title'];
+        $announcement->description = $validated['description'];
+    
+        // Save the post with the updated caption
+        $announcement->save();
+    
+        // Return a response (success or error)
+        return response()->json([
+            'message' => 'Post updated successfully!',
+            'announcement' => $announcement
+        ], 200);
+    }
+
+    public function deleteAnnouncement($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+
+        // Optional: Check if the authenticated user owns the post
+        if ($announcement->shelter_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $announcement->delete();
+        return response()->json(['message' => 'Post deleted successfully']);
+    }
 }

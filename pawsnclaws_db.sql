@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 24, 2025 at 02:58 AM
+-- Generation Time: Mar 07, 2025 at 01:16 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -57,7 +57,8 @@ INSERT INTO `adoption_applications` (`application_id`, `adoption_id`, `receiver_
 (3, 'A-3-1025-0211', 1, 4, 51, 'Aj to', '231123123', 'individual', 'student', NULL, 'asjdkhaskdha', 'wala', 'tae', 0, 'gov_ids/qR9avc9cZZVxLol09iqwJr0n1leClACkYxbA0268.jpg', 'Complete', '2025-02-10 18:25:36', '2025-02-10 18:26:23'),
 (4, 'A-4-1144-0211', 1, 5, 52, 'asdasd', 'asdasd', 'individual', 'student', NULL, 'asdasd', 'sadasdas', 'asdasdasd', 0, 'gov_ids/EnLzNkBUrmaCgYHql0Yzvdj593GoO8x7lkJkpafP.pdf', 'Reject', '2025-02-10 19:44:25', '2025-02-10 20:00:05'),
 (6, 'A-6-1443-0211', 5, 1, 54, 'hjkdasjdjasdj', 'ajsdkkjashdjas', 'individual', 'student', NULL, 'asdasdasd', 'asdasda', 'sasdasdasd', 0, 'gov_ids/Dq3BUM2liDHGsw09bP4l30aAAC3GcFRkdd7BTM0I.pdf', 'Reject', '2025-02-10 22:43:43', '2025-02-11 00:13:25'),
-(7, 'A-7-1445-0211', 1, 5, 57, 'asdasd', 'asdasdasd', 'individual', 'student', NULL, 'asdasdasdasd', 'asdasdasdasdas', 'asdasdasdas', 0, 'gov_ids/zzr61Kxsrv1Zp8hLJkuOfZpetedspCzzerprYdhQ.pdf', 'Ongoing', '2025-02-10 22:45:29', '2025-02-14 18:49:10');
+(7, 'A-7-1445-0211', 1, 5, 57, 'asdasd', 'asdasdasd', 'individual', 'student', NULL, 'asdasdasdasd', 'asdasdasdasdas', 'asdasdasdas', 0, 'gov_ids/zzr61Kxsrv1Zp8hLJkuOfZpetedspCzzerprYdhQ.pdf', 'Complete', '2025-02-10 22:45:29', '2025-02-26 05:58:12'),
+(8, 'A-8-1209-0227', 1, 7, 61, 'aj', 'aj', 'individual', 'student', NULL, 'aj', 'aj', 'aj', 0, 'gov_ids/bvBzWZtjQwTbUDRuxQK4OPxCjXNwgeWCBQoh1KQb.png', 'Failed', '2025-02-26 20:09:22', '2025-02-26 20:12:36');
 
 --
 -- Triggers `adoption_applications`
@@ -198,7 +199,22 @@ INSERT INTO `comments` (`comment_id`, `user_id`, `post_comment_id`, `event_comme
 (38, 1, NULL, NULL, 10, '11', '2025-02-22 06:33:50', '2025-02-22 06:33:50'),
 (39, 1, 58, NULL, NULL, 'asdas', '2025-02-22 06:40:29', '2025-02-22 06:40:29'),
 (40, 1, 58, NULL, NULL, '12', '2025-02-22 06:40:33', '2025-02-22 06:40:33'),
-(41, 1, NULL, NULL, 10, 'asd', '2025-02-22 06:40:56', '2025-02-22 06:40:56');
+(41, 1, NULL, NULL, 10, 'asd12', '2025-02-22 06:40:56', '2025-03-01 23:47:14'),
+(42, 1, 57, NULL, NULL, 'asdasd', '2025-02-26 05:31:53', '2025-02-26 05:31:53'),
+(43, 1, 61, NULL, NULL, 'asdasdd', '2025-02-26 20:48:14', '2025-02-26 20:48:14'),
+(44, 1, 62, NULL, NULL, 'asdasdasdasddsaads', '2025-02-28 05:15:11', '2025-02-28 05:15:11'),
+(45, 1, 62, NULL, NULL, 'asdasdasd', '2025-02-28 05:15:14', '2025-02-28 05:15:14'),
+(46, 1, 62, NULL, NULL, 'asdasdas', '2025-02-28 05:15:17', '2025-02-28 05:15:17'),
+(47, 1, 62, NULL, NULL, 'asdasdas', '2025-02-28 05:15:20', '2025-02-28 05:15:20'),
+(56, 1, 62, NULL, NULL, 'sad', '2025-03-02 01:47:11', '2025-03-02 01:47:11'),
+(57, 1, 62, NULL, NULL, 'asdasd', '2025-03-02 01:47:14', '2025-03-02 01:47:14'),
+(58, 1, 62, NULL, NULL, 'asd', '2025-03-02 01:47:16', '2025-03-02 01:47:16'),
+(59, 1, 62, NULL, NULL, 'asdasd', '2025-03-02 01:47:26', '2025-03-02 01:47:26'),
+(60, 1, 62, NULL, NULL, 'asd', '2025-03-02 01:47:29', '2025-03-02 01:47:29'),
+(61, 1, 62, NULL, NULL, 'asda', '2025-03-02 01:47:31', '2025-03-02 01:47:31'),
+(62, 1, 62, NULL, NULL, '11', '2025-03-02 01:47:33', '2025-03-02 01:47:33'),
+(63, 1, 62, NULL, NULL, '12', '2025-03-02 01:47:35', '2025-03-02 01:47:35'),
+(64, 1, 62, NULL, NULL, '131111', '2025-03-02 01:47:37', '2025-03-02 02:00:20');
 
 -- --------------------------------------------------------
 
@@ -239,7 +255,8 @@ INSERT INTO `done_adoption_forms` (`done_id`, `done_user_id`, `done_post_id`, `c
 (3, 4, 51, '2025-02-10 18:25:36', '2025-02-10 18:25:36'),
 (4, 5, 52, '2025-02-10 19:44:25', '2025-02-10 19:44:25'),
 (6, 1, 54, '2025-02-10 22:43:43', '2025-02-10 22:43:43'),
-(7, 5, 57, '2025-02-10 22:45:29', '2025-02-10 22:45:29');
+(7, 5, 57, '2025-02-10 22:45:29', '2025-02-10 22:45:29'),
+(8, 7, 61, '2025-02-26 20:09:22', '2025-02-26 20:09:22');
 
 -- --------------------------------------------------------
 
@@ -344,7 +361,10 @@ CREATE TABLE `likes` (
 --
 
 INSERT INTO `likes` (`like_id`, `post_id`, `announcement_id`, `user_id`, `created_at`, `updated_at`) VALUES
-(46, 54, NULL, 5, '2025-02-11 00:04:13', '2025-02-11 00:04:13');
+(46, 54, NULL, 5, '2025-02-11 00:04:13', '2025-02-11 00:04:13'),
+(89, 57, NULL, 1, '2025-02-26 05:34:37', '2025-02-26 05:34:37'),
+(90, 62, NULL, 1, '2025-03-01 23:45:55', '2025-03-01 23:45:55'),
+(91, 61, NULL, 1, '2025-03-02 05:11:18', '2025-03-02 05:11:18');
 
 -- --------------------------------------------------------
 
@@ -404,19 +424,19 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`notification_id`, `user_id`, `liked_by_user_id`, `comment_by_user_id`, `notif_from_receiver`, `post_id`, `announcement_id`, `type`, `read_at`, `created_at`, `updated_at`) VALUES
-(7, 1, NULL, NULL, 4, 50, NULL, 'submitted an adoption application', '2025-02-19 18:28:22', '2025-02-10 16:58:51', '2025-02-19 18:28:22'),
+(7, 1, NULL, NULL, 4, 50, NULL, 'submitted an adoption application', '2025-02-26 19:59:56', '2025-02-10 16:58:51', '2025-02-26 19:59:56'),
 (8, 4, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', '2025-02-10 18:11:38', '2025-02-10 16:59:27', '2025-02-10 18:11:38'),
 (9, 4, NULL, NULL, 1, NULL, NULL, 'your adoption request is completed', '2025-02-10 18:11:35', '2025-02-10 17:42:52', '2025-02-10 18:11:35'),
-(10, 1, NULL, NULL, 4, 51, NULL, 'submitted an adoption application', '2025-02-19 18:28:21', '2025-02-10 18:25:36', '2025-02-19 18:28:21'),
+(10, 1, NULL, NULL, 4, 51, NULL, 'submitted an adoption application', '2025-02-26 19:59:57', '2025-02-10 18:25:36', '2025-02-26 19:59:57'),
 (11, 4, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', NULL, '2025-02-10 18:26:20', '2025-02-10 18:26:20'),
 (12, 4, NULL, NULL, 1, NULL, NULL, 'your adoption request is completed', NULL, '2025-02-10 18:26:23', '2025-02-10 18:26:23'),
-(13, 1, NULL, NULL, 5, 52, NULL, 'submitted an adoption application', '2025-02-19 18:28:20', '2025-02-10 19:44:25', '2025-02-19 18:28:20'),
+(13, 1, NULL, NULL, 5, 52, NULL, 'submitted an adoption application', '2025-02-26 19:59:57', '2025-02-10 19:44:25', '2025-02-26 19:59:57'),
 (14, 5, NULL, NULL, 1, NULL, NULL, 'rejected your adoption request form', '2025-02-10 21:34:17', '2025-02-10 20:00:05', '2025-02-10 21:34:17'),
-(15, 1, 5, NULL, NULL, 52, NULL, 'liked your post', '2025-02-19 18:28:19', '2025-02-10 21:40:39', '2025-02-19 18:28:19'),
+(15, 1, 5, NULL, NULL, 52, NULL, 'liked your post', '2025-02-26 19:59:59', '2025-02-10 21:40:39', '2025-02-26 19:59:59'),
 (17, 5, NULL, NULL, 1, 54, NULL, 'submitted an adoption application', '2025-02-10 22:47:48', '2025-02-10 22:43:43', '2025-02-10 22:47:48'),
-(18, 1, NULL, NULL, 5, 57, NULL, 'submitted an adoption application', '2025-02-19 18:27:43', '2025-02-10 22:45:29', '2025-02-19 18:27:43'),
-(19, 1, 5, NULL, NULL, 57, NULL, 'liked your post', '2025-02-19 18:27:42', '2025-02-10 22:47:55', '2025-02-19 18:27:42'),
-(20, 1, NULL, NULL, 5, NULL, NULL, 'rejected your adoption request form', '2025-02-19 18:27:41', '2025-02-11 00:13:25', '2025-02-19 18:27:41'),
+(18, 1, NULL, NULL, 5, 57, NULL, 'submitted an adoption application', '2025-02-26 20:00:01', '2025-02-10 22:45:29', '2025-02-26 20:00:01'),
+(19, 1, 5, NULL, NULL, 57, NULL, 'liked your post', '2025-02-26 20:00:01', '2025-02-10 22:47:55', '2025-02-26 20:00:01'),
+(20, 1, NULL, NULL, 5, NULL, NULL, 'rejected your adoption request form', '2025-03-02 00:25:05', '2025-02-11 00:13:25', '2025-03-02 00:25:05'),
 (21, 5, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', NULL, '2025-02-14 18:49:10', '2025-02-14 18:49:10'),
 (22, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 07:00:17', '2025-02-17 07:00:17'),
 (23, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:13:03', '2025-02-17 18:13:03'),
@@ -443,7 +463,11 @@ INSERT INTO `notifications` (`notification_id`, `user_id`, `liked_by_user_id`, `
 (44, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-22 05:48:20', '2025-02-22 05:48:20'),
 (45, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-22 06:32:54', '2025-02-22 06:32:54'),
 (46, 6, NULL, 1, NULL, 58, NULL, 'commented on your post', NULL, '2025-02-22 06:40:29', '2025-02-22 06:40:29'),
-(47, 6, NULL, 1, NULL, 58, NULL, 'commented on your post', NULL, '2025-02-22 06:40:33', '2025-02-22 06:40:33');
+(47, 6, NULL, 1, NULL, 58, NULL, 'commented on your post', NULL, '2025-02-22 06:40:33', '2025-02-22 06:40:33'),
+(48, 5, NULL, NULL, 1, NULL, NULL, 'your adoption request is completed', NULL, '2025-02-26 05:58:12', '2025-02-26 05:58:12'),
+(49, 1, NULL, NULL, 7, 61, NULL, 'submitted an adoption application', '2025-03-02 04:15:02', '2025-02-26 20:09:22', '2025-03-02 04:15:02'),
+(50, 7, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', NULL, '2025-02-26 20:10:43', '2025-02-26 20:10:43'),
+(51, 7, NULL, NULL, 1, NULL, NULL, 'your adoption process is failed', NULL, '2025-02-26 20:12:36', '2025-02-26 20:12:36');
 
 -- --------------------------------------------------------
 
@@ -514,9 +538,11 @@ INSERT INTO `posts` (`post_id`, `caption`, `user_id`, `image_path`, `status`, `c
 (54, 'adoption asjdasdasd', 5, '\"[\\\"images\\\\\\/posts\\\\\\/Ljh23EPtDe55vUcMvqmRxdGVdMBdl6qzbWf3V4XI.jpg\\\",\\\"images\\\\\\/posts\\\\\\/vapYpMOOpEDzy233ACCfDi0ylmlyVcR296vJY8dC.jpg\\\"]\"', 'uploaded', '2025-02-10 22:42:48', '2025-02-10 22:42:48', 1, 'iRTF7BzzvHEQNrH'),
 (55, 'asdasdasd', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:45', '2025-02-10 22:44:45', 1, 'e96sTkHNvKTrmEL'),
 (56, 'asdasdasdasd', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:50', '2025-02-10 22:44:50', 1, 'RpAtGwhUdzZuCIq'),
-(57, '123123123123', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:54', '2025-02-10 22:44:54', 1, 'UM6TIhJamS6FuKU'),
+(57, 'aaa11', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:54', '2025-02-26 05:58:12', 2, 'UM6TIhJamS6FuKU'),
 (58, 'Sample', 6, '\"[\\\"images\\\\\\/posts\\\\\\/3zOKwCM2ep00rr40vttrR5lXtOeWNgyMRgpzQHCv.jpg\\\"]\"', 'uploaded', '2025-02-14 18:17:51', '2025-02-14 18:17:51', 0, 'L2YKRatCwEtZ9SU'),
-(59, 'Sample Adopted Post', 6, '\"[\\\"images\\\\\\/posts\\\\\\/ZHypQwpFaKCSytbG0Tsz9MIQb5D3JnqZ06expR4z.jpg\\\"]\"', 'uploaded', '2025-02-14 18:26:58', '2025-02-14 18:34:46', 2, '1gTljrUhrkCPb42');
+(59, 'Sample Adopted Post', 6, '\"[\\\"images\\\\\\/posts\\\\\\/ZHypQwpFaKCSytbG0Tsz9MIQb5D3JnqZ06expR4z.jpg\\\"]\"', 'uploaded', '2025-02-14 18:26:58', '2025-02-14 18:34:46', 2, '1gTljrUhrkCPb42'),
+(61, 'tae', 1, '\"[]\"', 'uploaded', '2025-02-26 20:07:44', '2025-02-26 20:07:44', 1, 'wTMxQG765XC3NIR'),
+(62, 'asdasd', 1, '\"[]\"', 'uploaded', '2025-02-26 20:48:49', '2025-02-26 20:48:49', 0, '3fus2AQY6PzUnug');
 
 -- --------------------------------------------------------
 
@@ -556,8 +582,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('EussNrRmGUZo5AROMjMwRiNCpB52OriJycKRu9Kx', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVGhpNXBtZGlxVEhvN3FpYWMyUkNWYmFMS3VHWkNyVEs0YnhjQ1JSdyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hbm5vdW5jZW1lbnRzIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1740235995),
-('qv9Qso6xjI2CQuTcN0qP381v5egsLegomTaQ9TZl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiQWx1UERURk8wWXNzbGNCTU92aVNvYmczdFlCRXBXSzZGaVVKTGJPNCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1740231962);
+('cvbLRBNlsRZDLfjLLtkByUAZdD3azOTuVq7jaOZ0', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTVExamM4aWZhSzREOExRM0JoUjNxVnV2RVE0Wnl0ZWJkYmc2SHhrcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wYWdlcy9wcm9maWxlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1741339590);
 
 -- --------------------------------------------------------
 
@@ -589,11 +614,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `username`, `profile_picture`, `bio`, `email`, `email_verified_at`, `password`, `role`, `status`, `is_online`, `last_online`, `suspended_until`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Alex', 'admin', 'images/defaultpics/default-profile.png', NULL, 'admin@gmail.com', NULL, '$2y$12$fy3sVE1nde4QtB/3JoOnf.RmuasRfkgSV9cqwqjTlTeYf2lMt0pce', 'Admin', 'Active', 1, '2025-02-22 06:53:15', NULL, NULL, '2024-12-19 16:37:21', '2025-02-22 06:53:15'),
+(1, 'Aj122', 'admin12', 'images/defaultpics/default-profile.png', 'Cat lover ako tae huhuhuhu', 'admin@gmail.com', NULL, '$2y$12$fy3sVE1nde4QtB/3JoOnf.RmuasRfkgSV9cqwqjTlTeYf2lMt0pce', 'Admin', 'Active', 0, '2025-03-07 01:26:28', NULL, NULL, '2024-12-19 16:37:21', '2025-03-07 01:26:30'),
 (2, 'tae', 'tae', 'images/defaultpics/default-profile.png', NULL, 'tae@gmail.com', NULL, '$2y$12$HuHMBVaC6FJ9kCokadE6/.aie1g1kMmlc3jVdrY7HCsSNyo6vEZFO', 'User', 'Active', 0, '2025-01-28 00:18:12', NULL, NULL, '2025-01-27 21:54:47', '2025-01-28 00:18:15'),
 (4, 'Aj', 'aj', 'images/defaultpics/default-profile.png', NULL, 'aj@gmail.com', NULL, '$2y$12$XYl0dF/V4DgW1//hShR.HeDxyHBnq0BJMUSHpIvYsDAHyH2gS3cO2', 'User', 'Active', 0, '2025-02-10 18:30:07', NULL, NULL, '2025-02-10 16:56:53', '2025-02-10 18:30:10'),
 (5, 'Jm', 'jm18', 'images/defaultpics/default-profile.png', NULL, 'jm@gmail.com', NULL, '$2y$12$j/1J.G7GPT6uqb8hPHCCxuJWmQuz3l//L.PrtkAZrTHmxrbIY0Fgq', 'User', 'Active', 1, '2025-02-11 00:27:35', NULL, NULL, '2025-02-10 18:30:53', '2025-02-11 00:27:35'),
-(6, 'sample', 'sample', 'images/defaultpics/default-profile.png', NULL, 'sample@gmail.com', NULL, '$2y$12$uqyCCNvcFVCLDQN39guNF.j2nC8HHFgI2RlHRSHHiyLdI2IkLACM2', 'User', 'Active', 0, '2025-02-14 18:37:31', NULL, NULL, '2025-02-14 18:12:18', '2025-02-14 18:37:33');
+(6, 'sample', 'sample', 'images/defaultpics/default-profile.png', NULL, 'sample@gmail.com', NULL, '$2y$12$uqyCCNvcFVCLDQN39guNF.j2nC8HHFgI2RlHRSHHiyLdI2IkLACM2', 'User', 'Active', 0, '2025-02-14 18:37:31', NULL, NULL, '2025-02-14 18:12:18', '2025-02-14 18:37:33'),
+(7, 'aj11', 'aj11', 'images/defaultpics/default-profile.png', NULL, 'aj11@gmail.com', NULL, '$2y$12$/lDpKYczyCQ5eFMT6OKOb.OT10waAfvnuTh0yvY6kk.g9yKIucI2q', 'User', 'Active', 0, '2025-03-02 01:56:28', NULL, NULL, '2025-02-26 20:08:45', '2025-03-02 01:56:31');
 
 --
 -- Indexes for dumped tables
@@ -761,7 +787,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `adoption_applications`
 --
 ALTER TABLE `adoption_applications`
-  MODIFY `application_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `application_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `announcements`
@@ -773,7 +799,7 @@ ALTER TABLE `announcements`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `comment_replies`
@@ -785,7 +811,7 @@ ALTER TABLE `comment_replies`
 -- AUTO_INCREMENT for table `done_adoption_forms`
 --
 ALTER TABLE `done_adoption_forms`
-  MODIFY `done_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `done_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -815,7 +841,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -827,25 +853,25 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `reports`
 --
 ALTER TABLE `reports`
-  MODIFY `report_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `report_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables

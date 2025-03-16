@@ -82,7 +82,9 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
 
     //Announcement Modifiers
-    Route::post('/api/announcement/upload', [PostController::class, 'createAnnouncement']);
+    Route::post('/api/announcement/upload', [AnnouncementController::class, 'createAnnouncement']);
+    Route::put('/api/announcement/edit/{announcement_id}', [AnnouncementController::class, 'updateAnnouncement']);
+    Route::delete('/api/announcement/delete/{announcement_id}', [AnnouncementController::class, 'deleteAnnouncement']);
     
     //Post Interactions
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
