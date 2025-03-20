@@ -14,8 +14,6 @@
             Post Comment
         </button>
 
-        
-
         <!-- Comment Section -->
         <div class="comment-section mt-4">
           <!-- Loading Animation -->
@@ -240,7 +238,7 @@ import Swal from 'sweetalert2';
 export default {
   name: 'CommentsModal',
   props: {
-    isModalOpen: {
+    isCommentsModalOpen: {
       type: Boolean,
       required: true
     },
@@ -518,7 +516,7 @@ export default {
     
   },
   watch: {
-    isModalOpen(newVal) {
+    isCommentsModalOpen(newVal) {
       if (newVal) {
         this.$refs.commentsDialog.showModal(); // Open the dialog when the prop is true
         this.fetchComments();  // Fetch comments when modal opens

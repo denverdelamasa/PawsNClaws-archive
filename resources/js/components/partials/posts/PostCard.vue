@@ -143,61 +143,8 @@
       </div>
     </dialog>
 
-    <!-- Report Post Modal -->
-    <dialog :id="`reportPostModal-${post.post_id}`" class="modal">
-      <div class="modal-box">
-        <h3 class="text-lg font-bold">Report Post</h3>
-        <p class="py-4">Please select the reason for reporting this post:</p>
-
-        <form @submit.prevent="submitReport(post.post_id)">
-          <!-- Predefined Report Reasons -->
-          <div class="my-4 gap-y-2 flex flex-col">
-            <div>
-              <input type="radio" id="troll" value="Troll" v-model="reportReason" class="radio"/>
-              <label for="troll" class="ml-2">Troll</label>
-            </div>
-
-            <div>
-              <input type="radio" id="hate-speech" value="Hate Speech" v-model="reportReason" class="radio"/>
-              <label for="hate-speech" class="ml-2">Hate Speech</label>
-            </div>
-
-            <div>
-              <input type="radio" id="spam" value="Spam" v-model="reportReason" class="radio"/>
-              <label for="spam" class="ml-2">Spam</label>
-            </div>
-
-            <div>
-              <input type="radio" id="harassment" value="Harassment" v-model="reportReason" class="radio"/>
-              <label for="harassment" class="ml-2">Harassment</label>
-            </div>
-
-            <div>
-              <input type="radio" id="other" value="Other" v-model="reportReason" class="radio"/>
-              <label for="other" class="ml-2">Other</label>
-            </div>
-          </div>
-
-          <!-- If "Other" is selected, show a text area for additional comments -->
-          <div v-if="reportReason === 'Other'" class="my-4">
-            <label for="custom-reason" class="label">Please describe the issue</label>
-            <textarea
-              id="custom-reason"
-              v-model="customReason"
-              class="textarea textarea-bordered w-full"
-              rows="4"
-              placeholder="Enter custom reason for reporting..."
-            ></textarea>
-          </div>
-
-          <div class="modal-action">
-            <button class="btn btn-error">Submit Report</button>
-            <a class="btn" @click="closeReportModal(post.post_id)">Cancel</a>
-          </div>
-        </form>
-      </div>
-    </dialog>
-
+    <!-- Report Modal -->
+    <ReportModal v-if="selectedReportPostId" :postId="selectedReportPostId" :currentUserId="currentUserId" @close="closeReportModal"/>
 
     <!-- Card Body -->
     <div class="card-body">
@@ -268,14 +215,14 @@
       </button>
 
       <!-- Comments Button -->
-      <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(post.post_id)">
+      <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openCommentsModal(post.post_id)">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
         </svg>
       <span>{{ post.comments_count}} Comments</span>
     </button>
 
-    <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
+    <Comments :isCommentsModalOpen="isCommentsModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedCommentPostId"/>
 
       <!-- Bookmark Button -->
       <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -454,11 +401,13 @@ import axios from "axios";
 import Swal from 'sweetalert2';
 import UploadPost from "../misc/UploadPost.vue";
 import Comments from '../misc/Comments.vue';
+import ReportModal from "../misc/Reports.vue";
 
 export default {
   components: {
     UploadPost,
-    Comments
+    Comments,
+    ReportModal
   },
   data() {
     return {
@@ -472,9 +421,10 @@ export default {
       isAuthenticated: false,
       currentUserId: null,
       selectedPost: { caption: '' },
-      isModalOpen: false,
+      isCommentsModalOpen: false,
       comments: [],  // Store comments here,
-      selectedPostId: null,
+      selectedReportPostId: null,  // for report modal
+      selectedCommentPostId: null, // for comment modal
       reportReason: '',
       customReason: '',
       invalidSocmedLink: false,
@@ -590,13 +540,13 @@ export default {
               alert('Failed to submit the application.');
             }
     },
-    openModal(postId) {
-      this.isModalOpen = true;
+    openCommentsModal(postId) {
+      this.isCommentsModalOpen = true;
       this.fetchComments(postId);  // Fetch comments for the selected post  
-      this.selectedPostId = postId;
+      this.selectedCommentPostId = postId;
     },
     closeCommentsModal() {
-      this.isModalOpen = false;
+      this.isCommentsModalOpen = false;
       this.comments = [];  // Clear comments when modal is closed
       this.fetchPost();
     },
@@ -742,63 +692,10 @@ export default {
         });
     },
     openReportModal(postId) {
-      const modal = document.getElementById(`reportPostModal-${postId}`);
-      modal.showModal();
+      this.selectedReportPostId = postId;
     },
-
-    closeReportModal(postId) {
-      const modal = document.getElementById(`reportPostModal-${postId}`);
-      modal.close();
-      this.reportReason = ''; // Clear the selected reason
-      this.customReason = ''; // Clear the custom reason field
-    },
-
-    submitReport(postId) {
-      const reportData = {
-        user_id: this.currentUserId,  // The user reporting the post/comment
-        reason: this.reportReason,
-        type: 'post',
-        post_id: postId,
-        details: this.reportReason === 'Other' ? this.customReason : '',
-      };
-
-      axios.post('/api/reports/submit', reportData)
-        .then(response => {
-          this.closeReportModal(postId);
-          
-          Swal.fire({
-            position: 'center',  // Positions it in the center of the screen
-            icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-            title: 'Your report has been submitted successfully!',  // Customize your message
-            showConfirmButton: true,  // Show the OK button
-            confirmButtonText: 'OK',  // Text of the button
-            background: '#2c2f36',  // Dark background color
-            color: '#fff',  // White text color
-            confirmButtonColor: '#3085d6',  // Blue color for the button
-            toast: true,  // Display as a toast
-            timer: 3000,  // Time in milliseconds before the toast closes
-            timerProgressBar: true,  // Optional, shows a progress bar
-            didOpen: () => {
-              Swal.showLoading();  // Show loading indicator
-            }
-          });
-        })
-        .catch(error => {
-          console.error('Error submitting report:', error);
-          
-          Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Something went wrong!',
-          text: error.response ? error.response.data.message : 'Try again later.',
-          showConfirmButton: false,
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-          background: '#2c2f36',
-          color: '#fff',
-        });
-        });
+    closeReportModal() {
+      this.selectedReportPostId = null;
     },
     toggleDescription(post) {
       if (!("expanded" in post)) {
