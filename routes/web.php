@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -85,6 +86,9 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::post('/api/announcement/upload', [AnnouncementController::class, 'createAnnouncement']);
     Route::put('/api/announcement/edit/{announcement_id}', [AnnouncementController::class, 'updateAnnouncement']);
     Route::delete('/api/announcement/delete/{announcement_id}', [AnnouncementController::class, 'deleteAnnouncement']);
+
+    //Event Modifiers
+    Route::post('/api/events/upload', [EventController::class, 'createEvent']);
     
     //Post Interactions
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);

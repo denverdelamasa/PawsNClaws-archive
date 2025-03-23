@@ -144,7 +144,7 @@
     </dialog>
 
     <!-- Report Modal -->
-    <ReportModal v-if="selectedReportPostId" :postId="selectedReportPostId" :currentUserId="currentUserId" @close="closeReportModal"/>
+    <ReportModal v-if="selectedReportPostId" :postId="selectedReportPostId" :reportType="'post'" :currentUserId="currentUserId" @close="closeReportModal"/>
 
     <!-- Card Body -->
     <div class="card-body">
@@ -480,7 +480,6 @@ export default {
       const file = event.target.files[0];
       if (file) {
         this.formData.govIdFile = file;
-        console.log('File selected:', file);
       } else {
         this.formData.govIdFile = null;
       }
@@ -692,6 +691,7 @@ export default {
         });
     },
     openReportModal(postId) {
+      this.reportType = 'post';
       this.selectedReportPostId = postId;
     },
     closeReportModal() {

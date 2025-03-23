@@ -1,68 +1,89 @@
 <template>
-  <dialog ref="reportDialog" :id="`reportPostModal-${postId}`" class="modal">
+  <dialog ref="reportDialog" class="modal">
     <div class="modal-box">
-      <h3 class="text-lg font-bold">Report Post</h3>
-      <p class="py-4">Please select the reason for reporting this post:</p>
+      <h3 class="text-lg font-bold text-red-600">
+        Report {{ reportType === 'post' ? 'Post' : 'Comment' }}
+      </h3>
+      <p class="py-4 text-gray-300">Please select the reason for reporting this {{ reportType }}:</p>
 
       <form @submit.prevent="submitReport">
-        <!-- Predefined Report Reasons -->
+        <!-- Report Reasons -->
         <div class="my-4 gap-y-2 flex flex-col">
-          <div>
-            <input type="radio" id="troll" value="Troll" v-model="reportReason" class="radio"/>
-            <label for="troll" class="ml-2">Troll</label>
-          </div>
-
-          <div>
-            <input type="radio" id="hate-speech" value="Hate Speech" v-model="reportReason" class="radio"/>
-            <label for="hate-speech" class="ml-2">Hate Speech</label>
-          </div>
-
-          <div>
-            <input type="radio" id="spam" value="Spam" v-model="reportReason" class="radio"/>
-            <label for="spam" class="ml-2">Spam</label>
-          </div>
-
-          <div>
-            <input type="radio" id="harassment" value="Harassment" v-model="reportReason" class="radio"/>
-            <label for="harassment" class="ml-2">Harassment</label>
-          </div>
-
-          <div>
-            <input type="radio" id="other" value="Other" v-model="reportReason" class="radio"/>
-            <label for="other" class="ml-2">Other</label>
-          </div>
+          <label class="inline-flex items-center">
+            <input type="radio" value="Troll" v-model="reportReason" class="radio mr-2" /> Troll
+          </label>
+          <label class="inline-flex items-center">
+            <input type="radio" value="Hate Speech" v-model="reportReason" class="radio mr-2" /> Hate Speech
+          </label>
+          <label class="inline-flex items-center">
+            <input type="radio" value="Spam" v-model="reportReason" class="radio mr-2" /> Spam
+          </label>
+          <label class="inline-flex items-center">
+            <input type="radio" value="Harassment" v-model="reportReason" class="radio mr-2" /> Harassment
+          </label>
+          <label class="inline-flex items-center">
+            <input type="radio" value="Other" v-model="reportReason" class="radio mr-2" /> Other
+          </label>
         </div>
 
-        <!-- If "Other" is selected, show a text area for additional comments -->
         <div v-if="reportReason === 'Other'" class="my-4">
-          <label for="custom-reason" class="label">Please describe the issue</label>
+          <label for="custom-reason" class="label text-gray-300">Please describe the issue</label>
           <textarea
             id="custom-reason"
             v-model="customReason"
-            class="textarea textarea-bordered w-full"
+            class="textarea textarea-bordered w-full bg-gray-800 text-white"
             rows="4"
             placeholder="Enter custom reason for reporting..."
           ></textarea>
         </div>
 
         <div class="modal-action">
-          <button class="btn btn-error">Submit Report</button>
-          <a class="btn" @click="closeModal">Cancel</a>
+          <button type="submit" class="btn btn-error">Submit Report</button>
+          <button type="button" class="btn" @click="closeModal">Cancel</button>
         </div>
       </form>
+    </div>
+  </dialog>
+
+  <!-- Success Modal -->
+  <dialog ref="successDialog">
+    <div class="modal-box text-center">
+      <h3 class="text-lg font-bold text-green-400">Report Submitted</h3>
+      <p class="py-4 text-gray-300">Your report has been submitted successfully!</p>
+      <div class="modal-action justify-center">
+        <button class="btn btn-success" @click="closeSuccessModal">OK</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Error Modal -->
+  <dialog ref="errorDialog" class="modal">
+    <div class="modal-box text-center">
+      <h3 class="text-lg font-bold text-red-400">Submission Failed</h3>
+      <p class="py-4 text-gray-300">{{ errorMessage }}</p>
+      <div class="modal-action justify-center">
+        <button class="btn btn-error" @click="closeErrorModal">Close</button>
+      </div>
     </div>
   </dialog>
 </template>
 
 <script>
 import axios from "axios";
-import Swal from 'sweetalert2';
 
 export default {
   props: {
     postId: {
       type: Number,
-      required: true,
+      default: null,
+    },
+    commentId: {
+      type: Number,
+      default: null,
+    },
+    reportType: {
+      type: String,
+      required: true, // 'post' or 'comment'
     },
     currentUserId: {
       type: Number,
@@ -73,60 +94,51 @@ export default {
     return {
       reportReason: '',
       customReason: '',
+      errorMessage: '',
     };
+  },
+  computed: {
+    isComment() {
+      return this.reportType === 'comment';
+    }
   },
   methods: {
     closeModal() {
       this.$refs.reportDialog.close();
       this.$emit('close');
-      this.reportReason = ''; // Clear the selected reason
-      this.customReason = ''; // Clear the custom reason field
+      this.reportReason = '';
+      this.customReason = '';
+      this.errorMessage = '';
+    },
+    closeSuccessModal() {
+      this.$refs.successDialog.close();
+    },
+    closeErrorModal() {
+      this.$refs.errorDialog.close();
     },
     submitReport() {
       const reportData = {
-        user_id: this.currentUserId,  // The user reporting the post/comment
+        user_id: this.currentUserId,
         reason: this.reportReason,
-        type: 'post',
-        post_id: this.postId,
+        type: this.reportType,
+        post_id: this.isComment ? null : this.postId,
+        comment_id: this.isComment ? this.commentId : null,
         details: this.reportReason === 'Other' ? this.customReason : '',
       };
 
       axios.post('/api/reports/submit', reportData)
-        .then(response => {
+        .then(() => {
+          console.log('Showing success dialog...');
           this.closeModal();
-          
-          Swal.fire({
-            position: 'center',  // Positions it in the center of the screen
-            icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-            title: 'Your report has been submitted successfully!',  // Customize your message
-            showConfirmButton: true,  // Show the OK button
-            confirmButtonText: 'OK',  // Text of the button
-            background: '#2c2f36',  // Dark background color
-            color: '#fff',  // White text color
-            confirmButtonColor: '#3085d6',  // Blue color for the button
-            toast: true,  // Display as a toast
-            timer: 3000,  // Time in milliseconds before the toast closes
-            timerProgressBar: true,  // Optional, shows a progress bar
-            didOpen: () => {
-              Swal.showLoading();  // Show loading indicator
-            }
+          this.$nextTick(() => {
+            this.$refs.successDialog.showModal();
           });
         })
         .catch(error => {
           console.error('Error submitting report:', error);
-          
-          Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Something went wrong!',
-          text: error.response ? error.response.data.message : 'Try again later.',
-          showConfirmButton: false,
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-          background: '#2c2f36',
-          color: '#fff',
-        });
+          this.errorMessage = error.response?.data?.message || 'Something went wrong. Please try again later.';
+          this.closeModal();
+          this.$refs.errorDialog.showModal();
         });
     },
   },
@@ -137,5 +149,13 @@ export default {
 </script>
 
 <style scoped>
-/* Add any custom styles here */
+.modal-box {
+  background-color: #2c2f36;
+  color: #fff;
+  border-radius: 0.5rem;
+}
+.radio:checked {
+  border-color: #dc2626;
+  background-color: #dc2626;
+}
 </style>

@@ -40,7 +40,7 @@
                     </svg>
                   </label>
                   <ul tabindex="0" class="dropdown-content menu shadow bg-base-300 rounded-box w-45 z-40">
-                    <li v-if="comment.user_id === commentUserId">
+                    <li v-if="comment.user_id === currentUserId">
                       <a href="#" @click.prevent="openEditCommentModal(comment)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
@@ -49,7 +49,7 @@
                         Edit Comment
                       </a>
                     </li>
-                    <li v-if="comment.user_id === commentUserId">
+                    <li v-if="comment.user_id === currentUserId">
                       <a href="#" @click.prevent="openDeleteCommentModal(comment.comment_id)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
@@ -58,7 +58,7 @@
                         Delete Comment
                       </a>
                     </li>
-                    <li v-if="comment.user_id !== commentUserId">
+                    <li v-if="comment.user_id !== currentUserId">
                       <a href="#" @click.prevent="openReportModal(comment.comment_id)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
                           <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z"/>
@@ -81,89 +81,7 @@
                   </div>
                 </dialog>
 
-                <dialog :id="`reportCommentModal-${comment.comment_id}`" class="modal">
-                  <div class="modal-box">
-                    <h3 class="text-lg font-bold">Report Comment</h3>
-                    <p class="py-4">Please select the reason for reporting this post:</p>
-
-                    <form @submit.prevent="submitReport(comment.comment_id)">
-                      <!-- Predefined Report Reasons -->
-                      <div class="my-4 gap-y-2 flex flex-col">
-                        <div>
-                          <input
-                            type="radio"
-                            id="troll"
-                            value="Troll"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="troll" class="ml-2">Troll</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="hate-speech"
-                            value="Hate Speech"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="hate-speech" class="ml-2">Hate Speech</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="spam"
-                            value="Spam"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="spam" class="ml-2">Spam</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="harassment"
-                            value="Harassment"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="harassment" class="ml-2">Harassment</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="other"
-                            value="Other"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="other" class="ml-2">Other</label>
-                        </div>
-                      </div>
-
-                      <!-- If "Other" is selected, show a text area for additional comments -->
-                      <div v-if="reportReason === 'Other'" class="my-4">
-                        <label for="custom-reason" class="label">Please describe the issue</label>
-                        <textarea
-                          id="custom-reason"
-                          v-model="customReason"
-                          class="textarea textarea-bordered w-full"
-                          rows="4"
-                          placeholder="Enter custom reason for reporting..."
-                        ></textarea>
-                      </div>
-
-                      <div class="modal-action">
-                        <button class="btn btn-error">Submit Report</button>
-                        <a class="btn" @click="closeReportModal(comment.comment_id)">Cancel</a>
-                      </div>
-                    </form>
-                  </div>
-                </dialog>
+                <ReportComments v-if="selectedCommentId" :commentId="selectedCommentId" :reportType="'comment'" :currentUserId="currentUserId" @close="closeReportModal"/>
 
                 <div class="flex items-center space-x-3">
                   <div class="avatar">
@@ -217,16 +135,6 @@
         No more comments available.
       </div>
     </dialog>
-    <!-- Custom Success Modal -->
-    <dialog ref="successModal" class="modal">
-      <div class="report-modal-box">
-        <h3 class="text-lg font-bold">Report Submitted Successfully!</h3>
-        <p class="py-4">Your report has been submitted successfully.</p>
-        <div class="modal-action">
-          <button class="btn btn-primary" @click="closeSuccessModal">OK</button>
-        </div>
-      </div>
-    </dialog>
   </div>
 </template>
 
@@ -234,9 +142,13 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import ReportComments from '../misc/Reports.vue';
 
 export default {
   name: 'CommentsModal',
+  components: {
+    ReportComments
+  },
   props: {
     isCommentsModalOpen: {
       type: Boolean,
@@ -263,8 +175,9 @@ export default {
       newComment: '',
       isLoading: false,
       loading: false,
-      commentUserId: null,
+      currentUserId: null,
       isAuthenticated: false,
+      selectedCommentId: null,
       isEditing: false,
       reportReason: '',
       customReason: '',
@@ -275,6 +188,13 @@ export default {
     };
   },
   methods: {
+    showModal(commentId) {
+      if (modal) {
+        modal.showModal();
+      } else {
+        console.log("Modal not found");
+      }
+    },
     openEditCommentModal(comment) {
       this.selectedComment = { ...comment };  // Copy comment data to selectedComment
       this.isEditing = true;  // Set editing state to true
@@ -453,7 +373,7 @@ export default {
       try {
           const response = await axios.get('/api/auth/status');
           this.isAuthenticated = response.data.authenticated;
-          this.commentUserId = response.data.user_id; // Fetch the authenticated user's ID
+          this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
       } catch (error) {
           console.error("Error checking authentication status:", error);
       }
@@ -464,47 +384,14 @@ export default {
         this.selectedComment = {}; // Clear the selected comment
       }
     },
+    
     openReportModal(commentId) {
-      const modal = document.getElementById(`reportCommentModal-${commentId}`);
-      modal.showModal();
+      this.reportType = 'comment';
+      this.selectedCommentId = commentId;
     },
 
-    closeReportModal(commentId) {
-      const modal = document.getElementById(`reportCommentModal-${commentId}`);
-      modal.close();
-      this.reportReason = ''; // Clear the selected reason
-      this.customReason = ''; // Clear the custom reason field
-    },
-    submitReport(commentId) {
-      const reportData = {
-        user_id: this.commentUserId,  // The user reporting the post/comment
-        reason: this.reportReason,
-        type: "comment",
-        comment_id: commentId,
-        details: this.reportReason === 'Other' ? this.customReason : '',
-      };
-
-      axios.post('/api/reports/submit', reportData)
-        .then(response => {
-          this.closeReportModal(commentId);
-          this.openSuccessModal();
-        })
-        .catch(error => {
-          console.error('Error submitting report:', error);
-          
-          Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Something went wrong!',
-          text: error.response ? error.response.data.message : 'Try again later.',
-          showConfirmButton: false,
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-          background: '#2c2f36',
-          color: '#fff',
-        });
-      });
+    closeReportModal() {
+      this.selectedCommentId = null;
     },
     openSuccessModal() {
       this.$refs.successModal.showModal(); // Open the success modal
@@ -563,14 +450,6 @@ export default {
 .modal-box {
   overflow-y: auto;
   max-height: 80vh; /* Adjust as needed */
-}
-
-.report-modal-box {
-  background-color: #2c2f36;
-  color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 400px;
 }
 .modal-action {
   display: flex;
