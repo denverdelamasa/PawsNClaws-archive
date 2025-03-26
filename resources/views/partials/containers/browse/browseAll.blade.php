@@ -55,6 +55,8 @@
                         </div>
                     </ul>
                 </div>
+                <!-- From Uiverse.io by kirzin --> 
+                <button class="AccountBrowseViewButton m-auto hover:scale-105 transition-all duration-100">View</button>
             </div>
         @endfor
         
@@ -74,28 +76,37 @@
         </div>
         <p class="text-lg mb-2">Explore a variety of pet services tailored to your needs, including grooming, veterinary care, boarding, and training.</p>
 
-        <div class="carousel w-full mb-2">
-            @for ($i = 1; $i <= 3; $i++)
-                <div id="slide{{ $i }}" class="carousel-item relative w-full flex justify-center">
-                    <div class="card bg-base-200 w-96 shadow-sm border-2 border-base-300">
-                        <figure>
-                            <img src="https://th.bing.com/th/id/OIP.PXS4cGMqIeBeuiCVKKEjvAHaE8?rs=1&pid=ImgDetMain" alt="Service Image"/>
-                        </figure>
-                        <div class="card-body">
-                            <h2 class="card-title">Service #{{ $i }}</h2>
-                            <p>High-quality pet services to keep your furry friend happy and healthy.</p>
-                            <div class="card-actions justify-end">
-                                <button class="btn btn-primary">Visit Profile</button>
+        <div class="relative w-full">
+            <!-- Carousel Container -->
+            <div class="carousel w-full mb-2 flex overflow-x-auto snap-mandatory scroll-smooth">
+                @for ($i = 1; $i <= 6; $i++)
+                    <div id="slide{{ $i }}" class="carousel-item w-full flex justify-center snap-center relative">
+                        <div class="card bg-base-200 w-192 shadow-sm border-2 border-base-300">
+                            <figure class="w-full h-64 overflow-hidden">
+                                <img src="https://th.bing.com/th/id/OIP.PXS4cGMqIeBeuiCVKKEjvAHaE8?rs=1&pid=ImgDetMain" 
+                                     alt="Service Image" 
+                                     class="w-full h-full object-cover" />
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">Service #{{ $i }}</h2>
+                                <p>High-quality pet services to keep your furry friend happy and healthy.</p>
+                                <div class="card-actions justify-end">
+                                    <button class="btn btn-primary">Visit Profile</button>
+                                </div>
                             </div>
                         </div>
+        
+                        <!-- Navigation Arrows inside each slide -->
+                        <div class="absolute top-1/2 left-5 right-5 flex justify-between -translate-y-1/2 z-10">
+                            <a href="#slide{{ $i == 1 ? 6 : $i - 1 }}" class="btn btn-circle">❮</a>
+                            <a href="#slide{{ $i == 6 ? 1 : $i + 1 }}" class="btn btn-circle">❯</a>
+                        </div>
                     </div>
-                    <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                        <a href="#slide{{ $i == 1 ? 3 : $i - 1 }}" class="btn btn-circle">❮</a>
-                        <a href="#slide{{ $i == 3 ? 1 : $i + 1 }}" class="btn btn-circle">❯</a>
-                    </div>
-                </div>
-            @endfor
+                @endfor
+            </div>
         </div>
+        
+        
 
         <button class="loadMore m-auto p-2 bg-base-200 mb-2 w-64 text-center">
             Load More
@@ -609,5 +620,61 @@
     transform: scale(0.9) rotate(3deg);
     background: radial-gradient( circle farthest-corner at 10% 20%,  rgba(255,94,247,1) 17.8%, rgba(2,245,255,1) 100.2% );
     transition: 0.5s;
+    }
+
+    /* From Uiverse.io by kirzin */ 
+    .AccountBrowseViewButton {
+    text-decoration: none;
+    position: relative;
+    border: none;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #fff;
+    width: 9em;
+    height: 3em;
+    line-height: 2em;
+    text-align: center;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 300%;
+    border-radius: 30px;
+    z-index: 1;
+    }
+
+    .AccountBrowseViewButton:hover {
+    animation: ani 8s linear infinite;
+    border: none;
+    }
+
+    @keyframes ani {
+    0% {
+        background-position: 0%;
+    }
+
+    100% {
+        background-position: 400%;
+    }
+    }
+
+    .AccountBrowseViewButton:before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+    background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+    background-size: 400%;
+    border-radius: 35px;
+    transition: 1s;
+    }
+
+    .AccountBrowseViewButton:hover::before {
+    filter: blur(20px);
+    }
+
+    .AccountBrowseViewButton:active {
+    background: linear-gradient(32deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
     }
 </style>
