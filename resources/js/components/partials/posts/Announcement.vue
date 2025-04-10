@@ -143,7 +143,7 @@
               <span>{{ announcement.comments_count}} Comments</span>
             </button>
 
-            <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :announcementId="selectedAnnouncementId"/>
+            <Comments :isCommentsModalOpen="isCommentsModalOpen" :commentList="comments" @close="closeCommentsModal" :announcementId="selectedAnnouncementId"/>
       
             <!-- Bookmark Button -->
             <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -170,7 +170,7 @@ export default {
     return {
       announcements: [],
       comments: [],
-      isModalOpen: false,
+      isCommentsModalOpen: false,
       selectedAnnouncementId: null,
       currentPage: 1,
       totalPages: 1,
@@ -251,12 +251,12 @@ export default {
       }
     },
     openModal(announcementId) {
-      this.isModalOpen = true;
+      this.isCommentsModalOpen = true;
       this.fetchComments(announcementId);  // Fetch comments for the selected post  
       this.selectedAnnouncementId = announcementId;
     },
     closeCommentsModal() {
-      this.isModalOpen = false;
+      this.isCommentsModalOpen = false;
       this.comments = [];  // Clear comments when modal is closed
       this.fetchAnnouncements();
     },

@@ -28,6 +28,12 @@ class CommentsController extends Controller
                 ->latest()
                 ->paginate(10);
                 $commentsCount = Comment::where('post_comment_id', $id)->count();
+        } else if ($type === 'event') {
+            $comments = Comment::with('user')
+                ->where('event_comment_id', $id)
+                ->latest()
+                ->paginate(10);
+                $commentsCount = Comment::where('event_comment_id', $id)->count();
         } else {
             return response()->json(['error' => 'Invalid comment type'], 400);
         }
@@ -41,6 +47,7 @@ class CommentsController extends Controller
                 'user_id' => $comment->user_id,
                 'announcement_comment_id' => $comment->announcement_comment_id,
                 'post_comment_id' => $comment->post_comment_id,
+                'event_comment_id' => $comment->event_comment_id,
                 'user' => [
                     'user_id' => $comment->user->user_id,
                     'name' => $comment->user->name,
@@ -69,14 +76,15 @@ class CommentsController extends Controller
             'comment' => 'required|string|max:1000',
             'post_comment_id' => 'nullable|exists:posts,post_id',
             'announcement_comment_id' => 'nullable|exists:announcements,announcement_id',
+            'event_comment_id' => 'nullable|exists:events,event_id'
         ]);
     
         // Ensure only one of post_comment_id or announcement_comment_id is provided
-        if ($request->has('post_comment_id') && $request->has('announcement_comment_id')) {
+        if ($request->has('post_comment_id') && $request->has('announcement_comment_id') && $request->has('event_comment_id')) {
             return response()->json(['error' => 'Only one of post_comment_id or announcement_comment_id can be provided.'], 400);
         }
     
-        if (!$request->has('post_comment_id') && !$request->has('announcement_comment_id')) {
+        if (!$request->has('post_comment_id') && !$request->has('announcement_comment_id') && !$request->has('event_comment_id')) {
             return response()->json(['error' => 'Either post_comment_id or announcement_comment_id must be provided.'], 400);
         }
     
@@ -84,6 +92,7 @@ class CommentsController extends Controller
         $comment = Comment::create([
             'post_comment_id' => $request->post_comment_id,
             'announcement_comment_id' => $request->announcement_comment_id,
+            'event_comment_id' => $request->event_comment_id,
             'user_id' => $userId,
             'comment' => $request->comment,
         ]);
@@ -119,6 +128,21 @@ class CommentsController extends Controller
                     'type' => 'commented on your announcement',
                     'comment_by_user_id' => $userId,
                     'announcement_id' => $request->announcement_comment_id,
+                    'read_at' => null,
+                ]);
+            }
+        }   elseif ($request->has('event_comment_id')) {
+            // Get the event owner
+            $eventOwner = Event::find($request->event_comment_id)->shelter_id;
+    
+            // Check if the commenter is not the announcement owner
+            if ($userId !== $eventOwner) {
+                // Create a notification for the announcement owner
+                Notification::create([
+                    'user_id' => $eventOwner,
+                    'type' => 'commented on your event',
+                    'comment_by_user_id' => $userId,
+                    'event_id' => $request->event_comment_id,
                     'read_at' => null,
                 ]);
             }

@@ -20,6 +20,7 @@ class Notification extends Model
         'type',      // The type of the notification (e.g., 'info', 'warning', etc.
         'read_at',   // To mark the notification as read or unread (nullable)
         'post_id',
+        'event_id',
         'announcement_id',
         'liked_by_user_id',
         'comment_by_user_id',
@@ -45,6 +46,11 @@ class Notification extends Model
     public function announcement()
     {
         return $this->belongsTo(Announcement::class);
+    }
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
     }
 
     public function commenter() {

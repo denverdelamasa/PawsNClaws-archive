@@ -89,6 +89,8 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
 
     //Event Modifiers
     Route::post('/api/events/upload', [EventController::class, 'createEvent']);
+    Route::put('/api/event/edit/{event_id}', [EventController::class, 'updateEvent']);
+    Route::delete('/api/event/delete/{event_id}', [EventController::class, 'deleteEvent']);
     
     //Post Interactions
     Route::post('/api/comments/submit', [CommentsController::class, 'postComment']);
@@ -110,9 +112,10 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 Route::get('/api/announcements/list', [AnnouncementController::class, 'announcementList']);
+Route::get('/api/events/list', [EventController::class, 'eventList']);  
 Route::get('/api/announcement/welcome', [AnnouncementController::class, 'announcementWelcome']);
 Route::get('/api/comments/{id}/{type}', [CommentsController::class, 'getComments'])
-    ->where(['id' => '[0-9]+', 'type' => 'post|announcement']);
+    ->where(['id' => '[0-9]+', 'type' => 'post|announcement|event']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');

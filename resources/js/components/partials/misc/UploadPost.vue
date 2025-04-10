@@ -79,8 +79,8 @@
           <input type="file" id="thumbnail" class="hidden" ref="imageInput" @change="handleImageChange" />
 
           <!-- Image Preview -->
-          <div v-if="modalData.image_preview" class="my-4">
-            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
+          <div v-if="modalData.thumbnail" class="my-4">
+            <img :src="modalData.image_previews" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
           </div>
         </div>
 
@@ -202,11 +202,22 @@
           </button>
 
           <!-- Hidden File Input for Image -->
-          <input type="file" id="thumbnail" class="hidden" ref="imageInput" @change="handleImageChange" />
+          <input type="file" id="event_thumbnail" class="hidden" ref="imageInput" @change="handleImageChange" multiple/>
 
           <!-- Image Preview -->
-          <div v-if="modalData.image_preview" class="my-4">
-            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
+          <div v-if="modalData.image_previews.length > 0" class="my-4">
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="(preview, index) in modalData.image_previews" :key="index" class="relative">
+                <img :src="preview" alt="Image Preview" class="w-full h-24 object-cover rounded-lg" />
+                <button 
+                  type="button" 
+                  @click="removeImage(index)" 
+                  class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -294,13 +305,17 @@ export default {
           this.modalData.thumbnail = files[0];
           this.modalData.image_previews = [URL.createObjectURL(files[0])];
         } else if (this.modalType === "event") {
-          if(files.length > 1) {
-            this.validationMessage = "You can upload one image for an event";
+          if(files.length > 5) {
+            this.validationMessage = "You can upload five images for an event";
             return;
           }
 
-          this.modalData.event_thumbnail = files[0];
-          this.modalData.image_previews = [URL.createObjectURL(files[0])];
+          this.modalData.event_thumbnail = Array.from(files);
+          this.modalData.image_previews = [];
+
+          for (let i = 0; i < files.length; i++) {
+            this.modalData.image_previews.push(URL.createObjectURL(files[i]));
+          }
         }
       }
     },
@@ -379,8 +394,10 @@ export default {
       formData.append("event_date", this.modalData.event_date);
       formData.append("event_location", this.modalData.event_location);
 
-      if (this.modalData.thumbnail) {
-        formData.append("event_thumbnail", this.modalData.event_thumbnail);
+      if (this.modalData.event_thumbnail && this.modalData.event_thumbnail.length > 0) {
+        this.modalData.event_thumbnail.forEach((file, index) => {
+          formData.append(`event_thumbnail[${index}]`, file);
+        });
       }
 
       axios
@@ -429,7 +446,7 @@ export default {
     },
     triggerFileInput() {
       this.$refs.imageInput.accept = 'image/*';
-      this.$refs.imageInput.multiple = this.modalType === "post"; // Allow multiple files only for posts
+      this.$refs.imageInput.multiple = ['post', 'event', 'announcement'].includes(this.modalType); // Allow multiple files for posts, events, and announcements
       this.$refs.imageInput.click();
     },
     resetForm() {

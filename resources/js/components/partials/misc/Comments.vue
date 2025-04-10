@@ -162,6 +162,10 @@ export default {
       type: [String, Number],
       required: false
     },
+    eventId: {
+      type: [String, Number],
+      required: false
+    },
     commentList: {
       type: Array,
       default: () => []
@@ -254,7 +258,9 @@ export default {
           url = `/api/comments/${this.postId}/post?page=${this.currentPage}`;
       } else if (this.announcementId) {
           url = `/api/comments/${this.announcementId}/announcement?page=${this.currentPage}`;
-      } else {
+      } else if (this.eventId){
+          url = `/api/comments/${this.eventId}/event?page=${this.currentPage}`;
+      }else {
           console.error("No postId or announcementId provided");
           this.isLoading = false;
           return;
@@ -334,6 +340,8 @@ export default {
           commentData.announcement_comment_id = this.announcementId;
       } else if (this.postId) {
           commentData.post_comment_id = this.postId;
+      } else if (this.eventId){
+          commentData.event_comment_id = this.eventId;
       } else {
           console.error("No postId or announcementId provided");
           return;

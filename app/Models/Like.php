@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Post;
+use App\Models\Event;
+use App\Models\Announcement;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Like extends Model
 {
@@ -19,7 +22,8 @@ class Like extends Model
     protected $fillable = [
         'post_id', // ID of the liked post
         'user_id',  // ID of the user who liked the post
-        'announcement_id'
+        'announcement_id',
+        'event_id'
     ];
 
     /**
@@ -47,6 +51,11 @@ class Like extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id'); // Custom foreign and local keys

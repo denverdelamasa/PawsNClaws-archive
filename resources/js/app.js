@@ -22,6 +22,7 @@ import Footer from './components/partials/misc/Footer.vue';
 import UserProfile from './components/Auth/UserProfile.vue';
 import Announcement from './components/partials/posts/Announcement.vue';
 import AnnouncementWelcome from './components/partials/posts/AnnouncementWelcome.vue';
+import Event from './components/partials/posts/Event.vue';
 
 // Create the Vue app
 const app1 = createApp({});
@@ -42,6 +43,7 @@ app2.component('reports-management', ReportsManagement);
 app2.component('user-profile', UserProfile);
 app2.component('profile-footer', Footer);
 app2.component('announcement-cards', Announcement);
+app2.component('event-cards', Event);
 
 app2.mount("#app2");
 

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DoneAdoptionForm;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Announcement;
+use App\Models\Event;
 use Illuminate\Support\Str;
+use App\Models\Announcement;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Models\DoneAdoptionForm;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -167,6 +168,12 @@ class PostController extends Controller
                 return response()->json(['error' => 'Announcement not found'], 404);
             }
             $postOwner = $announcement->shelter_id;
+        } elseif ($type === 'event') {
+            $event = Event::find($itemId);
+            if(!$event) {
+                return response()->json(['error' => 'Event not found'], 404);
+            }
+            $postOwner = $event->shelter_id;
         } else {
             return response()->json(['error' => 'Invalid type specified'], 400);
         }
@@ -178,6 +185,8 @@ class PostController extends Controller
             $likeQuery->where('post_id', $itemId);
         } elseif ($type === 'announcement') {
             $likeQuery->where('announcement_id', $itemId);
+        } elseif ($type === 'event') {
+            $likeQuery->where('event_id', $itemId);
         }
     
         $like = $likeQuery->first();
@@ -196,6 +205,8 @@ class PostController extends Controller
                 $likeData['post_id'] = $itemId;
             } elseif ($type === 'announcement') {
                 $likeData['announcement_id'] = $itemId;
+            } elseif ($type === 'event'){
+                $likeData['event_id'] = $itemId;
             }
     
             Like::create($likeData);
@@ -217,6 +228,8 @@ class PostController extends Controller
                     $notificationData['post_id'] = $itemId;
                 } elseif ($type === 'announcement') {
                     $notificationData['announcement_id'] = $itemId;
+                } elseif ($type === 'event') {
+                    $notificationData['event_id'] = $itemId;
                 }
     
                 Notification::create($notificationData);
@@ -252,7 +265,19 @@ class PostController extends Controller
                 'likesCount' => $likesCount,
                 'announcementType' => $announcement->type,
             ]);
-        }
+        } elseif ($type === 'event') {
+            $event = Event::find($id);
+            if (!$event) {
+                return response()->json(['error' => 'Event not found'], 404);
+            }
+    
+            $likesCount = Like::where('event_id', $id)->count();
+    
+            return response()->json([
+                'likesCount' => $likesCount,
+                'announcementType' => $event->type,
+            ]);
+        } 
     
         return response()->json(['error' => 'Invalid type specified'], 400);
     }    

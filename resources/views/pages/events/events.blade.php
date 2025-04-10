@@ -4,6 +4,6 @@
       <upload-post></upload-post>
     @endauth
     
-    @include('partials.containers.event.event-card')
+    <event-cards></event-cards>
 
 @include('partials.main.footer')

@@ -46,7 +46,7 @@
   </dialog>
 
   <!-- Success Modal -->
-  <dialog ref="successDialog">
+  <dialog ref="successDialog" >
     <div class="modal-box text-center">
       <h3 class="text-lg font-bold text-green-400">Report Submitted</h3>
       <p class="py-4 text-gray-300">Your report has been submitted successfully!</p>
