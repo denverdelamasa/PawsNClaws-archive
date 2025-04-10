@@ -121,7 +121,7 @@ Route::get('/api/comments/{id}/{type}', [CommentsController::class, 'getComments
 Route::get('/home', [PageController::class, 'home'])->name('home');
 Route::get('/announcements', [PageController::class, 'announcements'])->name('announcements');
 Route::get('/events', [PageController::class, 'events'])->name('events');
-Route::get('/shelters', [PageController::class, 'shelters'])->name('shelters'); 
+Route::get('/Services', [PageController::class, 'Services'])->name('Services'); 
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 
@@ -150,7 +150,7 @@ Route::get('/api/partial/containers/browse/{content}', function ($content) {
         'browsePosts',
         'browseAnnouncements',
         'browseEvents',
-        'browseShelters',
+        'browseServices',
         'browseAccounts'
     ];
 

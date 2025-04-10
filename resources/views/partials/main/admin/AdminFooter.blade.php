@@ -13,7 +13,7 @@
         <a class="link link-hover">Posts</a>
         <a class="link link-hover">Announcements</a>
         <a class="link link-hover">Events</a>
-        <a class="link link-hover">Shelters</a>
+        <a class="link link-hover">Services</a>
     </nav>
     <nav class="flex flex-col gap-y-2">
         <h6 class="footer-title text-xs">Legal</h6>

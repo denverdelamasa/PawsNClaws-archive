@@ -9,15 +9,26 @@
             <div tabindex="0" role="button" class="btn btn-md flex items-center">
               Filter
             </div>
-            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow">
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow gap-2">
               <li><a>
-                By Latest
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="0 0 16 16">
+                  <path d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1zm5 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1zm.79-5.373q.168-.117.444-.275L3.524 6q-.183.111-.452.287-.27.176-.51.428a2.4 2.4 0 0 0-.398.562Q2 7.587 2 7.969q0 .54.217.873.217.328.72.328.322 0 .504-.211a.7.7 0 0 0 .188-.463q0-.345-.211-.521-.205-.182-.568-.182h-.282q.036-.305.123-.498a1.4 1.4 0 0 1 .252-.37 2 2 0 0 1 .346-.298zm2.167 0q.17-.117.445-.275L5.692 6q-.183.111-.452.287-.27.176-.51.428a2.4 2.4 0 0 0-.398.562q-.165.31-.164.692 0 .54.217.873.217.328.72.328.322 0 .504-.211a.7.7 0 0 0 .188-.463q0-.345-.211-.521-.205-.182-.568-.182h-.282a1.8 1.8 0 0 1 .118-.492q.087-.194.257-.375a2 2 0 0 1 .346-.3z"/>
+                </svg>
+                Relevance
               </a></li>
               <li><a>
-                By Likes
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M11.5 1.246c.832-.855 2.913.642 0 2.566-2.913-1.924-.832-3.421 0-2.566M9 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4m13.5-8.09c1.387-1.425 4.855 1.07 0 4.277-4.854-3.207-1.387-5.702 0-4.276ZM15 2.165c.555-.57 1.942.428 0 1.711-1.942-1.283-.555-2.281 0-1.71Z"/>
+                </svg>
+                Engagement
               </a></li>
               <li><a>
-                Nearest
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="0 0 16 16">
+                  <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+                  <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+                  <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
+                </svg>
+                Recent
               </a></li>
             </ul>
           </div>
@@ -26,6 +37,7 @@
         </div>
         <!-- Content Section -->
         <div class="mainBrowseContent">
+          <!-- Loader -->
           <div v-if="loading" class="text-center flex flex-wrap justify-center">
             <!-- From Uiverse.io by Nawsome -->
             <div class="feed-loader bg-base-100 rounded-xl border border-base-300 m-4">
@@ -38,7 +50,7 @@
               </div>
             </div>
           </div> 
-          
+           
           <div v-if="browseContent === 'browseAll'">
             <div v-html="browseAll"></div> 
           </div>
@@ -51,8 +63,8 @@
           <div v-if="browseContent === 'browseEvents'">
             <div v-html="browseEvents"></div>
           </div>
-          <div v-if="browseContent === 'browseShelters'">
-            <div v-html="browseShelters"></div>
+          <div v-if="browseContent === 'browseServices'">
+            <div v-html="browseServices"></div>
           </div>
           <div v-if="browseContent === 'browseAccounts'">
             <div v-html="browseAccounts"></div>
@@ -62,8 +74,8 @@
       </div>
       <div class="drawer-side hide-scrollbar">
         <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-        <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4 flex flex-col gap-4 z-50">
-          <h6 class="text-xl">Search Filter:</h6>
+        <ul class="menu bg-base-200 text-base-content min-h-full w-80 px-4 py-8 flex flex-col gap-4 z-50">
+          <h6 class="text-2xl">Search Filter:</h6>
           <li>  
             <a 
               @click="changeContent('browseAll')" 
@@ -107,14 +119,14 @@
           </a></li>
           <li>
             <a 
-              @click="changeContent('browseShelters')" 
-              :class="{'active': browseContent === 'browseShelters', 'text-content': browseContent !== 'browseShelters'}"
+              @click="changeContent('browseServices')" 
+              :class="{'active': browseContent === 'browseServices', 'text-content': browseContent !== 'browseServices'}"
             >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-house-heart-fill" viewBox="0 0 16 16">
               <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707z"/>
               <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018"/>
             </svg>
-            Shelters
+            Services
           </a></li>
           <li>
             <a 
@@ -126,6 +138,28 @@
             </svg>
             Accounts
           </a></li>
+          
+          <footer class="absolute bottom-4 bg-base-300 text-base-content p-4 text-xs flex flex-row gap-x-4 justify-between rounded-xl border border-base-300">
+            <nav class="flex flex-col gap-y-2">
+              <h6 class="footer-title text-xs">Contents</h6>
+              <a class="link link-hover">Posts</a>
+              <a class="link link-hover">Announcements</a>
+              <a class="link link-hover">Events</a>
+              <a class="link link-hover">Services</a>
+            </nav>
+            <nav class="flex flex-col gap-y-2">
+              <h6 class="footer-title text-xs">Site</h6>
+              <a class="link link-hover">About us</a>
+              <a class="link link-hover">Contact</a>
+              <a class="link link-hover">Apply</a>
+            </nav>
+            <nav class="flex flex-col gap-y-2">
+              <h6 class="footer-title text-xs">Legal</h6>
+              <a class="link link-hover" href="{{ url('terms-of-service') }}">Terms of Service</a>
+              <a class="link link-hover" href="{{ url('privacy-policy') }}">Privacy policy</a>
+              
+            </nav>
+          </footer>
         </ul>
       </div>
     </div>
@@ -144,7 +178,7 @@ export default {
       browsePosts: '',            // Content for browsePosts
       browseAnnouncements: '',    // Content for browseAnnouncements
       browseEvents: '',           // Content for browseEvents
-      browseShelters: '',         // Content for browseShelters
+      browseServices: '',         // Content for browseServices
       browseAccounts: ''          // Content for browseAccounts
     };
   },
@@ -180,5 +214,4 @@ export default {
 </script>
 
 <style scoped>
-/* You can add any styles here */
 </style>

@@ -36,9 +36,9 @@ class PageController extends Controller
     {
         return view('pages.events.events'); // Return the view for the home page
     }
-    public function shelters()
+    public function Services()
     {
-        return view('pages.shelters.shelters'); // Return the view for the home page
+        return view('pages.services.services'); // Return the view for the home page
     }
     public function browse()
     {

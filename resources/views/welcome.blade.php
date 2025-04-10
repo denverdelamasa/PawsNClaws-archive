@@ -18,7 +18,7 @@
                 <div class="max-w-full">
                     <h1 class="mb-5 text-5xl font-bold">Discover, Share, and Connect – All in One Place!</h1>
                     <p class="mb-5">
-                        Join a thriving community of pet lovers. Share your stories, find your next furry friend, or connect with shelters near you!
+                        Join a thriving community of pet lovers. Share your stories, find your next furry friend, or connect with Services near you!
                     </p>
                     @include('partials.misc.CTAHomeHero')
                 </div>
@@ -53,7 +53,7 @@
               <div class="flex flex-col text-start justify-start w-1/2 m-auto p-2">
                 <h1 class="sm:text-5xl text-2xl font-medium title-font">Why Become Part of Our Community?</h1>
                 <p class="leading-relaxed text-base">
-                    Discover a platform designed to connect pet lovers, shelters, and fosters. Share experiences, find new furry friends, and access exclusive resources that make a real difference in the world of pet adoption and care.
+                    Discover a platform designed to connect pet lovers, Services, and fosters. Share experiences, find new furry friends, and access exclusive resources that make a real difference in the world of pet adoption and care.
                 </p>
               </div>
               <div class="md:flex md:flex-wrap w-1/2 m-auto gap-2 hidden"> <!-- Add gap property here -->
@@ -222,7 +222,7 @@
           <a class="link link-hover">Posts</a>
           <a class="link link-hover">Announcements</a>
           <a class="link link-hover">Events</a>
-          <a class="link link-hover">Shelters</a>
+          <a class="link link-hover">Services</a>
         </nav>
         <nav>
           <h6 class="footer-title text-xs">Site</h6>
