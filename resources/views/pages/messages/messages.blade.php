@@ -4,12 +4,12 @@
     <body class="font-sans">
         <div id="app2">
             <div class="flex flex-col">
-                @include('partials.main.navbar')
                 <div class="drawer lg:drawer-open">
                     <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
                     <div class="drawer-content flex flex-col items-center justify-start overflow-y-auto">
-                        <div class="w-full max-w-full h-full bg-base-100 rounded-xl shadow-xl flex flex-col overflow-y-scroll px-2 py-2">
-                            <div class="flex items-center justify-between border-b border-base-300 pb-2 w-full">
+                        <div class="w-full max-w-full h-full bg-base-100 rounded-xl shadow-xl flex flex-col overflow-y-scroll">
+                            @include('partials.main.navbar')
+                            <div class="flex items-center justify-between border-b border-base-300 w-full px-2 py-2">
                                 <div class="flex items-center gap-3">
                                     <div class="avatar">
                                         <div class="w-10 rounded-full">
@@ -23,7 +23,7 @@
                                 </div>
                                 <button class="btn btn-sm btn-outline btn-primary">Visit Profile</button>
                             </div>
-                            <div class="flex-1 overflow-y-auto space-y-4 py-4 px-2 pb-28 hide-scrollbar w-full">
+                            <div class="flex-1 overflow-y-auto space-y-4 py-4 px-2 hide-scrollbar w-full">
                                 <div class="chat chat-start">
                                     <div class="chat-image avatar">
                                         <div class="w-8 rounded-full">
@@ -73,7 +73,7 @@
                                     <div class="chat-bubble chat-bubble-primary">Okay 😊</div>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3 border-t border-base-300 pt-3 w-full sticky bottom-0 bg-base-100 z-10 px-2">
+                            <div class="flex items-center gap-3 border-t border-base-300 pt-3 w-full sticky bottom-0 bg-base-100 z-10 px-2 py-2">
                                 <input type="text" placeholder="Type your message..." class="input input-bordered w-full" />
                                 <button class="btn btn-primary">Send</button>
                             </div> 
