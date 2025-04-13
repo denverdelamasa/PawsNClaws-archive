@@ -16,7 +16,6 @@
       </div>
     </a>
   @endauth
-
   <footer class="absolute bottom-4 bg-base-300 text-base-content p-4 text-xs flex flex-row gap-x-4 justify-between rounded-xl border border-base-300">
     <nav class="flex flex-col gap-y-2">
       <h6 class="footer-title text-xs">Contents</h6>

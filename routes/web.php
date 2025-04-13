@@ -133,6 +133,8 @@ Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name(
 
 Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');
 Route::get('/privacy-policy', [PageController::class, 'PrivacyPolicy'])->name('privacy-policy');
+Route::get('/messages', [PageController::class, 'messages'])->name('messages');
+
 
 Route::post('/set-theme', function (\Illuminate\Http\Request $request) {
     $theme = $request->input('theme', 'light'); // Default to 'light' if no theme is provided
