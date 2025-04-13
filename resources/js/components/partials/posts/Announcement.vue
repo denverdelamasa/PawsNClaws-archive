@@ -1,5 +1,6 @@
 <template>
-    <div v-for="announcement in announcements" :key="announcement.announcement_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300 w-3/4">
+  <UploadPost v-if="isAuthenticated" :fetchAnnouncementsProp="fetchAnnouncements" />
+  <div v-for="announcement in announcements" :key="announcement.announcement_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300 w-3/4">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4">
       <!-- Dropdown Menu -->
@@ -161,10 +162,12 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Comments from '../misc/Comments.vue';
+import UploadPost from '../misc/UploadPost.vue';
 
 export default {
   components: {
-    Comments
+    Comments,
+    UploadPost
   },
   data() {
     return {

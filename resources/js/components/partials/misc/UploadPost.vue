@@ -238,6 +238,14 @@ export default {
     fetchPostsProp: {
       type: Function,
       required: true
+    },
+    fetchAnnouncementsProp: {
+      type: Function,
+      required: true
+    },
+    fetchEventsProp: {
+      type: Function,
+      required: true
     }
   },
   data() {
@@ -340,7 +348,9 @@ export default {
         this.resetForm();
 
         // Fetch the latest posts after creating a new post
-        this.fetchPosts(true); // Reset and fetch latest posts
+        if (typeof this.fetchPostsProp === 'function') {
+          this.fetchPostsProp(true);
+        }
       } catch (error) {
         console.error("Error creating post:", error);
         this.validationMessage = "Something went wrong while uploading your post.";
@@ -361,7 +371,10 @@ export default {
           console.log("Post created:", response.data);
           this.closeModal();
           this.resetForm();
-          this.fetchPosts();
+          
+          if (typeof this.fetchAnnouncementsProp === 'function') {
+            this.fetchAnnouncementsProp(true);
+          }
 
           Swal.fire({
             position: "bottom-end",
@@ -407,10 +420,14 @@ export default {
           this.closeModal();
           this.resetForm();
 
+          if (typeof this.fetchEventsProp === 'function') {
+            this.fetchEventsProp(true);
+          }
+
           Swal.fire({
             position: "bottom-end",
             icon: "success",
-            title: "Your announcement has been uploaded successfully!",
+            title: "Your event has been uploaded successfully!",
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
@@ -435,15 +452,6 @@ export default {
       this.modalData.image_path.splice(index, 1);
       this.modalData.image_previews.splice(index, 1);
     },
-    fetchPosts() {
-      axios.get("/api/posts/list")
-        .then((response) => {
-          this.posts = response.data; // Update the posts list
-        })
-        .catch((error) => {
-          console.error("Error fetching posts:", error);
-        });
-    },
     triggerFileInput() {
       this.$refs.imageInput.accept = 'image/*';
       this.$refs.imageInput.multiple = ['post', 'event', 'announcement'].includes(this.modalType); // Allow multiple files for posts, events, and announcements
@@ -460,7 +468,8 @@ export default {
       this.modalData.event_title = "",
       this.modalData.event_description = "",
       this.modalData.event_thumbnail = null,
-      this.modalData.event_location = ""
+      this.modalData.event_location = "",
+      this.modalData.event_date = ""
     },
     fetchUserProfile() {
       axios

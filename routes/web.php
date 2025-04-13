@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\EventController;
 use App\Models\User;
-use Illuminate\Support\Facades\Route;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ProfileController;
@@ -14,11 +16,10 @@ use App\Http\Controllers\DashboardControllers;
 use App\Http\Middleware\TrackUserOnlineStatus;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdoptionFormController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
-use App\Http\Controllers\AnnouncementController;
-use App\Models\Announcement;
 
 Route::get('/', function () {
     return view('welcome');
@@ -139,9 +140,8 @@ Route::post('/set-theme', function (\Illuminate\Http\Request $request) {
     return back(); // Redirect back to the previous page
 })->name('set-theme');
 
- 
-
-
+Route::post('/api/send-otp', [OtpController::class, 'sendOtp']);
+Route::post('/api/verify-otp', [OtpController::class, 'verifyOtp']);
 
 Route::get('/api/partial/containers/browse/{content}', function ($content) {
     // Ensure only valid contents are allowed

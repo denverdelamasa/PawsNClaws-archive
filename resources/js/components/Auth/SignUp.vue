@@ -26,32 +26,41 @@
               Create an account
             </h1>
             <form @submit.prevent="handleSubmit" class="space-y-4 md:space-y-6">
-              <div>
-                <label
-                  for="email"
-                  class="block mb-2 text-sm text-secondary font-medium"
-                  >Your email</label
-                >
-                <input
-                  type="email"
-                  v-model="form.email"
-                  @input="checkAvailability('email')"
-                  id="email"
-                  class="input input-bordered w-full"
-                  placeholder="name@company.com"
-                  required
-                />
-                <span
-                    v-if="availability.email"
-                    :class="{
-                    'text-success': availability.email.available,
-                    'text-error': !availability.email.available
-                    }"
-                    class="text-sm"
-                >
-                    {{ availability.email.message }}
-                </span>
+              <div class="w-full">
+                <label for="email" class="block mb-2 text-sm text-secondary font-medium">
+                  Your Email
+                </label>
+                <div class="flex items-center gap-2">
+                  <input
+                    type="email"
+                    v-model="form.email"
+                    @input="checkAvailability('email')"
+                    id="email"
+                    class="input input-bordered w-full"
+                    placeholder="name@company.com"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-sm"
+                    @click="sendOtp"
+                    :disabled="otpStatus === 'pending' || !form.email"
+                  >
+                    {{ otpStatus === 'verified' ? 'Verified' : 'Verify' }}
+                  </button>
+                </div>
               </div>
+              <span
+                v-if="availability.email"
+                :class="{
+                  'text-success': availability.email.available,
+                  'text-error': !availability.email.available
+                }"
+                class="text-sm"
+              >
+                {{ availability.email.message }}
+              </span>
+
               <div>
                 <label
                   for="name"
@@ -192,6 +201,9 @@
               <button type="submit" class="btn btn-primary w-full">
                 Create an account
               </button>
+              <p v-if="showVerifyMessage" class="text-error text-sm mt-2">
+                Please verify your email before creating an account.
+              </p>
               <p class="text-sm font-light text-secondary">
                 Already have an account?
                 <a
@@ -201,6 +213,58 @@
                 >
               </p>
             </form>
+            <div v-if="showOtpModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div class="bg-base-200 p-6 rounded-lg shadow-lg w-[90%] max-w-md">
+                <h2 class="text-lg font-bold mb-4">Enter OTP</h2>
+                <p v-if="otpSentMessage" class="text-success text-sm mb-2">
+                  {{ otpSentMessage }}
+                </p>
+                <input
+                  v-model="enteredOtp"
+                  type="text"
+                  placeholder="Enter the 6-digit code"
+                  class="input input-bordered w-full mb-4"
+                  maxlength="6"
+                />
+
+                <div class="flex justify-end gap-2">
+                  <button class="btn btn-outline" @click="closeOtpModal">Cancel</button>
+                  <button class="btn btn-primary" @click="verifyOtp">
+                    <span v-if="isSendingOtp" class="loading loading-spinner"></span>
+                    <span v-else>Verify</span>
+                  </button>
+                </div>
+                <p v-if="otpError" class="text-red-500 mt-2 text-sm">{{ otpError }}</p>
+
+                <div class="flex justify-between items-center mt-4">
+                  <p class="text-sm text-secondary">Didn't receive the code?</p>
+                  <button
+                    class="btn btn-link btn-sm text-primary p-0"
+                    @click="resendOtp"
+                    :disabled="resendCountdown > 0 || isResendingOtp"
+                  >
+                    <span v-if="isResendingOtp" class="loading loading-spinner loading-sm"></span>
+                    <span v-else>
+                      Resend OTP <span v-if="resendCountdown > 0">({{ resendCountdown }}s)</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ✅ Email Verified Success Modal -->
+            <div
+              v-if="showSuccessModal"
+              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            >
+              <div class="bg-base-100 p-6 rounded-lg shadow-lg w-[90%] max-w-sm text-center">
+                <h2 class="text-xl font-bold text-success mb-2">🎉 Verified!</h2>
+                <p class="text-sm text-secondary">
+                  {{ verificationMessage }}
+                </p>
+                <button class="btn btn-primary mt-4" @click="closeSuccessModal">OK</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -229,6 +293,18 @@ export default {
         password: null,
       },
       showPassword: false,
+      showOtpModal: false,
+      enteredOtp: "",
+      otpStatus: "", // '', 'pending', 'verified'
+      otpError: "",
+      otpSentMessage: "",
+      isSendingOtp: false,
+      showVerifyMessage: false,
+      resendCountdown: 0,
+      resendTimer: null,
+      isResendingOtp: false,
+      showSuccessModal: false,
+      verificationMessage: "",
     };
   },
   computed: {
@@ -242,6 +318,13 @@ export default {
       this.showPassword = !this.showPassword;
     },
     async handleSubmit() {
+      if (this.otpStatus !== 'verified') {
+        this.showVerifyMessage = true;
+        return;
+      }
+
+      this.showVerifyMessage = false;
+
       try {
         const response = await axios.post("/signup", this.form);
         console.log(response.data); // Handle success
@@ -265,6 +348,87 @@ export default {
         console.error("Error checking availability:", error.response?.data || error.message);
       }
     },
+    async sendOtp() {
+      this.otpError = "";
+      this.otpSentMessage = "";
+      this.otpStatus = "pending";
+      this.isSendingOtp = true;
+      this.showOtpModal = true;
+
+      try {
+        await axios.post("/api/send-otp", {
+          email: this.form.email,
+        });
+
+        this.otpSentMessage = "An OTP has been sent to your email successfully.";
+        this.startResendCountdown();
+      } catch (err) {
+        this.otpError = "Failed to send OTP. Try again.";
+      } finally {
+        this.isSendingOtp = false;
+      }
+    },
+    async verifyOtp() {
+      try {
+        const response = await axios.post("/api/verify-otp", {
+          email: this.form.email,
+          otp: this.enteredOtp,
+        });
+
+        if (response.data.verified) {
+          this.otpStatus = "verified";
+          this.otpError = "";
+          this.showOtpModal = false;
+
+          this.verificationMessage = "Your email has been successfully verified! 🎉";
+          this.showSuccessModal = true; // ✅ Show success modal
+        } else {
+          this.otpError = "Invalid OTP. Please try again.";
+        }
+      } catch (err) {
+        this.otpError = "Verification failed. Please try again.";
+      }
+    },
+    startResendCountdown(seconds = 30) {
+      this.resendCountdown = seconds;
+      if (this.resendTimer) clearInterval(this.resendTimer);
+      this.resendTimer = setInterval(() => {
+        if (this.resendCountdown > 0) {
+          this.resendCountdown--;
+        } else {
+          clearInterval(this.resendTimer);
+        }
+      }, 1000);
+    },
+    async resendOtp() {
+      this.otpError = "";
+      this.otpSentMessage = "";
+      this.isResendingOtp = true;
+
+      try {
+        const response = await axios.post("/api/send-otp", {
+          email: this.form.email,
+        });
+
+        this.otpSentMessage = "A new OTP has been sent to your email.";
+        this.startResendCountdown();
+      } catch (err) {
+        this.otpError = "Failed to resend OTP. Please try again.";
+      } finally {
+        this.isResendingOtp = false;
+      }
+    },
+    closeOtpModal() {
+      this.showOtpModal = false;
+      this.enteredOtp = "";
+      this.otpError = "";
+    },
+    closeSuccessModal() {
+      this.showSuccessModal = false;
+    },
+  },
+  beforeDestroy() {
+    if (this.resendTimer) clearInterval(this.resendTimer);
   },
 };
 </script>
