@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BrowseController;
 use App\Models\User;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
@@ -118,6 +119,9 @@ Route::get('/api/announcement/welcome', [AnnouncementController::class, 'announc
 Route::get('/api/comments/{id}/{type}', [CommentsController::class, 'getComments'])
     ->where(['id' => '[0-9]+', 'type' => 'post|announcement|event']);
 
+Route::get('/api/browse/users', [BrowseController::class, 'browseAccounts']);
+
+
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');
 Route::get('/announcements', [PageController::class, 'announcements'])->name('announcements');
@@ -136,7 +140,7 @@ Route::get('/privacy-policy', [PageController::class, 'PrivacyPolicy'])->name('p
 Route::get('/messages', [PageController::class, 'messages'])->name('messages');
 
 
-Route::post('/set-theme', function (\Illuminate\Http\Request $request) {
+Route::post('/set-theme', function (Request $request) {
     $theme = $request->input('theme', 'light'); // Default to 'light' if no theme is provided
     session(['theme' => $theme]); // Store theme in session
     return back(); // Redirect back to the previous page

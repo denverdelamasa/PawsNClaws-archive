@@ -122,17 +122,29 @@
 
             <!-- If no comments, show a message -->
             <div v-else>
-              <p>No comments yet. Be the first to comment!</p>
+              <p v-if="!noMoreComments">No comments yet. Be the first to comment!</p>
             </div>
+
+            <!-- No More Comments Message -->
+            <div v-if="noMoreComments" class="text-center py-4 text-gray-500">
+              {{ comments.length === 0 ? 'No comments available.' : 'No more comments available.' }}
+            </div>
+          </div>
+          <!-- Load More Button -->
+          <div v-if="!noMoreComments" class="text-center mt-4">
+            <button 
+              @click="fetchComments" 
+              class="btn btn-primary btn-sm"
+              :disabled="isLoading"
+            >
+              {{ isLoading ? 'Loading...' : 'Load More Comments' }}
+            </button>
           </div>
         </div>
 
         <form method="dialog">
           <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
-      </div>
-      <div v-if="noMoreComments && comments.length > 0" class="text-center py-4 text-gray-500">
-        No more comments available.
       </div>
     </dialog>
   </div>
@@ -415,37 +427,17 @@ export default {
       if (newVal) {
         this.$refs.commentsDialog.showModal(); // Open the dialog when the prop is true
         this.fetchComments();  // Fetch comments when modal opens
-        // Attach the scroll event listener when the modal opens
-        const modal = this.$refs.commentsDialog;
-        if (modal) {
-          modal.addEventListener('scroll', this.handleCommentsScroll);
-        }
       } else {
         this.$refs.commentsDialog.close(); // Close the modal when the prop is false
-        // Remove the scroll event listener when the modal closes
-        const modal = this.$refs.commentsDialog;
-        if (modal) {
-          modal.removeEventListener('scroll', this.handleCommentsScroll);
-        }
       }
     }
   },
   mounted(){
     this.checkAuthentication();
     window.addEventListener('keydown', this.handleEscKey);
-    
-    const modal = this.$refs.commentsDialog;
-    if (modal) {
-      modal.addEventListener('scroll', this.handleCommentsScroll);
-    }
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleEscKey); // Clean up the event listener
-    
-    const modal = this.$refs.commentsDialog;
-    if (modal) {
-      modal.removeEventListener('scroll', this.handleCommentsScroll);
-    }
   }
 };
 </script>

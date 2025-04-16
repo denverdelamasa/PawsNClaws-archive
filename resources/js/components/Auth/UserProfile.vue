@@ -458,7 +458,6 @@ export default {
       imagePreview: null,
       cropper: null,
       selectedImage: null,
-      imagePreview: null,
       userAdoptionForms: [],
       showFormModal: false,
       selectedApplication: null,

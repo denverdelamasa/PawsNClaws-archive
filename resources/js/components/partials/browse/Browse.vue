@@ -33,7 +33,7 @@
             </ul>
           </div>
           <!-- Search automatic na magsshow -->
-          <input type="text" placeholder="Search" class="input input-bordered border-base-100 input-accent w-full bg-base-200"/>
+          <input type="text" placeholder="Search" v-model="searchQuery" class="input input-bordered border-base-100 input-accent w-full bg-base-200"/>
         </div>
         <!-- Content Section -->
         <div class="mainBrowseContent">
@@ -52,22 +52,22 @@
           </div> 
            
           <div v-if="browseContent === 'browseAll'">
-            <div v-html="browseAll"></div> 
+            <browseAll/>
           </div>
           <div v-if="browseContent === 'browsePosts'">
-            <div v-html="browsePosts"></div>
+            <browsePosts/>
           </div>
           <div v-if="browseContent === 'browseAnnouncements'">
-            <div v-html="browseAnnouncements"></div>
+            <browseAnnouncements/>
           </div>
           <div v-if="browseContent === 'browseEvents'">
-            <div v-html="browseEvents"></div>
+            <browseEvents/>
           </div>
           <div v-if="browseContent === 'browseServices'">
-            <div v-html="browseServices"></div>
+            <browseServices/>
           </div>
           <div v-if="browseContent === 'browseAccounts'">
-            <div v-html="browseAccounts"></div>
+            <browseAccounts :searchQuery="searchQuery"/>
           </div>
         </div>
 
@@ -157,7 +157,6 @@
               <h6 class="footer-title text-xs">Legal</h6>
               <a class="link link-hover" href="{{ url('terms-of-service') }}">Terms of Service</a>
               <a class="link link-hover" href="{{ url('privacy-policy') }}">Privacy policy</a>
-              
             </nav>
           </footer>
         </ul>
@@ -168,10 +167,25 @@
 
 <script>
 import axios from 'axios';
+import browseAll from './BrowseAll.vue';
+import browseAccounts from './BrowseAccounts.vue';
+import browseAnnouncements from './browseAnnouncements.vue';
+import browseEvents from './BrowseEvents.vue';
+import browsePosts from './BrowsePosts.vue';
+import browseServices from './BrowseServices.vue';
 
 export default {
+  components: {
+    browseAll,
+    browseAccounts,
+    browseAnnouncements,
+    browseEvents,
+    browsePosts,
+    browseServices,
+  },
   data() {
     return {
+      searchQuery: '',
       browseContent: 'browseAll', // Example default state
       loading: false,             // Loading state
       browseAll: '',              // Content for browseAll

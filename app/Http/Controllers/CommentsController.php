@@ -14,7 +14,6 @@ class CommentsController extends Controller
 {
     public function getComments($id, $type)
     {
-        \Log::info("Fetching Comments for ID: $id, Type: $type");
         // Determine the type of comment to fetch
         if ($type === 'announcement') {
             $comments = Comment::with('user')
