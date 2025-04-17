@@ -2,12 +2,12 @@
 <div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6 flex flex-col">
     <!-- Users -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
-        <browseAccounts/>
+        <browseAccounts :searchQuery="searchQuery"/>
     </div>
 
     <!-- Services -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
-        <browseServices/>
+        <browseServices :searchQuery="searchQuery"/>
     </div>
 
     <!-- Posts -->
@@ -35,6 +35,7 @@ import browseEvents from './BrowseEvents.vue';
 
 
 export default {
+    props: ['searchQuery'],
     components: {
         browseAccounts,
         browsePosts,

@@ -32,27 +32,22 @@
               </a></li>
             </ul>
           </div>
-          <!-- Search automatic na magsshow -->
-          <input type="text" placeholder="Search" v-model="searchQuery" class="input input-bordered border-base-100 input-accent w-full bg-base-200"/>
+          <div class="flex gap-2 w-full">
+            <div class="w-full relative">
+              <!-- Search automatic na magsshow -->
+              <input type="text" placeholder="Search" v-model="tempSearch" @keyup.enter="triggerSearch" @input="handleSearchInput" class="input input-bordered border-base-100 input-accent w-full bg-base-200"/>
+            </div>
+          </div>
+          <button @click="triggerSearch" class="btn btn-accent">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
         </div>
         <!-- Content Section -->
         <div class="mainBrowseContent">
-          <!-- Loader -->
-          <div v-if="loading" class="text-center flex flex-wrap justify-center">
-            <!-- From Uiverse.io by Nawsome -->
-            <div class="feed-loader bg-base-100 rounded-xl border border-base-300 m-4">
-              <div class="wrapper">
-                <div class="circle bg-base-200"></div>
-                <div class="line-1 bg-base-200"></div>
-                <div class="line-2 bg-base-200"></div>
-                <div class="line-3 bg-base-200"></div>
-                <div class="line-4 bg-base-200"></div>
-              </div>
-            </div>
-          </div> 
-           
           <div v-if="browseContent === 'browseAll'">
-            <browseAll/>
+            <browseAll :searchQuery="searchQuery"/>
           </div>
           <div v-if="browseContent === 'browsePosts'">
             <browsePosts/>
@@ -64,7 +59,7 @@
             <browseEvents/>
           </div>
           <div v-if="browseContent === 'browseServices'">
-            <browseServices/>
+            <browseServices :searchQuery="searchQuery"/>
           </div>
           <div v-if="browseContent === 'browseAccounts'">
             <browseAccounts :searchQuery="searchQuery"/>
@@ -186,6 +181,7 @@ export default {
   data() {
     return {
       searchQuery: '',
+      tempSearch: '',
       browseContent: 'browseAll', // Example default state
       loading: false,             // Loading state
       browseAll: '',              // Content for browseAll
@@ -193,10 +189,60 @@ export default {
       browseAnnouncements: '',    // Content for browseAnnouncements
       browseEvents: '',           // Content for browseEvents
       browseServices: '',         // Content for browseServices
-      browseAccounts: ''          // Content for browseAccounts
+      browseAccounts: '',          // Content for browseAccounts
+      searchSuggestions: [],
+      showSuggestions: false,
+      debounceTimeout: null
     };
   },
   methods: {
+    handleSearchInput() {
+      this.showSuggestions = true;
+      clearTimeout(this.debounceTimeout);
+      this.debounceTimeout = setTimeout(() => {
+        if (this.tempSearch.length > 0) {
+          this.fetchSearchSuggestions();
+        } else {
+          this.searchSuggestions = [];
+        }
+      }, 300);
+    },
+    async fetchSearchSuggestions() {
+      try {
+        const response = await axios.get('/api/browse/accounts', {
+          params: {
+            search: this.tempSearch,
+            page: 1,
+            perPage: 5 // Limit suggestions to 5 results
+          }
+        });
+        this.searchSuggestions = response.data.data;
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+      }
+    },
+
+    selectSuggestion(user) {
+      this.tempSearch = user.name;
+      this.triggerSearch();
+      this.showSuggestions = false;
+    },
+
+    triggerSearch() {
+      this.showSuggestions = false;
+      this.searchQuery = this.tempSearch;
+      // Add click-outside handler
+      document.addEventListener('click', this.handleClickOutside);
+    },
+
+    handleClickOutside(event) {
+      if (!this.$el.contains(event.target)) {
+        this.showSuggestions = false;
+      }
+    },
+    triggerSearch() {
+      this.searchQuery = this.tempSearch;
+    },
     changeContent(content) {
       this.browseContent = content;  // Change content dynamically
     },
@@ -222,10 +268,24 @@ export default {
   },
   mounted() {
     this.fetchContent(this.browseContent);  // Load initial content on mount
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside);
   }
 };
 
 </script>
 
 <style scoped>
+/* Add transition for smoother dropdown appearance */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>

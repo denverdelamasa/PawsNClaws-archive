@@ -30,7 +30,7 @@ class OtpController extends Controller
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email:rfc,dns|ends_with:@gmail.com',
             'otp' => 'required|digits:6',
         ]);
 

@@ -44,10 +44,17 @@
                     type="button"
                     class="btn btn-outline btn-sm"
                     @click="sendOtp"
-                    :disabled="otpStatus === 'pending' || !form.email"
+                    :disabled="otpStatus === 'verified' || !isValidEmail || !form.email"
                   >
                     {{ otpStatus === 'verified' ? 'Verified' : 'Verify' }}
                   </button>
+                  <!-- Add validation message -->
+                  <span 
+                    v-if="form.email && !isValidEmail"
+                    class="text-error text-sm"
+                  >
+                    Please enter a valid Gmail address
+                  </span>
                 </div>
               </div>
               <span
@@ -312,6 +319,9 @@ export default {
     passwordsMatch() {
       return this.form.password === this.form.password_confirmation;
     },
+    isValidEmail() {
+      return /^[^\s@]+@gmail\.com$/.test(this.form.email);
+    }
   },
   methods: {
     toggleShowPassword() {
@@ -349,6 +359,10 @@ export default {
       }
     },
     async sendOtp() {
+      if (!this.isValidEmail) {
+        this.otpError = "Please enter a valid Gmail address";
+        return;
+      }
       this.otpError = "";
       this.otpSentMessage = "";
       this.otpStatus = "pending";
@@ -366,6 +380,14 @@ export default {
         this.otpError = "Failed to send OTP. Try again.";
       } finally {
         this.isSendingOtp = false;
+      }
+    },
+    closeOtpModal() {
+      this.showOtpModal = false;
+      this.enteredOtp = "";
+      this.otpError = "";
+      if (this.otpStatus !== 'verified') {
+        this.otpStatus = "";
       }
     },
     async verifyOtp() {

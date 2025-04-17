@@ -119,8 +119,9 @@ Route::get('/api/announcement/welcome', [AnnouncementController::class, 'announc
 Route::get('/api/comments/{id}/{type}', [CommentsController::class, 'getComments'])
     ->where(['id' => '[0-9]+', 'type' => 'post|announcement|event']);
 
-Route::get('/api/browse/users', [BrowseController::class, 'browseAccounts']);
-
+Route::get('/api/browse/accounts', [BrowseController::class, 'browseAccounts']);
+Route::get('/api/browse/shelters', [BrowseController::class, 'browseServices']);
+Route::get('/api/browse/posts', [BrowseController::class, 'browsePosts']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');
