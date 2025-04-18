@@ -50,7 +50,11 @@ class PageController extends Controller
     }
     public function profile()
     {
-        return view('pages.profile.profile'); // Return the view for the home page
+        return view('pages.profile.profile'); // Return the view for the home page 
+    }
+    public function editprofile()
+    {
+        return view('pages.profile.editprofile');
     }
     public function messages()
     {
