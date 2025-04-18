@@ -12,17 +12,17 @@
 
     <!-- Posts -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
-        <browsePosts/>
+        <browsePosts :searchQuery="searchQuery"/>
     </div>
 
     <!-- Anouncements -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
-        <browseAnnouncements/>
+        <browseAnnouncements :searchQuery="searchQuery"/>
     </div>
 
     <!-- Events -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
-        <browseEvents/>
+        <browseEvents :searchQuery="searchQuery"/>
     </div>
 </div>
 </template>

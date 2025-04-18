@@ -73,7 +73,7 @@
     <dialog :id="`editAnnouncementModal-${announcement.announcement_id}`" class="modal">
         <div class="modal-box w-[90vw] h-[40vh] max-w-2xl">
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeEditModal(announcement.announcement_id)">✕</button>
-          <h3 class="text-xl font-semibold">Edit Post</h3>
+          <h3 class="text-xl font-semibold">Edit Announcement</h3>
           <form @submit.prevent="submitEditAnnouncement(announcement.announcement_id)">
             <div class="my-4">
               <label for="caption" class="label">Title</label>
@@ -292,7 +292,7 @@ export default {
       }
     },
     closeEditModal(announcementId) {
-      const modal = document.getElementById(`editAnnouncementModal-${this.announcementId}`);
+      const modal = document.getElementById(`editAnnouncementModal-${announcementId}`);
       if (modal) {
         modal.close();  // This will close the modal
       }

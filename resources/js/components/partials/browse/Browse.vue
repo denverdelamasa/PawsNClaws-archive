@@ -50,13 +50,13 @@
             <browseAll :searchQuery="searchQuery"/>
           </div>
           <div v-if="browseContent === 'browsePosts'">
-            <browsePosts/>
+            <browsePosts :searchQuery="searchQuery"/>
           </div>
           <div v-if="browseContent === 'browseAnnouncements'">
-            <browseAnnouncements/>
+            <browseAnnouncements :searchQuery="searchQuery"/>
           </div>
           <div v-if="browseContent === 'browseEvents'">
-            <browseEvents/>
+            <browseEvents :searchQuery="searchQuery"/>
           </div>
           <div v-if="browseContent === 'browseServices'">
             <browseServices :searchQuery="searchQuery"/>

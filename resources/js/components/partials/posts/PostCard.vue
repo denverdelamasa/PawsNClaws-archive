@@ -81,8 +81,6 @@
       </div>
     </div>
 
-
-
     <!-- Edit Post Modal -->
     <dialog :id="`editPostModal-${post.post_id}`" class="modal">
         <div class="modal-box w-[90vw] h-[40vh] max-w-2xl">
@@ -611,22 +609,22 @@ export default {
               toast: true,
               });
           });
-      },
-      editPost(post) {
-          this.selectedPost = { ...post };     // Make sure to copy post data correctly
-          const modal = document.getElementById(`editPostModal-${post.post_id}`);
-          if (modal) {
-              modal.showModal();
-          }
-      },
-
-      // Close the edit modal
-      closeEditModal(postId) {
-        const modal = document.getElementById(`editPostModal-${postId}`);
+    },
+    editPost(post) {
+        this.selectedPost = { ...post };     // Make sure to copy post data correctly
+        const modal = document.getElementById(`editPostModal-${post.post_id}`);
         if (modal) {
-            modal.close();  // This will close the modal
+            modal.showModal();
         }
-      },
+    },
+
+    // Close the edit modal
+    closeEditModal(postId) {
+      const modal = document.getElementById(`editPostModal-${postId}`);
+      if (modal) {
+          modal.close();  // This will close the modal
+      }
+    },
 
     // Submit the edit form
     submitEditPost() {
@@ -636,7 +634,7 @@ export default {
         })
         .then(response => {
             this.$emit('post-updated', response.data);  // Emit event to parent if needed
-            this.fetchPosts(true);  // Refresh the posts list
+            this.fetchPosts();  // Refresh the posts list
             this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
             
             Swal.fire({
@@ -774,7 +772,6 @@ export default {
       }
     },
 
-    // Check if the user has scrolled to the bottom
     handleScroll() {
       const bottomOfWindow =
         document.documentElement.scrollTop + window.innerHeight >=

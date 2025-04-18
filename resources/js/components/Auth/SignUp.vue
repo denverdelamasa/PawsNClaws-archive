@@ -58,10 +58,10 @@
                 </div>
               </div>
               <span
-                v-if="availability.email"
+                v-if="availability.email && isValidEmail"
                 :class="{
                   'text-success': availability.email.available,
-                  'text-error': !availability.email.available
+                  'text-error': !availability.email.available && isValidEmail
                 }"
                 class="text-sm"
               >

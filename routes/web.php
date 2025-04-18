@@ -122,6 +122,9 @@ Route::get('/api/comments/{id}/{type}', [CommentsController::class, 'getComments
 Route::get('/api/browse/accounts', [BrowseController::class, 'browseAccounts']);
 Route::get('/api/browse/shelters', [BrowseController::class, 'browseServices']);
 Route::get('/api/browse/posts', [BrowseController::class, 'browsePosts']);
+Route::get('/api/browse/announcements', [BrowseController::class, 'browseAnnouncements']);
+Route::get('/api/browse/events', [BrowseController::class, 'browseEvents']);
+Route::get('/api/accounts/view/{id}', [BrowseController::class, 'viewAccount']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');

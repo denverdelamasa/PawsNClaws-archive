@@ -22,7 +22,7 @@
             <div class="absolute bottom-5 right-0 h-4 w-4 rounded-full bg-slate-400"></div>
         </div>
         
-        <div v-if="users.length === 0 && searchQuery" class="text-center p-4">
+        <div v-if="users.length === 0 && searchQuery && !loading" class="text-center p-4">
             <div class="text-4xl mb-4">😿</div>
             <h3 class="text-xl font-semibold text-base-content/80">
                 No accounts found <span v-if="searchQuery">for "{{ searchQuery }}"</span>
@@ -76,8 +76,8 @@
                         </div>
                     </ul>
                 </div>
-                <!-- From Uiverse.io by kirzin --> 
-                <button class="AccountBrowseViewButton m-auto hover:scale-105 transition-all duration-100">View</button>
+                <!-- View Profile Account --> 
+                <router-link :to="{ name: 'ViewAccount', params: { id: user.user_id } }" class="AccountBrowseViewButton m-auto hover:scale-105 transition-all duration-100">View</router-link>
             </div>
             <!--Load More-->
             <div v-if="hasMore" class="text-center mt-4">

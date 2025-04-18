@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Post;
 use App\Models\Like;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Event;
+use App\Models\Announcement;
+use Illuminate\Http\Request;
 use App\Models\DoneAdoptionForm;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class BrowseController extends Controller
 {
@@ -126,5 +129,167 @@ class BrowseController extends Controller
                 'prev_page_url' => $posts->previousPageUrl(),
             ]
         ], 200);
+    }
+
+    public function browseAnnouncements(Request $request)
+    {
+        $userId = Auth::id(); // Get the current user's ID
+        $search = $request->input('search', '');
+        $page = $request->input('page', 1);
+        $perPage = 3; // 3 posts per page
+    
+        $query = Announcement::with('shelter')
+            ->withCount('comments')
+            ->orderBy('created_at', 'desc');
+    
+        // Add search functionality
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('shelter', function($userQuery) use ($search) {
+                      $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('username', 'like', "%{$search}%")
+                                ->orWhere('bio', 'like', "%{$search}%");
+                  });
+            });
+        }
+    
+        $announcements = $query->paginate($perPage, ['*'], 'page', $page);
+    
+        // Format the response
+        $formattedAnnouncements = $announcements->map(function ($announcements) use ($userId) {
+            $announcementLikesCount = Like::where('announcement_id', $announcements->announcement_id)->count();
+    
+            $isLikedAnnouncement = Like::where('announcement_id', $announcements->announcement_id)
+                            ->where('user_id', $userId)
+                            ->exists();
+    
+            return [
+                'announcement_id' => $announcements->announcement_id,
+                'shelter_id' => $announcements->shelter_id,
+                'name' => $announcements->shelter?->name ?? 'Unknown User',
+                'username' => $announcements->shelter?->username ?? 'Unknown User',
+                'profile_picture' => $announcements->shelter?->profile_picture ?? 'default-profile.jpg',
+                'thumbnail' => $announcements->thumbnail ? $announcements->thumbnail : null, 
+                'title' => $announcements->title,
+                'description' => $announcements->description,
+                'created_at' => $announcements->created_at->diffForHumans(),
+                'updated_at' => $announcements->updated_at->diffForHumans(),
+                'likes_count' => $announcementLikesCount,
+                'is_liked' => $isLikedAnnouncement,
+                'comments_count' => $announcements->comments_count,
+            ];
+        });
+    
+        return response()->json([
+            'announcements' => $formattedAnnouncements,
+            'pagination' => [
+                'current_page' => $announcements->currentPage(),
+                'per_page' => $announcements->perPage(),
+                'total' => $announcements->total(),
+                'last_page' => $announcements->lastPage(),
+                'next_page_url' => $announcements->nextPageUrl(),
+                'prev_page_url' => $announcements->previousPageUrl(),
+            ]
+        ], 200);
+    }
+
+    public function browseEvents(Request $request)
+    {
+        $userId = Auth::id(); // Get the current user's ID
+        $search = $request->input('search', '');
+        $page = $request->input('page', 1);
+        $perPage = 3; // 3 posts per page
+    
+        $query = Event::with('shelter')
+            ->withCount('comments')
+            ->orderBy('created_at', 'desc');
+    
+        // Add search functionality
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('event_title', 'like', "%{$search}%")
+                  ->orWhereHas('shelter', function($userQuery) use ($search) {
+                      $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('username', 'like', "%{$search}%")
+                                ->orWhere('bio', 'like', "%{$search}%");
+                  });
+            });
+        }
+    
+        $events = $query->paginate($perPage, ['*'], 'page', $page);
+    
+        // Format the response
+        $formattedEvents = $events->map(function ($events) use ($userId) {
+            $EventLikesCount = Like::where('event_id', $events->event_id)->count();
+    
+            $isLikedAnnouncement = Like::where('event_id', $events->event_id)
+                            ->where('user_id', $userId)
+                            ->exists();
+    
+            return [
+                'event_id' => $events->event_id,
+                'shelter_id' => $events->shelter_id,
+                'name' => $events->shelter?->name ?? 'Unknown User',
+                'username' => $events->shelter?->username ?? 'Unknown User',
+                'profile_picture' => $events->shelter?->profile_picture ?? 'default-profile.jpg',
+                'event_thumbnail' => $events->event_thumbnail ? json_decode($events->event_thumbnail, true) : [],
+                'event_title' => $events->event_title,
+                'event_description' => $events->event_description,
+                'created_at' => $events->created_at->diffForHumans(),
+                'updated_at' => $events->updated_at->diffForHumans(),
+                'likes_count' => $EventLikesCount,
+                'is_liked' => $isLikedAnnouncement,
+                'comments_count' => $events->comments_count,
+            ];
+        });
+    
+        return response()->json([
+            'events' => $formattedEvents,
+            'pagination' => [
+                'current_page' => $events->currentPage(),
+                'per_page' => $events->perPage(),
+                'total' => $events->total(),
+                'last_page' => $events->lastPage(),
+                'next_page_url' => $events->nextPageUrl(),
+                'prev_page_url' => $events->previousPageUrl(),
+            ]
+        ], 200);
+    }
+
+    public function viewAccount($id)
+    {
+        try {
+            $user = User::select(
+                'user_id',
+                'name',
+                'email',
+                'profile_picture',
+                'role',
+                'status',
+                'is_online',
+                'last_online',
+                'bio',
+                'created_at'
+            )->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'user' => $user
+            ]);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+            
+        } catch (\Exception $e) {
+            Log::error('Error fetching user account: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
     }
 }

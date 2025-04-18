@@ -226,6 +226,7 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import Swal from 'sweetalert2';
 import Comments from '../misc/Comments.vue';
 import UploadPost from '../misc/UploadPost.vue';
@@ -308,7 +309,7 @@ export default{
             }
         },
         closeEditModal(eventId) {
-            const modal = document.getElementById(`editEventModal-${this.eventId}`);
+            const modal = document.getElementById(`editEventModal-${eventId}`);
             if (modal) {
                 modal.close();  // This will close the modal
             }

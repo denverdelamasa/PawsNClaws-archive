@@ -64,7 +64,7 @@
       </div>
 
       <!-- No Results -->
-      <div v-else class="text-center py-12">
+      <div v-else="!loading" class="text-center py-12">
         <div class="text-4xl mb-4">🐾</div>
         <h3 class="text-xl font-semibold text-base-content/80">
           No services found <span v-if="searchQuery">for "{{ searchQuery }}"</span>

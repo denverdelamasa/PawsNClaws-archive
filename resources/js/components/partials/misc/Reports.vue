@@ -1,4 +1,40 @@
 <template>
+  <!-- Success Modal -->
+  <dialog ref="successDialog" class="modal">
+    <div class="modal-box text-center p-8 transform transition-all duration-300">
+      <div class="animate-scale-in">
+        <!-- Animated checkmark -->
+        <div class="flex justify-center mb-4">
+          <svg class="w-16 h-16 text-green-400 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+
+        <h3 class="text-2xl font-bold text-green-400 mb-2">Report Submitted!</h3>
+        <p class="text-gray-300 mb-6">Thank you for helping improve our community 🌟</p>
+        
+        <div class="modal-action justify-center">
+          <button 
+            class="btn btn-success px-8 rounded-full transform transition-all hover:scale-105 hover:shadow-lg"
+            @click="closeSuccessModal"
+          >
+            Got it!
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Error Modal -->
+  <dialog ref="errorDialog" class="modal">
+    <div class="modal-box text-center">
+      <h3 class="text-lg font-bold text-red-400">Submission Failed</h3>
+      <p class="py-4 text-gray-300">{{ errorMessage }}</p>
+      <div class="modal-action justify-center">
+        <button class="btn btn-error" @click="closeErrorModal">Close</button>
+      </div>
+    </div>
+  </dialog>
   <dialog ref="reportDialog" class="modal">
     <div class="modal-box">
       <h3 class="text-lg font-bold text-red-600">
@@ -42,28 +78,6 @@
           <button type="button" class="btn" @click="closeModal">Cancel</button>
         </div>
       </form>
-    </div>
-  </dialog>
-
-  <!-- Success Modal -->
-  <dialog ref="successDialog" >
-    <div class="modal-box text-center">
-      <h3 class="text-lg font-bold text-green-400">Report Submitted</h3>
-      <p class="py-4 text-gray-300">Your report has been submitted successfully!</p>
-      <div class="modal-action justify-center">
-        <button class="btn btn-success" @click="closeSuccessModal">OK</button>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- Error Modal -->
-  <dialog ref="errorDialog" class="modal">
-    <div class="modal-box text-center">
-      <h3 class="text-lg font-bold text-red-400">Submission Failed</h3>
-      <p class="py-4 text-gray-300">{{ errorMessage }}</p>
-      <div class="modal-action justify-center">
-        <button class="btn btn-error" @click="closeErrorModal">Close</button>
-      </div>
     </div>
   </dialog>
 </template>
@@ -129,10 +143,11 @@ export default {
       axios.post('/api/reports/submit', reportData)
         .then(() => {
           console.log('Showing success dialog...');
-          this.closeModal();
-          this.$nextTick(() => {
-            this.$refs.successDialog.showModal();
-          });
+          this.reportReason = '';
+          this.customReason = '';
+          this.$refs.reportDialog.close();
+
+          this.$refs.successDialog.showModal();
         })
         .catch(error => {
           console.error('Error submitting report:', error);
@@ -141,6 +156,10 @@ export default {
           this.$refs.errorDialog.showModal();
         });
     },
+    closeSuccessModal() {
+      this.$refs.successDialog.close();
+      this.$emit('close'); // Add this line
+    }
   },
   mounted(){
     this.$refs.reportDialog.showModal();
@@ -157,5 +176,52 @@ export default {
 .radio:checked {
   border-color: #dc2626;
   background-color: #dc2626;
+}
+/* Animation for checkmark drawing */
+@keyframes draw-check {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-draw-check path {
+  stroke-dasharray: 24;
+  animation: draw-check 0.6s ease-out forwards;
+}
+
+/* Modal entrance animation */
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-box {
+  background: linear-gradient(145deg, #1a1e23, #2d333b);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.btn-success {
+  background: #10b981;
+  border-color: #059669;
+  transition: all 0.2s ease;
+}
+
+.btn-success:hover {
+  background: #059669;
+  transform: translateY(-1px);
 }
 </style>
