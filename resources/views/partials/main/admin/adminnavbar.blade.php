@@ -25,7 +25,7 @@
               <ul
                 tabindex="0"
                 class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow gap-y-2">
-                <li><a href="{{ route('client.profile.edit') }}">Profile</a></li>
+                <li><a href="{{ url('pages/profile') }}">Profile</a></li>
                 @auth
                   @if(Auth::user()->role === 'Admin')
                     <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
