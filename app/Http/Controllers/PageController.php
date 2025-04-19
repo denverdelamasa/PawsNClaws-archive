@@ -56,6 +56,10 @@ class PageController extends Controller
     {
         return view('pages.profile.editprofile');
     }
+    public function bookmarks()
+    {
+        return view('pages.profile.bookmarks');
+    }
     public function messages()
     {
         return view('pages.messages.messages'); // Return the view for the home page

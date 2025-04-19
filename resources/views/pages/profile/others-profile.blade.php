@@ -3,7 +3,6 @@
 @include('partials.main.scripts-styles')    
     <body class="font-sans">
         @include('partials.main.navbar')
-
         <div class="bg-base-200">
             <div class="container mx-auto py-8">
                 <div class="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
