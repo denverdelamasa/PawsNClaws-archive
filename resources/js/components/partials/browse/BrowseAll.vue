@@ -1,5 +1,5 @@
 <template>
-<div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6 flex flex-col">
+<div class="h-full w-full bg-base-100 overflow-auto gap-4 flex flex-col">
     <!-- Users -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
         <browseAccounts :searchQuery="searchQuery"/>

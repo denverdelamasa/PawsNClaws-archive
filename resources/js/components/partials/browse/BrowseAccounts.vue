@@ -1,7 +1,7 @@
 <template>
-<div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6">
+<div class="h-full w-full bg-base-100 overflow-auto gap-4 lg:p-6 p-0">
     <!-- Users -->
-    <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
+    <div class="flex flex-col m-2 p-2 border-base-300">
         <div class="flex gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-12 h-12" viewBox="0 0 16 16">
                 <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1z"/>
@@ -31,18 +31,19 @@
         </div>
 
         <div v-else>
-            <div v-for="user in users" :key="user.user_id" class="m-6 flex card card-side bg-base-200 shadow-sm border border-base-300 px-6 hover:scale-105 transition-transform duration-200">
+            <div v-for="user in users" :key="user.user_id" class="mt-6 flex flex-row card card-side bg-base-200 shadow-sm px-4 hover:scale-105 transition-transform duration-200">
                 <figure class="m-auto w-16 h-16 rounded-full overflow-hidden">
                     <img
                         :src="`/storage/${user.profile_picture}`"
                         alt="User Avatar"
                         class="w-full h-full object-cover" />
                 </figure>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <h2 class="card-title">{{ user.name }}</h2>
                     <p class="truncate">{{ user.bio || 'No bio available' }}</p>
                     <!-- Inde ko alam kung pano yung mag ccut sya pag over flow yung naka "..." yung dulo? inde ko alam HAGSHAHA  -->
                     <ul class="flex flex-wrap gap-x-2 gap-y-2">
+                    <!--
                         <div class="badge badge-accent">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
                                 <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
@@ -74,10 +75,11 @@
                             </svg>
                             Furr-Parent
                         </div>
+                    -->
                     </ul>
                 </div>
                 <!-- View Profile Account --> 
-                <button @click="viewProfile(user.user_id)" class="AccountBrowseViewButton m-auto hover:scale-105 transition-all duration-100">View</button>
+                <button @click="viewProfile(user.user_id)" class="AccountBrowseViewButton m-auto max-w-12 hover:scale-105 transition-all duration-100">View</button>
             </div>
             <!--Load More-->
             <div v-if="hasMore" class="text-center mt-4">
