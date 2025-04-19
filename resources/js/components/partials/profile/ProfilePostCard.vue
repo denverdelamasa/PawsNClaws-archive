@@ -101,13 +101,35 @@
     </dialog>
 
     <!-- Modal Thumbnail -->
-    <dialog :id="`thumbnailModal-${post.post_id}`" class="modal">
-        <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
-            <div class="flex justify-center items-center h-full">
-            <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
-            </div>
+    <dialog v-if="post.image_path" :id="'thumbnailModal-' + post.post_id" class="modal">
+      <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen relative">
+        <!-- Close Button -->
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
+
+        <!-- Image Carousel -->
+        <div class="flex justify-center items-center h-full relative">
+          <!-- Left Arrow (Only show if NOT on the first image) -->
+          <button 
+            v-if="post.image_path.length > 1 && currentIndex[post.post_id] > 0"
+            class="absolute left-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
+            @click="prevImage(post.post_id)"
+          >
+            &lt;
+          </button>
+
+          <!-- Image Display -->
+          <img :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
+
+          <!-- Right Arrow (Only show if NOT on the last image) -->
+          <button 
+            v-if="post.image_path.length > 1 && currentIndex[post.post_id] < post.image_path.length - 1"
+            class="absolute right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
+            @click="nextImage(post.post_id)"
+          >
+            &gt;
+          </button>
         </div>
+      </div>
     </dialog>
 
     <!-- Card Body -->
@@ -176,14 +198,14 @@
         </button>
 
       <!-- Comments Button -->
-      <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(post.post_id)">
+      <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openCommentsModal(post.post_id)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
       </svg>
       <span>{{ post.comments_count}} Comments</span>
     </button>
 
-    <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
+    <Comments :isCommentsModalOpen="isCommentsModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedCommentPostId"/>
 
       <!-- Bookmark Button -->
       <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
@@ -216,13 +238,15 @@ export default {
   data() {
     return {
       posts: [],
+      currentIndex: {},
       expanded: false,
       isAuthenticated: false,
       currentUserId: null,
       selectedPost: { caption: '' },
       isModalOpen: false,
-      comments: [],  // Store comments here,
-      selectedPostId: null,
+      isCommentsModalOpen: false,
+      comments: [],
+      selectedCommentPostId: null,
       currentPage: 1,
       hasMorePosts: true,
       loading: false,
@@ -230,24 +254,30 @@ export default {
     };
   },
   methods: {
-    openModal(postId) {
-      this.isModalOpen = true;
-      this.fetchComments(postId);  // Fetch comments for the selected post  
-      this.selectedPostId = postId;
+    openCommentsModal(postId) {
+      this.isCommentsModalOpen = true;
+      this.selectedCommentPostId = postId;
     },
     closeCommentsModal() {
-      this.isModalOpen = false;
+      this.isCommentsModalOpen = false;
       this.comments = [];  // Clear comments when modal is closed
-      this.fetchPost();
+      this.fetchPosts();
     },
-    fetchComments(postId) {
-      axios.get(`/api/comments/post/${postId}`)
-        .then(response => {
-          this.comments = response.data;  // Store fetched comments
-        })
-        .catch(error => {
-          console.error("Error fetching comments:", error);
-        });
+    nextImage(postId) {
+      const post = this.posts.find(post => post.post_id === postId);
+      if (post && post.image_path.length > 0) {
+        this.currentIndex[postId] = (this.currentIndex[postId] + 1) % post.image_path.length;
+      } else {
+        console.error("Post or image path not found for postId:", postId);
+      }
+    },
+    prevImage(postId) {
+      const post = this.posts.find(post => post.post_id === postId);
+      if (post && post.image_path.length > 0) {
+        this.currentIndex[postId] = (this.currentIndex[postId] - 1 + post.image_path.length) % post.image_path.length;
+      } else {
+        console.error("Post or image path not found for postId:", postId);
+      }
     },
     openDeleteModal(postId) {
       const modal = document.getElementById(`deletePostModal-${postId}`);
@@ -381,10 +411,15 @@ export default {
       post.expanded = !post.expanded;
     },
     showModal(postId) {
-        const modal = document.getElementById(`thumbnailModal-${postId}`);
-        if (modal) {
-        modal.showModal();
-        }
+      // Ensure the index is set to 0 if undefined
+      if (!(postId in this.currentIndex)) {
+        this.currentIndex[postId] = 0;
+      }
+
+      const modal = document.getElementById(`thumbnailModal-${postId}`);
+      if (modal) {
+      modal.showModal();
+      }
     },
     closeThumbnailModal(postId) {
         const modal = document.getElementById(`thumbnailModal-${postId}`);

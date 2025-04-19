@@ -8,6 +8,9 @@ import axios from 'axios';
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+const urlParams = new URLSearchParams(window.location.search);
+const userIdFromUrl = urlParams.get('user_id') || null;
+
 // Import Vue and the component
 import { createApp } from 'vue';
 import Notification from './components/Notifications/Notifications.vue';
@@ -24,16 +27,25 @@ import Announcement from './components/partials/posts/Announcement.vue';
 import AnnouncementWelcome from './components/partials/posts/AnnouncementWelcome.vue';
 import Event from './components/partials/posts/Event.vue';
 import BrowseAccounts from './components/partials/browse/BrowseAccounts.vue';
+import ViewAccount from './components/partials/misc/ViewAccount.vue';
 
 // Create the Vue app
 const app1 = createApp({});
 app1.component('notifications', Notification);
 app1.mount('#app');
+
 // Create the event bus and attach it globally to the window
 const eventBus = createApp({});
 window.eventBus = eventBus;
 
-const app2 = createApp({});
+const app2 = createApp({
+    data() {
+        return {
+            userId: userIdFromUrl
+        };
+    }
+});
+
 app2.component('upload-post', UploadPost);
 app2.component('post-card', PostCard);
 app2.component('browse', Browse);
@@ -46,6 +58,7 @@ app2.component('profile-footer', Footer);
 app2.component('announcement-cards', Announcement);
 app2.component('event-cards', Event);
 app2.component('browse-accounts', BrowseAccounts);
+app2.component('view-account', ViewAccount);
 
 app2.mount("#app2");
 

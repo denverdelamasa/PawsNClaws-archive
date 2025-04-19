@@ -65,17 +65,9 @@
                         <h1 class="text-xl font-bold">Information</h1>
                     </div>
                     <div class="space-y-4 mt-4">
-                        <div v-if="user.bio">
+                        <div>
                             <p class="text-base-content/70 text-sm">Bio:</p>
-                            <p class="text-base-content">{{ user.bio }}</p>
-                        </div>
-                        <div v-if="user.location">
-                            <p class="text-base-content/70 text-sm">Location:</p>
-                            <p class="text-base-content">{{ user.location }}</p>
-                        </div>
-                        <div v-if="user.contact">
-                            <p class="text-base-content/70 text-sm">Contact:</p>
-                            <p class="text-base-content">{{ user.contact }}</p>
+                            <p class="text-base-content">{{ user.bio || "No Available Bio" }}</p>
                         </div>
                     </div>
                 </div>
@@ -87,13 +79,13 @@
                             @click="activeTab = 'posts'">
                         Posts
                     </button>
-                    <button v-if="user.role === 'Shelter'" 
+                    <button v-if="user.role === 'Shelter', 'Admin'" 
                             class="text-xl font-bold hover:scale-105 transition-all duration-100"
                             :class="{ 'text-primary': activeTab === 'announcements' }"
                             @click="activeTab = 'announcements'">
                         Announcements
                     </button>
-                    <button class="text-xl font-bold hover:scale-105 transition-all duration-100"
+                    <button v-if="user.role === 'Shelter', 'Admin'" class="text-xl font-bold hover:scale-105 transition-all duration-100"
                             :class="{ 'text-primary': activeTab === 'events' }"
                             @click="activeTab = 'events'">
                         Events
@@ -126,11 +118,18 @@ import axios from 'axios';
 
 export default {
     name: 'ViewAccount',
+    props: {
+        userId: {
+            type: [String, Number],
+            required: true,
+        }
+    },
     data() {
         return {
             user: null,
             loading: true,
-            error: null
+            error: null,
+            activeTab: 'posts'
         }
     },
     created() {
@@ -139,7 +138,7 @@ export default {
     methods: {
         async fetchUserData() {
             try {
-                const response = await axios.get(`/api/accounts/view/${this.$route.params.id}`);
+                const response = await axios.get(`/api/accounts/view/${this.userId}`);
                 this.user = response.data.user;
             } catch (error) {
                 this.error = error.response?.data.message || 'Failed to load user profile';

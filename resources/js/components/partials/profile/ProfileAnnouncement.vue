@@ -72,60 +72,67 @@
     <div class="card-body">
         <!-- Buttons -->
         <div class="flex gap-2 flex-wrap">
-            <!-- Upvote Button -->
-            <button 
-              class="btn bg-primary btn-sm text-base-300" 
-              @click="likeAnnouncement(announcement.announcement_id)">
-              <svg
-                  v-if="announcement.is_liked"
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              <svg
-                  v-else
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
-              <p>{{ announcement.likes_count }} Like</p>
-            </button>
-      
-            <!-- Comments Button -->
-            <button id="commentsBtn" class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(announcement.announcement_id)">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
-              </svg>
-              <span>{{ announcement.comments_count}} Comments</span>
-            </button>
+          <!-- Upvote Button -->
+          <button 
+            class="btn bg-primary btn-sm text-base-300" 
+            @click="likeAnnouncement(announcement.announcement_id)">
+            <svg
+                v-if="announcement.is_liked"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <p>{{ announcement.likes_count }} Like</p>
+          </button>
+    
+          <!-- Comments Button -->
+          <button id="commentsBtn" class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(announcement.announcement_id)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
+            </svg>
+            <span>{{ announcement.comments_count}} Comments</span>
+          </button>
 
-            <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :announcementId="selectedAnnouncementId"/>
-      
-            <!-- Bookmark Button -->
-            <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
-              <svg id="bookmarkIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
-                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-                <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"/>
-              </svg>
-              <span id="bookmarkText">Add to bookmarks</span>
-            </button>
-          </div>
+          <Comments :isModalOpen="isModalOpen" :commentList="comments" @close="closeCommentsModal" :announcementId="selectedAnnouncementId"/>
+    
+          <!-- Bookmark Button -->
+          <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
+            <svg id="bookmarkIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+              <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+              <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"/>
+            </svg>
+            <span id="bookmarkText">Add to bookmarks</span>
+          </button>
+        </div>
     </div>
 </div>
+<!-- Add loading indicator -->
+<div v-if="loading" class="text-center my-4">
+    <span class="loading loading-dots loading-lg"></span>
+  </div>
+  <div v-else-if="!hasMorePosts" class="text-center my-4">
+    No more announcement to load
+  </div>
 </template>
 <script>
 import axios from 'axios';

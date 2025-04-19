@@ -40,7 +40,7 @@
                 </figure>
                 <div class="card-body">
                     <h2 class="card-title">{{ user.name }}</h2>
-                    <p>{{ user.bio || 'No bio available' }}</p>
+                    <p class="truncate">{{ user.bio || 'No bio available' }}</p>
                     <!-- Inde ko alam kung pano yung mag ccut sya pag over flow yung naka "..." yung dulo? inde ko alam HAGSHAHA  -->
                     <ul class="flex flex-wrap gap-x-2 gap-y-2">
                         <div class="badge badge-accent">
@@ -77,7 +77,7 @@
                     </ul>
                 </div>
                 <!-- View Profile Account --> 
-                <router-link :to="{ name: 'ViewAccount', params: { id: user.user_id } }" class="AccountBrowseViewButton m-auto hover:scale-105 transition-all duration-100">View</router-link>
+                <button @click="viewProfile(user.user_id)" class="AccountBrowseViewButton m-auto hover:scale-105 transition-all duration-100">View</button>
             </div>
             <!--Load More-->
             <div v-if="hasMore" class="text-center mt-4">
@@ -110,6 +110,10 @@ export default {
         },
     },
     methods: {
+        viewProfile(userId) {
+            console.log('Navigating to profile with userId:', userId);
+            window.location.href = `/browse/view?user_id=${userId}`;
+        },
         fetchBrowseUsers(search = '') {
             this.loading = true; // Show loader when starting request
             axios.get('/api/browse/accounts', {
@@ -149,6 +153,12 @@ export default {
 </script>
 
 <style>
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px; /* Adjust as needed */
+}
 /* Add spinner animation */
 .loadMore {
     width: 165px;

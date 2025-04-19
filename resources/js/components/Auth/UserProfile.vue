@@ -12,27 +12,6 @@
                             <!-- Camera Icon inside the Profile Picture, only shown when hovering over the image -->
                             <i class="fas fa-camera w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
 
-                            <!-- Modal for Image Cropping -->
-                            <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-                                <div class="bg-white p-6 rounded-lg w-80">
-                                    <h2 class="text-xl font-bold mb-4">Crop Profile Picture</h2>
-                                    <!-- Image Preview -->
-                                    <div class="mb-4">
-                                        <img id="cropper-image" :src="imagePreview" v-if="imagePreview" class="w-full h-40 object-cover rounded-lg"/>
-                                        <p v-if="!imagePreview" class="text-gray-500">No image selected</p>
-                                    </div>
-
-                                    <!-- File Input -->
-                                    <input type="file" @change="handleFileChange" class="mb-4" accept="image/*" />
-
-                                    <!-- Save and Cancel Buttons -->
-                                    <div class="flex justify-end gap-4">
-                                        <button @click="save" class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">Save</button>
-                                        <button @click="closeModal" class="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="flex flex-row gap-x-2 align-middle items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16" @click="toggleEditing">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -149,16 +128,22 @@
                     <div class="p-2 flex flex-wrap gap-x-4">
                         <!-- mag cchange ng laman yung "div sa baba base sa pinindot dito" -->
                         <div class="flex flex-row md:border-r-2 md:border-accent pr-4 gap-x-4 gap-y-4">        
-                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                            <button class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    :class="{ 'text-primary': activeTab === 'posts' }"
+                                    @click="activeTab = 'posts'">
                                 Posts
-                            </h1>
+                            </button>
                             <!-- If shelter Acooutt -->
-                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                            <button v-if="user.role === 'Shelter', 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    :class="{ 'text-primary': activeTab === 'announcements' }"
+                                    @click="activeTab = 'announcements'">
                                 Announcement
-                            </h1>
-                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                            </button>
+                            <button v-if="user.role === 'Shelter', 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    :class="{ 'text-primary': activeTab === 'events' }"
+                                    @click="activeTab = 'events'">
                                 Events
-                            </h1>
+                            </button>
                         </div>
                         <!-- Modal muna to -->
                         <div>
@@ -171,7 +156,18 @@
                         </div>
                     </div>
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
-                        <ProfileAnnouncement/>
+                        <div v-if="activeTab === 'posts'">
+                            <!-- Posts content -->
+                            <ProfilePostCard/>
+                        </div>
+                        <div v-if="activeTab === 'announcements'">
+                            <!-- Posts content -->
+                            <ProfileAnnouncement/>
+                        </div>
+                        <div v-if="activeTab === 'events'">
+                            <!-- Posts content -->
+                             Events to
+                        </div>
                     </div>
                 </div>
             </div>
@@ -444,19 +440,17 @@ import Swal from 'sweetalert2';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ProfilePostCard from '../partials/profile/ProfilePostCard.vue';
 import ProfileAnnouncement from '../partials/profile/ProfileAnnouncement.vue';
-import Cropper from 'cropperjs';
 
 export default {
   components: {
     ProfilePostCard,
-    ProfileAnnouncement
+    ProfileAnnouncement,
   },
   data() {
     return {
       isEditing: false,
       isModalOpen: false,
       imagePreview: null,
-      cropper: null,
       selectedImage: null,
       userAdoptionForms: [],
       showFormModal: false,
@@ -470,6 +464,7 @@ export default {
         role: '',
         bio: '',
       },
+      activeTab: 'posts'
     };
   },
   methods: {
@@ -610,10 +605,7 @@ export default {
     closeModal() {
       this.isModalOpen = false;
       this.imagePreview = null;
-      if (this.cropper) {
-        this.cropper.destroy();
-        this.cropper = null;
-      }
+
     },
     
     handleFileChange(event) {
@@ -622,30 +614,9 @@ export default {
             const reader = new FileReader();
             reader.onloadend = () => {
                 this.imagePreview = reader.result;
-                this.$nextTick(() => {
-                    this.initializeCropper(); // Initialize the cropper after the image is loaded
-                });
             };
             reader.readAsDataURL(file);
         }
-    },
-    initializeCropper() {
-        const image = document.getElementById('cropper-image');
-        if (image) {
-            // Destroy the existing cropper instance if it exists
-            if (this.cropper) {
-                this.cropper.destroy();
-            }
-
-            // Initialize a new cropper instance
-            this.cropper = new Cropper(image, {
-                aspectRatio: 1, // Set aspect ratio to 1:1 for a square crop
-                viewMode: 1, // Restrict the crop box to not exceed the size of the image
-                autoCropArea: 1, // Automatically set the crop area to the entire image
-            });
-            console.log('Cropper initialized:', this.cropper);
-        }
-        
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
@@ -657,23 +628,6 @@ export default {
         formData.append('_method', 'PUT'); // Laravel will interpret this as a PUT request
         formData.append('name', this.user.name); // Append the updated name
         formData.append('bio', this.user.bio); // Append the updated bio
-
-        // Append the cropped profile picture if it exists
-        if (this.cropper) {
-            const croppedCanvas = this.cropper.getCroppedCanvas();
-            if (croppedCanvas) {
-                // Wrap toBlob in a Promise to handle it asynchronously
-                const blob = await new Promise((resolve) => {
-                    croppedCanvas.toBlob((blob) => {
-                        resolve(blob);
-                    });
-                });
-
-                if (blob) {
-                    formData.append('profile_picture', blob, 'profile-picture.png');
-                }
-            }
-        }
 
         try {
             const response = await axios.post('/api/user/update/profile', formData, {
@@ -859,14 +813,5 @@ display: none; /* Hides scrollbar in WebKit browsers */
 -ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
 scrollbar-width: none; /* Hides scrollbar in Firefox */
 overflow: auto; /* Ensure scrolling is enabled */
-}
-
-#cropper-image {
-  max-width: 100%;
-  height: auto;
-}
-
-.cropper-container {
-  margin: 0 auto;
 }
 </style>

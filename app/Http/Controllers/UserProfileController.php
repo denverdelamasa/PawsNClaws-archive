@@ -260,7 +260,7 @@ class UserProfileController extends Controller
     
         // Return the formatted response as JSON with pagination metadata
         return response()->json([
-            'announcement' => $formattedAnnouncement,
+            'announcements' => $formattedAnnouncement,
             'pagination' => [
                 'current_page' => $announcements->currentPage(),
                 'per_page' => $announcements->perPage(),

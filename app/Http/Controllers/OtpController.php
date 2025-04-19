@@ -14,7 +14,7 @@ class OtpController extends Controller
     public function sendOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email:rfc,dns|ends_with:@gmail.com',
         ]);
     
         $otp = rand(100000, 999999);

@@ -135,7 +135,7 @@ Route::get('/browse', [PageController::class, 'browse'])->name('browse');
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 
 Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
-Route::get('/pages/others-profile', [PageController::class, 'others_profile'])->name('others-profile'); 
+Route::get('/browse/view', [PageController::class, 'others_profile']);
 
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
 
