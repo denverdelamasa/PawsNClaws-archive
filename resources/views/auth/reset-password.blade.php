@@ -3,8 +3,8 @@
     <div class="hero-content flex-col justify-center items-center w-full">
       <div class="card bg-base-100 w-full max-w-md shadow-2xl p-8">
         <!-- Logo -->
-        <div class="flex justify-center mb-6">
-          <img src="/images/pictures/logo.jpg" alt="Paws'N Claws Logo" class="h-16 w-auto" />
+        <div class="flex justify-center">
+            <img src="/images/pictures/logo.jpg" alt="Cat Paw Logo" class="w-[120px] h-[120px] mb-4 rounded-full object-cover object-center">
         </div>
 
         <!-- Title and Subtitle -->

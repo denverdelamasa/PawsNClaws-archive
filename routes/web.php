@@ -110,6 +110,7 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::put('/api/user/adoption/fail/{id}', [UserProfileController::class, 'failAdoption']);
     Route::get('/api/user/posts/list',[UserProfileController::class, 'userPostList']);
     Route::get('/api/user/announcement/list',[UserProfileController::class, 'userAnnouncementList']);
+    Route::get('/api/user/event/list',[UserProfileController::class, 'userEventList']);
     Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
 });
 Route::get('/api/posts/list', [PostController::class, 'postList']);
@@ -133,8 +134,9 @@ Route::get('/events', [PageController::class, 'events'])->name('events');
 Route::get('/Services', [PageController::class, 'Services'])->name('Services'); 
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
+Route::get('/settings', [PageController::class, 'editprofile']);
 
-Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::get('/profile', [PageController::class, 'profile'])->name('profile'); 
 Route::get('/browse/view', [PageController::class, 'others_profile']);
 
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
@@ -142,7 +144,6 @@ Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name(
 Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');
 Route::get('/privacy-policy', [PageController::class, 'PrivacyPolicy'])->name('privacy-policy');
 Route::get('/messages', [PageController::class, 'messages'])->name('messages');
-
 
 Route::post('/set-theme', function (Request $request) {
     $theme = $request->input('theme', 'light'); // Default to 'light' if no theme is provided

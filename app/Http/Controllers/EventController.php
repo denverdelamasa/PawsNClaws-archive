@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Like;
 use App\Models\Event;
 use Illuminate\Http\Request;
@@ -39,7 +40,8 @@ class EventController extends Controller
                 'event_thumbnail' => $events->event_thumbnail ? json_decode($events->event_thumbnail, true) : [], // Ensure event thumbnail exists
                 'event_title' => $events->event_title,
                 'event_description' => $events->event_description,
-                'event_date' => $events->event_date,
+                'event_start_date' => Carbon::parse($events->event_start_date)->format('F j, Y'),
+                'event_end_date' => Carbon::parse($events->event_end_date)->format('F j, Y'),
                 'created_at' => $events->created_at->diffForHumans(), // Format the created_at timestamp
                 'updated_at' => $events->updated_at->diffForHumans(), // Format the updated_at timestamp
                 'likes_count' => $likesCount, // Include likes count for the announcement
@@ -70,13 +72,15 @@ class EventController extends Controller
             'event_thumbnail' => 'nullable|array',
             'event_thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10000',
             'event_description' => 'required|string',
-            'event_date' => 'required|date'
+            'event_start_date' => 'required|date',
+            'event_end_date' => 'required|date',
         ]);
     
         $event = new Event();
         $event->event_title = $request->input('event_title');
         $event->event_description = $request->input('event_description');
-        $event->event_date = $request->input('event_date');
+        $event->event_start_date = $request->input('event_start_date');
+        $event->event_end_date = $request->input('event_end_date');
         $event->event_location = $request->input('event_location');
         $event->shelter_id = Auth::id();
         $event->save();

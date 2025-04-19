@@ -97,7 +97,7 @@
 
       <!-- Modal for Changing User Role -->
       <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-md shadow-lg w-96">
+        <div class="bg-base-200 p-6 rounded-md shadow-lg w-96">
           <h3 class="text-lg font-semibold mb-4">Change User Role</h3>
           <div class="flex flex-col items-center mb-4">
             <img :src="currentUser?.profile_picture ? '/storage/' + currentUser.profile_picture : defaultProfilePicture" 
@@ -123,7 +123,7 @@
 
       <!-- Modal for Suspending User -->
       <div v-if="isSuspendModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-md shadow-lg w-96">
+        <div class="bg-base-200 p-6 rounded-md shadow-lg w-96">
           <h3 class="text-lg font-semibold mb-4">Suspend User</h3>
           <div class="flex flex-col items-center mb-4">
             <img :src="currentUser?.profile_picture ? '/storage/' + currentUser.profile_picture : defaultProfilePicture" 
@@ -147,7 +147,7 @@
 
       <!-- Modal for Delete Confirmation -->
       <div v-if="isDeleteModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-        <div class="bg-white p-6 rounded-md shadow-lg w-96">
+        <div class="bg-base-200 p-6 rounded-md shadow-lg w-96">
           <h3 class="text-lg font-semibold mb-4">Are you sure you want to delete this user?</h3>
           <div class="flex flex-col items-center mb-4">
             <img :src="currentUser?.profile_picture ? '/storage/' + currentUser.profile_picture : defaultProfilePicture" 

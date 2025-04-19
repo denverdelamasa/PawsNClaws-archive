@@ -254,6 +254,28 @@ export default {
     };
   },
   methods: {
+    UpdatePosts() {
+      this.loading = true; // Show loader when starting request
+
+      axios.get('/api/user/posts/list')
+        .then(response => {
+          const newPosts = response.data.posts || [];
+
+          // Replace the posts list with the new posts
+          this.posts = newPosts;
+
+          // Optionally reset pagination info if you're still tracking it
+          this.totalPages = 1;
+          this.currentPage = 1;
+          this.hasMore = false;
+        })
+        .catch(error => {
+          console.error('Error fetching browse posts:', error);
+        })
+        .finally(() => {
+          this.loading = false; // Hide loader when done
+        });
+    },
     openCommentsModal(postId) {
       this.isCommentsModalOpen = true;
       this.selectedCommentPostId = postId;
@@ -261,7 +283,7 @@ export default {
     closeCommentsModal() {
       this.isCommentsModalOpen = false;
       this.comments = [];  // Clear comments when modal is closed
-      this.fetchPosts();
+      this.UpdatePosts();
     },
     nextImage(postId) {
       const post = this.posts.find(post => post.post_id === postId);
@@ -294,7 +316,7 @@ export default {
     confirmDelete(postId) {
       axios.delete(`/api/posts/delete/${postId}`)
         .then(response => {
-          this.posts = this.posts.filter(post => post.post_id !== postId);
+          this.UpdatePosts();
           console.log("Post deleted successfully");
           this.closeDeleteModal(postId);
 
@@ -348,13 +370,10 @@ export default {
 
     // Submit the edit form
     submitEditPost() {
-      console.log(this.selectedPost); // Log selectedPost to check category_id
-
       axios.put(`/api/post/edit/${this.selectedPost.post_id}`, this.selectedPost, {
         })
         .then(response => {
-            this.$emit('post-updated', response.data);  // Emit event to parent if needed
-            this.fetchPosts();  // Refresh the posts list
+            this.UpdatePosts();
             this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
             
             Swal.fire({

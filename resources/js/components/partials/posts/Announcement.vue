@@ -1,5 +1,6 @@
 <template>
-  <UploadPost v-if="isAuthenticated" :fetchAnnouncementsProp="fetchAnnouncements" />
+  <UploadPost v-if="isAuthenticated" :fetchAnnouncementsProp="UpdateAnnouncements" />
+  <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
   <div v-for="announcement in announcements" :key="announcement.announcement_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300 w-3/4">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4">
@@ -53,8 +54,10 @@
                 <p class="text-sm font-semibold">{{ announcement.name }}</p>
                 <div class="text-xs">
                     <span>{{ announcement.created_at }}</span>
-                    <span class="mx-1">|</span>
-                    <span>{{ announcement.updated_at }}</span>
+                    <template v-if="announcement.updated_at !== announcement.created_at">
+                      <span class="mx-1">|</span>
+                      <span>Edited</span>
+                    </template>
                 </div>
             </div>
         </div>       
@@ -159,6 +162,13 @@
           </div>
     </div>
 </div>
+<div v-if="loading" class="text-center my-4">
+  <span class="loading loading-dots loading-lg"></span>
+</div>
+<!-- Display "No more posts available" when noMorePosts is true -->
+<div v-if="noMoreAnnouncements && announcements.length > 0" class="text-center py-4 text-gray-500">
+  No more announcement available.
+</div>
 </template>
 <script>
 import axios from 'axios';
@@ -166,12 +176,14 @@ import Swal from 'sweetalert2';
 import Comments from '../misc/Comments.vue';
 import UploadPost from '../misc/UploadPost.vue';
 import ReportModal  from '../misc/Reports.vue';
+import LoginFirst from '../misc/LoginFirst.vue';
 
 export default {
   components: {
     Comments,
     UploadPost,
     ReportModal,
+    LoginFirst
   },
   data() {
     return {
@@ -186,10 +198,44 @@ export default {
       currentUserId: null,
       isAuthenticated: false,
       selectedReportAnnouncementId: null,
+      showLoginModal: false,
     };
   },
   methods: {
+    UpdateAnnouncements() {
+      this.loading = true; // Show loader when starting request
+
+      axios.get('/api/announcements/list')
+        .then(response => {
+          const newAnnouncements = response.data.announcements || [];
+
+          this.announcements = newAnnouncements;
+
+          this.totalPages = 1;
+          this.currentPage = 1;
+          this.hasMore = false;
+        })
+        .catch(error => {
+          console.error('Error fetching browse posts:', error);
+        })
+        .finally(() => {
+          this.loading = false; // Hide loader when done
+        });
+    },
+    triggerLoginModal() {
+      this.showLoginModal = true;
+      this.$nextTick(() => {
+        const loginFirst = this.$refs.loginFirst;
+        if (loginFirst) {
+          loginFirst.showLoginModal();
+        }
+      });
+    },
     openReportModal(announcementId) {
+      if(!this.isAuthenticated){
+        this.triggerLoginModal();
+        return;
+      }
       this.reportType = 'announcement';
       this.selectedReportAnnouncementId = announcementId;
     },
@@ -239,6 +285,10 @@ export default {
     },
     
     async likeAnnouncement(announcementId) {
+      if(!this.isAuthenticated){
+        this.triggerLoginModal();
+        return;
+      }
       try {
         await axios.post(`/api/like/${announcementId}/announcement`);
 
@@ -272,7 +322,7 @@ export default {
     },
     closeCommentsModal() {
       this.isCommentsModalOpen = false;
-      this.fetchAnnouncements();
+      this.UpdateAnnouncements();
     },
     async fetchComments(announcementId) {
       try {
@@ -313,7 +363,7 @@ export default {
         })
         .then(response => {
             this.$emit('announcement-updated', response.data);  // Emit event to parent if needed
-            this.fetchAnnouncements(true);  // Refresh the posts list
+            this.UpdateAnnouncements();  // Refresh the posts list
             this.closeEditModal(this.selectedAnnouncement.announcement_id);  // Close the modal after success
             
             Swal.fire({
@@ -381,7 +431,7 @@ export default {
     confirmDelete(announcementId) {
       axios.delete(`/api/announcement/delete/${announcementId}`)
         .then(response => {
-          this.announcements = this.announcements.filter(announcement => announcement.announcement_id !== announcementId);
+          this.UpdateAnnouncements();
           this.closeDeleteModal(announcementId);
 
             Swal.fire({

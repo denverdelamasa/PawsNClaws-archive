@@ -1,5 +1,6 @@
 <template>
-    <div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6">
+<div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6">
+    <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     <!-- Posts -->
     <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
         <div class="flex gap-2">
@@ -246,11 +247,13 @@ import axios from 'axios';
 import Swal from 'sweetalert2'; 
 import Comments from '../misc/Comments.vue';
 import ReportModal from '../misc/Reports.vue';
+import LoginFirst from '../misc/LoginFirst.vue';
 
 export default {
     components: {
         Comments,
         ReportModal,
+        LoginFirst
     },
     props: ['searchQuery'],
     data() {
@@ -268,6 +271,7 @@ export default {
             currentUserId: null,
             selectedPost: { caption: '' },
             selectedReportPostId: null,
+            showLoginModal: false,
         }
     },
     watch: {
@@ -278,6 +282,15 @@ export default {
         },
     },
     methods: {
+        triggerLoginModal() {
+            this.showLoginModal = true;
+            this.$nextTick(() => {
+                const loginFirst = this.$refs.loginFirst;
+                if (loginFirst) {
+                loginFirst.showLoginModal();
+                }
+            });
+        },
         toggleDescription(post) {
             if (!("expanded" in post)) {
                 post.expanded = false; // Initialize if it doesn't exist
@@ -407,6 +420,10 @@ export default {
             });
         },
         openReportModal(postId) {
+            if(!this.isAuthenticated){
+                this.triggerLoginModal();
+                return;
+            }
             this.reportType = 'post';
             this.selectedReportPostId = postId;
         },
@@ -422,6 +439,10 @@ export default {
             this.fetchBrowsePosts();
         },
         async likePost(postId) {
+            if(!this.isAuthenticated){
+                this.triggerLoginModal();
+                return;
+            }
             try {
                 await axios.post(`/api/like/${postId}/post`);
                 
