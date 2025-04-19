@@ -72,7 +72,29 @@
 
                 <!-- Save Button -->
                 <div class="mb-6">
-                    <button type="submit" class="btn btn-primary w-full">Save Profile Changes</button>
+                    <label for="otp-modal" class="btn btn-primary w-full cursor-pointer">Save Profile Changes</label>
+                </div>
+                <!-- OTP Verification Modal -->
+                <input type="checkbox" id="otp-modal" class="modal-toggle" />
+                <div class="modal">
+                <div class="modal-box">
+                    <h3 class="font-bold text-lg mb-2">Verify Your Email</h3>
+                    <p class="mb-4 text-sm">
+                    We’ve sent a 6-digit verification code to your new email address. Please enter the code below to confirm your changes. 📩
+                    </p>
+
+                    <input
+                    type="text"
+                    maxlength="6"
+                    placeholder="Enter OTP"
+                    class="input input-bordered w-full mb-4 text-center tracking-widest font-mono text-lg"
+                    />
+
+                    <div class="modal-action">
+                    <label for="otp-modal" class="btn btn-primary">Confirm</label>
+                    <label for="otp-modal" class="btn">Cancel</label>
+                    </div>
+                </div>
                 </div>
             </form>
 

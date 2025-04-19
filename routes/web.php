@@ -136,8 +136,10 @@ Route::get('/browse', [PageController::class, 'browse'])->name('browse');
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/settings', [PageController::class, 'editprofile']);
 
-Route::get('/profile', [PageController::class, 'profile'])->name('profile'); 
-Route::get('/browse/view', [PageController::class, 'others_profile']);
+Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::get('/pages/editprofile', [PageController::class, 'editprofile'])->name('editprofile');
+Route::get('/pages/others-profile', [PageController::class, 'others_profile'])->name('others-profile'); 
+Route::get('/pages/bookmarks', [PageController::class, 'bookmarks'])->name('bookmarks'); 
 
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
 
