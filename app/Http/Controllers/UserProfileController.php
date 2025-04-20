@@ -12,7 +12,10 @@ use Illuminate\Http\Request;
 use App\Models\DoneAdoptionForm;
 use App\Models\AdoptionApplication;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\VerifyEmailChange;
+
 
 class UserProfileController extends Controller
 {
@@ -59,48 +62,67 @@ class UserProfileController extends Controller
     {
         // Validate the incoming request
         $validated = $request->validate([
-            'name' => 'nullable|string|max:255', // 'name' is nullable
-            'bio' => 'nullable|string|max:1000', // 'bio' is nullable and not unique
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Allow image upload
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email,' . auth()->id(),
+            'bio' => 'nullable|string|max:1000',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'current_password' => 'required_with:password|nullable|string',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
-    
+
         // Get the authenticated user
         $user = auth()->user();
-    
-        // Update the user's name if it exists in the request
+
+        // Verify current password if new password or email is provided
+        if ($request->filled('password') || $request->filled('email')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json(['message' => 'Current password is incorrect'], 422);
+            }
+        }
+
+        // Update name
         if (array_key_exists('name', $validated) && $validated['name'] !== null) {
             $user->name = $validated['name'];
         }
-    
-        // Update the user's bio if it exists in the request
+
+        // Update email and send verification
+        if (array_key_exists('email', $validated) && $validated['email'] !== null && $validated['email'] !== $user->email) {
+            $user->email = $validated['email'];
+            $user->email_verified_at = null; // Reset verification
+            Notification::send($user, new VerifyEmailChange($user->email));
+        }
+
+        // Update bio
         if (array_key_exists('bio', $validated) && $validated['bio'] !== null) {
             $user->bio = $validated['bio'];
         }
-    
-        // Update the user's profile picture if it exists in the request
-        if ($request->hasFile('profile_picture')) {
-            // Check if the file is valid
-            if ($request->file('profile_picture')->isValid()) {
-                // Delete the old profile picture if it exists
-                if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
-                    Storage::disk('public')->delete($user->profile_picture);
-                }
-    
-                // Store the new profile picture and update profile picture path
-                $imagePath = $request->file('profile_picture')->store('images/profile_pictures', 'public');
-                $user->profile_picture = $imagePath;
+
+        // Update profile picture
+        if ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
+            // Delete old profile picture
+            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
             }
+            // Store new profile picture
+            $imagePath = $request->file('profile_picture')->store('images/profile_pictures', 'public');
+            $user->profile_picture = $imagePath;
         }
-    
-        // Save the user with the updated fields (if provided)
+
+        // Update password
+        if ($request->filled('password')) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        // Save changes
         $user->save();
-    
-        // Return a success response with the updated user data
+
+        // Return success response
         return response()->json([
             'message' => 'Profile updated successfully',
             'name' => $user->name,
+            'email' => $user->email,
             'bio' => $user->bio,
-            'profile_picture' => $user->profile_picture ? asset('storage/' . $user->profile_picture) : null, // Return the full URL of the profile picture
+            'profile_picture' => $user->profile_picture ? asset('storage/' . $user->profile_picture) : null,
         ]);
     }
     
@@ -246,7 +268,7 @@ class UserProfileController extends Controller
                 'name' => $announcement->shelter ? $announcement->shelter->name : 'Unknown User',
                 'username' => $announcement->shelter ? $announcement->shelter->username : 'Unknown User', // Fetch username from the related user
                 'profile_picture' => $announcement->shelter && $announcement->shelter->profile_picture ? $announcement->shelter->profile_picture : 'default-profile.jpg', // Use default if no profile picture
-                'thumbnail' => $announcement->thumbnail ? json_decode($announcement->thumbnail, true) : [],
+                'thumbnail' => $announcement->thumbnail ? $announcement->thumbnail : null,
                 'title' => $announcement->title,
                 'description' => $announcement->description,
                 'created_at' => $announcement->created_at->diffForHumans(), // Format the created_at timestamp
@@ -290,44 +312,39 @@ class UserProfileController extends Controller
             $likesCount = Like::where('event_id', $event->event_id)->count();
     
             // Check if the current user has liked the post
-            $isLiked = Like::where('announcement_id', $event->event_id)
+            $isLiked = Like::where('event_id', $event->event_id)
                             ->where('user_id', $userId)
                             ->exists();
     
-            // Check if the user has completed the adoption form for this post
-            $isDoneSendingAdoptionForm = DoneAdoptionForm::where('done_post_id', $announcement->announcement_id)
-                                ->where('done_user_id', $userId)
-                                ->exists();
-    
             return [
-                'announcement_id' => $announcement->announcement_id,
-                'user_id' => $announcement->shelter_id,
-                'name' => $announcement->shelter ? $announcement->shelter->name : 'Unknown User',
-                'username' => $announcement->shelter ? $announcement->shelter->username : 'Unknown User', // Fetch username from the related user
-                'profile_picture' => $announcement->shelter && $announcement->shelter->profile_picture ? $announcement->shelter->profile_picture : 'default-profile.jpg', // Use default if no profile picture
-                'thumbnail' => $announcement->thumbnail ? json_decode($announcement->thumbnail, true) : [],
-                'title' => $announcement->title,
-                'description' => $announcement->description,
-                'created_at' => $announcement->created_at->diffForHumans(), // Format the created_at timestamp
-                'updated_at' => $announcement->updated_at->diffForHumans(), // Format the updated_at timestamp
+                'event_id' => $event->event_id,
+                'shelter_id' => $event->shelter_id,
+                'name' => $event->shelter ? $event->shelter->name : 'Unknown User',
+                'username' => $event->shelter ? $event->shelter->username : 'Unknown User', // Fetch username from the related user
+                'profile_picture' => $event->shelter && $event->shelter->profile_picture ? $event->shelter->profile_picture : 'default-profile.jpg', // Use default if no profile picture
+                'event_thumbnail' => $event->event_thumbnail ? json_decode($event->event_thumbnail, true) : [],
+                'event_title' => $event->event_title,
+                'event_description' => $event->event_description,
+                'event_start_date' => Carbon::parse($event->event_start_date)->format('F j, Y'),
+                'event_end_date' => Carbon::parse($event->event_end_date)->format('F j, Y'),
+                'created_at' => $event->created_at->diffForHumans(), // Format the created_at timestamp
+                'updated_at' => $event->updated_at->diffForHumans(), // Format the updated_at timestamp
                 'likes_count' => $likesCount,
                 'is_liked' => $isLiked, // Add the `is_liked` state for the current user
-                'comments_count' => $announcement->comments_count, // Include the count of comments from the `withCount` query
-                'is_adoptable' => $announcement->is_adoptable, // Include the adoptable status
-                'done_sending_adoption_form' => $isDoneSendingAdoptionForm // Add adoption form status
+                'comments_count' => $event->comments_count, // Include the count of comments from the `withCount` query
             ];
         });
     
         // Return the formatted response as JSON with pagination metadata
         return response()->json([
-            'announcements' => $formattedAnnouncement,
+            'events' => $formattedEvents,
             'pagination' => [
-                'current_page' => $announcements->currentPage(),
-                'per_page' => $announcements->perPage(),
-                'total' => $announcements->total(),
-                'last_page' => $announcements->lastPage(),
-                'next_page_url' => $announcements->nextPageUrl(),
-                'prev_page_url' => $announcements->previousPageUrl(),
+                'current_page' => $events->currentPage(),
+                'per_page' => $events->perPage(),
+                'total' => $events->total(),
+                'last_page' => $events->lastPage(),
+                'next_page_url' => $events->nextPageUrl(),
+                'prev_page_url' => $events->previousPageUrl(),
             ]
         ], 200);
     }

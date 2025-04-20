@@ -187,8 +187,14 @@
         
         <!-- Event Date -->
         <div v-if="modalType === 'event'">
-          <label class="label text-white">Select Event Date</label>
-          <input type="date" class="input input-bordered w-full" v-model="modalData.event_date" required/>
+          <label class="label text-white"> Start Event Date</label>
+          <input type="date" class="input input-bordered w-full" v-model="modalData.event_start_date" required/>
+        </div>
+
+        <!-- Event Date -->
+        <div v-if="modalType === 'event'">
+          <label class="label text-white"> End Event Date</label>
+          <input type="date" class="input input-bordered w-full" v-model="modalData.event_end_date" required/>
         </div>
 
         <!-- Announcement Thumbnail -->
@@ -262,7 +268,8 @@ export default {
         description: "",
         event_title: "",
         event_description: "",
-        event_date: "",
+        event_start_date: "",
+        event_end_date: "",
         event_thumbnail: null,
       },
       userProfile: {
@@ -351,6 +358,19 @@ export default {
         if (typeof this.fetchPostsProp === 'function') {
           this.fetchPostsProp(true);
         }
+
+        Swal.fire({
+          position: "bottom-end",
+          icon: "success",
+          title: "Your post has been uploaded successfully!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
+        });
+
       } catch (error) {
         console.error("Error creating post:", error);
         this.validationMessage = "Something went wrong while uploading your post.";
@@ -404,7 +424,8 @@ export default {
       const formData = new FormData();
       formData.append("event_title", this.modalData.event_title);
       formData.append("event_description", this.modalData.event_description);
-      formData.append("event_date", this.modalData.event_date);
+      formData.append("event_start_date", this.modalData.event_start_date);
+      formData.append("event_end_date", this.modalData.event_end_date);
       formData.append("event_location", this.modalData.event_location);
 
       if (this.modalData.event_thumbnail && this.modalData.event_thumbnail.length > 0) {
@@ -469,7 +490,8 @@ export default {
       this.modalData.event_description = "",
       this.modalData.event_thumbnail = null,
       this.modalData.event_location = "",
-      this.modalData.event_date = ""
+      this.modalData.event_start_date = "",
+      this.modalData.event_end_date = ""
     },
     fetchUserProfile() {
       axios

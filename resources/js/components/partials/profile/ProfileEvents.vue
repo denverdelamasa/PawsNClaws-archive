@@ -144,9 +144,9 @@
         <h2 class="card-title mb-2 text-3xl">{{ event.event_title }}</h2>
             <!-- Date -->
             <div class="text-xs w-full mb-4">
-                <span>{{ event.created_at }}</span>
+                <span>From: {{ event.event_start_date }}</span>
                 <span class="mx-1">|</span>
-                <span>{{ event.updated_at }}</span>
+                <span>To: {{ event.event_end_date }}</span>
             </div>
             <p class="break-words whitespace-normal text-sm sm:text-base">
                 {{ event.expanded ? event.event_description : (event.event_description && event.event_description.length > 135 ? event.event_description.substring(0, 135) + '...' : event.event_description) }}
@@ -224,14 +224,330 @@
         </div>    
     </div>
 </div>
+<!-- Add loading indicator -->
 <div v-if="loading" class="text-center my-4">
     <span class="loading loading-dots loading-lg"></span>
 </div>
-<!-- Display "No more posts available" when noMorePosts is true -->
-<div v-if="noMoreEvents && event.length > 0" class="text-center py-4 text-gray-500">
-    No more events available.
+<div v-else-if="!hasMoreEvents" class="text-center my-4">
+    No more events to load
 </div>
 </template>
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
+import Comments from '../misc/Comments.vue';
+import ReportModal from '../misc/Reports.vue'
+
+export default {
+    components: {
+        Comments,
+        ReportModal
+    },
+    data(){
+        return{
+            events: [],
+            loading: false,
+            hasMoreEvents: true,
+            isAuthenticated: false,
+            currentUserId: null,
+            isCommentsModalOpen: false,
+            selectedCommentEventId: null,
+            currentPage: 1,
+            selectedReportEventId: null,
+            selectedEventId: null,
+            selectedEvent: {event_title: '', event_description: ''},
+            currentSlide: 0,
+            scrollListener: null,
+        }
+    },
+    methods: {
+        UpdateEvents() {
+            this.loading = true; // Show loader when starting request
+
+            axios.get('/api/user/event/list')
+                .then(response => {
+                const newEvents = response.data.events || [];
+
+                // Replace the posts list with the new posts
+                this.events = newEvents;
+
+                // Optionally reset pagination info if you're still tracking it
+                this.totalPages = 1;
+                this.currentPage = 1;
+                this.hasMore = false;
+                })
+                .catch(error => {
+                console.error('Error fetching browse posts:', error);
+                })
+                .finally(() => {
+                this.loading = false; // Hide loader when done
+                });
+        },
+        handleScroll() {
+            const scrollY = window.scrollY || window.pageYOffset;
+            const visibleHeight = window.innerHeight;
+            const pageHeight = document.documentElement.scrollHeight;
+            const bottomOffset = 100; // Load more when 100px from bottom
+
+            if (pageHeight - (scrollY + visibleHeight) < bottomOffset) {
+                if (!this.loading && this.hasMoreEvents) {
+                this.fetchEvents();
+                }
+            }
+        },
+        editEvent(event) {
+            this.selectedEvent = { ...event };     // Make sure to copy post data correctly
+            const modal = document.getElementById(`editEventModal-${event.event_id}`);
+            if (modal) {
+                modal.showModal();
+            }
+        },
+        closeEditModal(eventId) {
+            const modal = document.getElementById(`editEventModal-${eventId}`);
+            if (modal) {
+                modal.close();  // This will close the modal
+            }
+        },
+        submitEditEvent() {
+            axios.put(`/api/event/edit/${this.selectedEvent.event_id}`, this.selectedEvent, {
+                })
+                .then(response => {
+                    this.UpdateEvents();
+                    this.closeEditModal(this.selectedEvent.event_id);  // Close the modal after success
+                    
+                    Swal.fire({
+                        position: "bottom-end",
+                        icon: "success",
+                        title: "Your Event has been updated successfully!",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: "#1e293b", // Dark background
+                        color: "#ffffff", // Light text color
+                        toast: true, // Toast-style alert
+                        didOpen: (toast) => {
+                        const progressBar = Swal.getTimerProgressBar();
+                        if (progressBar) {
+                            progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                        }
+                        },
+                    });
+                })
+                .catch(error => {
+                    if (error.response && error.response.status === 422) {
+                        this.errors = error.response.data.errors;
+                        let errorMessages = '';
+                        for (let key in this.errors) {
+                            errorMessages += `${this.errors[key].join(', ')}\n`;
+                    }
+
+                    // Optionally, you can display the errors using a custom method
+                    console.error('Validation Failed:', errorMessages.trim());
+                    } else {
+                    console.error('Error updating Announcement:', error);
+                    }
+                    Swal.fire({
+                        position: "bottom-end",
+                        icon: "success",
+                        title: "Something went wrong",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: "#1e293b", // Dark background
+                        color: "#ffffff", // Light text color
+                        toast: true, // Toast-style alert
+                        didOpen: (toast) => {
+                        const progressBar = Swal.getTimerProgressBar();
+                        if (progressBar) {
+                            progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                        }
+                    },
+                });
+            });
+        },
+        openDeleteModal(eventId) {
+            const modal = document.getElementById(`deleteEventModal-${eventId}`);
+            if (modal) {
+                modal.showModal();
+            }
+        },
+        closeDeleteModal(eventId) {
+            const modal = document.getElementById(`deleteEventModal-${eventId}`);
+            if (modal) {
+                modal.close();
+            }
+        },
+        confirmDelete(eventId) {
+            axios.delete(`/api/event/delete/${eventId}`)
+                .then(response => {
+                    this.UpdateEvents();
+                    this.closeDeleteModal(eventId);
+
+                    Swal.fire({
+                    position: "bottom-end",
+                    icon: "success",
+                    title: "Your post has been deleted successfully!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: "#1e293b", // Dark background
+                    color: "#ffffff", // Light text color
+                    toast: true, // Toast-style alert
+                    didOpen: (toast) => {
+                        const progressBar = Swal.getTimerProgressBar();
+                        if (progressBar) {
+                        progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                        }
+                    },
+                    });
+                })
+                .catch(error => {
+                    console.error("Error deleting event:", error);
+
+                    Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    showConfirmButton: false,
+                    text: "Something went wrong while uploading your post!",
+                    background: "#1e293b", // Dark background
+                    color: "#ffffff", // Light text color
+                    toast: true,
+                });
+            });
+        },
+        nextSlide(event) {
+            if (event.currentSlide < event.event_thumbnail.length - 1) {
+                event.currentSlide++;
+            } else {
+                event.currentSlide = 0;
+            }
+        },
+        prevSlide(event) {
+            if (event.currentSlide > 0) {
+                event.currentSlide--;
+            } else {
+                event.currentSlide = event.event_thumbnail.length - 1;
+            }
+        },
+        goToSlide(event, index) {
+            event.currentSlide = index;
+        },
+        openModal(eventId) {
+            this.isCommentsModalOpen = true;
+            this.fetchComments(eventId);  // Fetch comments for the selected post  
+            this.selectedEventId = eventId;
+        },
+        closeCommentsModal() {
+            this.isCommentsModalOpen = false;
+            this.comments = [];  // Clear comments when modal is closed
+            this.UpdateEvents();
+        },
+        async fetchComments(eventId) {
+            try {
+                const response = await axios.get(`/api/comments/${eventId}/event`);
+                this.comments = response.data.data;  // Access the 'data' array from the API response
+                this.pagination = {
+                    current_page: response.data.current_page,
+                    last_page: response.data.last_page,
+                    per_page: response.data.per_page,
+                    total: response.data.total
+                };
+            } catch (error) {
+                console.error("Error fetching comments:", error);
+            }
+        },
+        async likeEvent(eventId) {
+            if(!this.isAuthenticated){
+                this.triggerLoginModal();
+                return;
+            }
+            try {
+                await axios.post(`/api/like/${eventId}/event`);
+                
+                // Find the post and update its like state
+                const event = this.events.find(event => event.event_id === eventId);
+                if (event) {
+                    event.is_liked = !event.is_liked; // Toggle like state
+                }
+
+                // Fetch the updated likes count
+                await this.fetchLikesCount(eventId);
+            } catch (error) {
+                console.error("Error liking/unliking event:", error);
+            }
+        },
+        async fetchLikesCount(eventId, type = 'event') {
+            try {
+                const response = await axios.get(`/api/like-count/${eventId}/${type}`);
+                const event = this.events.find(ev => ev.event_id === eventId);
+                if (event) {
+                    event.likes_count = response.data.likesCount; // Update likes count
+                }
+            } catch (error) {
+                console.error("Error fetching likes count:", error);
+            }
+        },
+        async fetchEvents(initialLoad = false) {
+            if (this.loading || !this.hasMoreEvents) return;
+
+            this.loading = true;
+            this.errorMessage = null;
+
+            try {
+                const response = await axios.get(`/api/user/event/list?page=${this.currentPage}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                console.log('Fetch Events Response:', response.data);
+
+                const events = (response.data.events || []).map(event => ({
+                    ...event,
+                    currentSlide: 0, // Initialize currentSlide
+                    expanded: false, // Initialize description state
+                    is_bookmarked: event.is_bookmarked || false, // Initialize bookmark state
+                }));
+
+                if (initialLoad) {
+                    this.events = events;
+                } else {
+                    this.events = [...this.events, ...events];
+                }
+
+                this.hasMoreEvents = !!response.data.pagination?.next_page_url;
+                this.currentPage++;
+            } catch (error) {
+                console.error('Error fetching events:', error.response?.data || error.message);
+                this.errorMessage = error.response?.data?.message || 'Failed to load events. Please try again.';
+                if (error.response?.status === 401) {
+                    this.triggerLoginModal();
+                }
+            } finally {
+                this.loading = false;
+            }
+        },
+        async checkAuthentication() {
+            try {
+                const response = await axios.get('/api/auth/status');
+                this.isAuthenticated = response.data.authenticated;
+                this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
+            } catch (error) {
+                console.error("Error checking authentication status:", error);
+            }
+        },
+    },
+    mounted() {
+        this.fetchEvents();
+        this.checkAuthentication();
+        this.scrollListener = this.handleScroll.bind(this);
+        window.addEventListener('scroll', this.scrollListener);
+    },
+    beforeUnmount() {
+        if (this.scrollListener) {
+            window.removeEventListener('scroll', this.scrollListener);
+        }
+    }
+}
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <UploadPost v-if="isAuthenticated" :fetchEventsProp="fetchEvents" />
+    <UploadPost v-if="isAuthenticated" :fetchEventsProp="UpdateEvents" />
     <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     <div v-for="event in events" :key="event.event_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
         <!-- Header with Title and Menu -->
@@ -146,9 +146,9 @@
             <h2 class="card-title mb-2 text-3xl">{{ event.event_title }}</h2>
                 <!-- Date -->
                 <div class="text-xs w-full mb-4">
-                    <span>{{ event.created_at }}</span>
+                    <span>From: {{ event.event_start_date }}</span>
                     <span class="mx-1">|</span>
-                    <span>{{ event.updated_at }}</span>
+                    <span>To: {{ event.event_end_date }}</span>
                 </div>
                 <p class="break-words whitespace-normal text-sm sm:text-base">
                     {{ event.expanded ? event.event_description : (event.event_description && event.event_description.length > 135 ? event.event_description.substring(0, 135) + '...' : event.event_description) }}
@@ -230,7 +230,7 @@
       <span class="loading loading-dots loading-lg"></span>
     </div>
     <!-- Display "No more posts available" when noMorePosts is true -->
-    <div v-if="noMoreEvents && event.length > 0" class="text-center py-4 text-gray-500">
+    <div v-if="noMoreEvents && events.length > 0" class="text-center py-4 text-gray-500">
       No more events available.
     </div>
 </template>
@@ -270,6 +270,32 @@ export default{
         }
     },
     methods: {
+        UpdateEvents() {
+            this.loading = true; // Show loader when starting request
+
+            axios.get('/api/events/list')
+                .then(response => {
+                    let newEvents = response.data.events || [];
+
+                    // Initialize currentSlide for each event
+                    newEvents = newEvents.map(event => ({
+                    ...event,
+                    currentSlide: 0
+                    }));
+
+                    this.events = newEvents;
+
+                    this.totalPages = 1;
+                    this.currentPage = 1;
+                    this.hasMore = false;
+                })
+                .catch(error => {
+                console.error('Error fetching browse events:', error);
+                })
+                .finally(() => {
+                    this.loading = false; // Hide loader when done
+                });
+        },
         openReportModal(eventId) {
             if(!this.isAuthenticated){
                 this.triggerLoginModal();
@@ -306,7 +332,7 @@ export default{
         closeCommentsModal() {
             this.isCommentsModalOpen = false;
             this.comments = [];  // Clear comments when modal is closed
-            this.fetchEvents();
+            this.UpdateEvents();
         },
         async fetchComments(eventId) {
             try {
@@ -346,8 +372,7 @@ export default{
             axios.put(`/api/event/edit/${this.selectedEvent.event_id}`, this.selectedEvent, {
                 })
                 .then(response => {
-                    this.$emit('event-updated', response.data);  // Emit event to parent if needed
-                    this.fetchEvents(true);  // Refresh the posts list
+                    this.UpdateEvents();
                     this.closeEditModal(this.selectedEvent.event_id);  // Close the modal after success
                     
                     Swal.fire({
@@ -415,13 +440,13 @@ export default{
         confirmDelete(eventId) {
             axios.delete(`/api/event/delete/${eventId}`)
                 .then(response => {
-                    this.events = this.events.filter(event => event.event_id !== eventId);
+                    this.UpdateEvents();
                     this.closeDeleteModal(eventId);
 
                     Swal.fire({
                     position: "bottom-end",
                     icon: "success",
-                    title: "Your post has been deleted successfully!",
+                    title: "Your event has been deleted successfully!",
                     showConfirmButton: false,
                     timer: 3000,
                     timerProgressBar: true,
@@ -522,7 +547,7 @@ export default{
                     this.noMoreEvents = true;
                 }
             } catch (error) {
-                console.error("Error fetching posts:", error);
+                console.error("Error fetching events:", error);
             } finally {
                 this.loading = false;
             }

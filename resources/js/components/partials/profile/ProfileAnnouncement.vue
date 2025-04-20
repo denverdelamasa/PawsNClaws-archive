@@ -10,25 +10,19 @@
           </svg>
         </label>
         <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-[230px]">
-          <li><a href="#">
+          <li v-if="announcement.user_id === currentUserId"><a href="#" @click.prevent="editAnnouncement(announcement)">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
               <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
               <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
             </svg>
             Edit Announcement
           </a></li>
-          <li><a href="#">
+          <li v-if="announcement.user_id === currentUserId"><a href="#" @click.prevent="openDeleteModal(announcement.announcement_id)">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
               <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
             </svg>
             Delete Announcement
-          </a></li>
-          <li><a href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-flag" viewBox="0 0 16 16">
-              <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z"/>
-            </svg>  
-            Report Announcement
           </a></li>
         </ul>
       </div>
@@ -66,8 +60,38 @@
                 :src="`/storage/${announcement.thumbnail}`"
                 class="w-full h-full object-cover" />
         </div>
-
     </div>
+
+    <!-- Edit Post Modal -->
+    <dialog :id="`editAnnouncementModal-${announcement.announcement_id}`" class="modal">
+        <div class="modal-box w-[90vw] h-[40vh] max-w-2xl">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeEditModal(announcement.announcement_id)">✕</button>
+          <h3 class="text-xl font-semibold">Edit Announcement</h3>
+          <form @submit.prevent="submitEditAnnouncement(announcement.announcement_id)">
+            <div class="my-4">
+              <label for="caption" class="label">Title</label>
+              <input type="text" v-model="selectedAnnouncement.title" id="title" class="textarea textarea-bordered w-full" rows="1"></input>
+              <label for="caption" class="label">Description</label>
+              <textarea v-model="selectedAnnouncement.description" id="description" class="textarea textarea-bordered w-full" rows="3"></textarea>
+            </div>
+            <div class="modal-action">
+              <button class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+    </dialog>
+
+    <!-- Delete Confirmation Modal -->
+    <dialog :id="`deleteAnnouncementModal-${announcement.announcement_id}`" class="modal">
+        <div class="modal-box">
+            <h3 class="text-lg f-bold">Are you sure you want to delete this announcement?</h3>
+            <p class="py-4">This action cannot be undone.</p>
+            <div class="modal-action">
+                <button class="btn btn-error" @click="confirmDelete(announcement.announcement_id)">Yes, Delete</button>
+                <button class="btn" @click="closeDeleteModal(announcement.announcement_id)">Cancel</button>
+            </div>
+        </div>
+    </dialog>
 
     <div class="card-body">
         <!-- Buttons -->
@@ -130,12 +154,13 @@
 <div v-if="loading" class="text-center my-4">
     <span class="loading loading-dots loading-lg"></span>
   </div>
-  <div v-else-if="!hasMorePosts" class="text-center my-4">
+  <div v-else-if="!hasMoreAnnouncement" class="text-center my-4">
     No more announcement to load
   </div>
 </template>
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import Comments from '../misc/Comments.vue';
 
 export default {
@@ -147,13 +172,137 @@ export default {
       announcements: [],
       isModalOpen: false,
       selectedAnnouncementId: null,
+      selectedAnnouncement: {title: '', description: ''},
       currentPage: 1,
       totalPages: 1,
       loading: false,
       hasMoreAnnouncement: true,
+      currentUserId: null,
+      scrollListener: null,
+      isAuthenticated: false,
     };
   },
   methods: {
+    editAnnouncement(announcement) {
+      this.selectedAnnouncement = { ...announcement };     // Make sure to copy post data correctly
+      const modal = document.getElementById(`editAnnouncementModal-${announcement.announcement_id}`);
+      if (modal) {
+          modal.showModal();
+      }
+    },
+    closeEditModal(announcementId) {
+      const modal = document.getElementById(`editAnnouncementModal-${announcementId}`);
+      if (modal) {
+        modal.close();  // This will close the modal
+      }
+    },
+    submitEditAnnouncement() {
+      axios.put(`/api/announcement/edit/${this.selectedAnnouncement.announcement_id}`, this.selectedAnnouncement, {
+        })
+        .then(response => {
+            this.announcements = this.announcements.filter(announcement => announcement.announcement_id !== this.selectedAnnouncement);
+            this.closeEditModal(this.selectedAnnouncement.announcement_id);  // Close the modal after success
+            
+            Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Your announcement has been updated successfully!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b", // Dark background
+                color: "#ffffff", // Light text color
+                toast: true, // Toast-style alert
+                didOpen: (toast) => {
+                const progressBar = Swal.getTimerProgressBar();
+                if (progressBar) {
+                    progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                }
+                },
+            });
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 422) {
+            this.errors = error.response.data.errors;
+            let errorMessages = '';
+            for (let key in this.errors) {
+                errorMessages += `${this.errors[key].join(', ')}\n`;
+            }
+
+            // Optionally, you can display the errors using a custom method
+            console.error('Validation Failed:', errorMessages.trim());
+            } else {
+            console.error('Error updating Announcement:', error);
+            }
+            Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Something went wrong",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b", // Dark background
+                color: "#ffffff", // Light text color
+                toast: true, // Toast-style alert
+                didOpen: (toast) => {
+                const progressBar = Swal.getTimerProgressBar();
+                if (progressBar) {
+                    progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                }
+                },
+            });
+        });
+    },
+    openDeleteModal(announcementId) {
+      const modal = document.getElementById(`deleteAnnouncementModal-${announcementId}`);
+      if (modal) {
+        modal.showModal();
+      }
+    },
+    closeDeleteModal(announcementId) {
+      const modal = document.getElementById(`deleteAnnouncementModal-${announcementId}`);
+      if (modal) {
+        modal.close();
+      }
+    },
+    confirmDelete(announcementId) {
+      axios.delete(`/api/announcement/delete/${announcementId}`)
+        .then(response => {
+          this.announcements = this.announcements.filter(announcement => announcement.announcement_id !== announcementId);
+          this.closeDeleteModal(announcementId);
+
+            Swal.fire({
+              position: "bottom-end",
+              icon: "success",
+              title: "Your post has been deleted successfully!",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              background: "#1e293b", // Dark background
+              color: "#ffffff", // Light text color
+              toast: true, // Toast-style alert
+              didOpen: (toast) => {
+                const progressBar = Swal.getTimerProgressBar();
+                if (progressBar) {
+                  progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                }
+              },
+            });
+          })
+          .catch(error => {
+            console.error("Error deleting announcement:", error);
+
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              showConfirmButton: false,
+              text: "Something went wrong while uploading your post!",
+              background: "#1e293b", // Dark background
+              color: "#ffffff", // Light text color
+              toast: true,
+              });
+          });
+    },
     async fetchAnnouncements(initialLoad = false) {
       if (this.loading || !this.hasMoreAnnouncement) return;
       
@@ -177,12 +326,15 @@ export default {
     },
 
     handleScroll() {
-      const bottomOfWindow =
-        document.documentElement.scrollTop + window.innerHeight >=
-        document.documentElement.offsetHeight - 100;
+      const scrollY = window.scrollY || window.pageYOffset;
+      const visibleHeight = window.innerHeight;
+      const pageHeight = document.documentElement.scrollHeight;
+      const bottomOffset = 100; // Load more when 100px from bottom
 
-      if (bottomOfWindow && !this.loading && !this.hasMoreAnnouncement) {
-        this.fetchAnnouncements();
+      if (pageHeight - (scrollY + visibleHeight) < bottomOffset) {
+        if (!this.loading && this.hasMoreAnnouncement) {
+          this.fetchAnnouncements();
+        }
       }
     },
     
@@ -238,14 +390,27 @@ export default {
         console.error("Error fetching comments:", error);
       }
     },
+    async checkAuthentication() {
+      try {
+          const response = await axios.get('/api/auth/status');
+          this.isAuthenticated = response.data.authenticated;
+          this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
+      } catch (error) {
+          console.error("Error checking authentication status:", error);
+      }
+    },
   },
   mounted() {
     this.fetchComments();
     this.fetchAnnouncements();
-    window.addEventListener('scroll', this.handleScroll);
+    this.checkAuthentication();
+    this.scrollListener = this.handleScroll.bind(this);
+    window.addEventListener('scroll', this.scrollListener);
   },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll)
-  }
+  beforeUnmount() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
+  },
 };
 </script>

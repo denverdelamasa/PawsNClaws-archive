@@ -1,5 +1,5 @@
 <template>
-  <UploadPost v-if="isAuthenticated" :fetchPostsProp="fetchPosts" />
+  <UploadPost v-if="isAuthenticated" :fetchPostsProp="UpdatePosts" />
 
   <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
@@ -321,7 +321,7 @@ export default {
     },
     closeAdoptionModal() {
       this.isAdoptionModalOpen = false;
-      this.fetchPosts(true);
+      this.UpdatePosts();;
     },
     handleFileChange(event) {
       const file = event.target.files[0];
@@ -388,7 +388,7 @@ export default {
     },
     closeCommentsModal() {
       this.isCommentsModalOpen = false;
-      this.fetchPost();
+      this.UpdatePosts();;
     },
     async fetchComments(postId) {
       try {
@@ -419,7 +419,7 @@ export default {
     confirmDelete(postId) {
       axios.delete(`/api/posts/delete/${postId}`)
         .then(response => {
-          this.posts = this.posts.filter(post => post.post_id !== postId);
+          this.UpdatePosts();
           this.closeDeleteModal(postId);
 
             Swal.fire({
@@ -478,7 +478,7 @@ export default {
         })
         .then(response => {
             this.$emit('post-updated', response.data);  // Emit event to parent if needed
-            this.fetchPosts();  // Refresh the posts list
+            this.UpdatePosts();  // Refresh the posts list
             this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
             
             Swal.fire({
@@ -585,6 +585,29 @@ export default {
         console.error("Post or image path not found for postId:", postId);
       }
     },
+    UpdatePosts() {
+      this.loading = true; // Show loader when starting request
+
+      axios.get('/api/posts/list')
+        .then(response => {
+          const newPosts = response.data.posts || [];
+
+          // Replace the posts list with the new posts
+          this.posts = newPosts;
+
+          // Optionally reset pagination info if you're still tracking it
+          this.totalPages = 1;
+          this.currentPage = 1;
+          this.hasMore = false;
+        })
+        .catch(error => {
+          console.error('Error fetching browse posts:', error);
+        })
+        .finally(() => {
+          this.loading = false; // Hide loader when done
+        });
+    },
+
     async fetchPosts(reset = false) {
       if (this.loading || (this.noMorePosts && !reset)) return; // Prevent multiple requests unless resetting
 
@@ -691,7 +714,7 @@ export default {
   },
   mounted() {
     this.checkAuthentication();
-    this.fetchPosts(); // Fetch the first page of posts
+    this.fetchPosts(true); // Fetch the first page of posts
     this.fetchComments();
     window.addEventListener('scroll', this.handleScroll);
   },
