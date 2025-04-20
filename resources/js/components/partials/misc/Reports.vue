@@ -38,7 +38,11 @@
   <dialog ref="reportDialog" class="modal">
     <div class="modal-box">
       <h3 class="text-lg font-bold text-red-600">
-        Report {{ reportType === 'post' ? 'Post' : 'Comment' }}
+        Report
+        {{ reportType === 'post' ? 'Post' :
+          reportType === 'comment' ? 'Comment' :
+          reportType === 'event' ? 'Event' :
+          reportType === 'announcement' ? 'Announcement' : 'Content' }}
       </h3>
       <p class="py-4 text-gray-300">Please select the reason for reporting this {{ reportType }}:</p>
 
@@ -91,6 +95,14 @@ export default {
       type: Number,
       default: null,
     },
+    announcementId: {
+      type: Number,
+      default: null,
+    },
+    eventId: {
+      type: Number,
+      default: null,
+    },
     commentId: {
       type: Number,
       default: null,
@@ -134,8 +146,10 @@ export default {
       const reportData = {
         user_id: this.currentUserId,
         reason: this.reportReason,
+        announcement_id: this.reportType === 'announcement' ? this.announcementId : null,
+        event_id: this.reportType === 'event' ? this.eventId : null,
+        post_id: this.reportType === 'post' ? this.postId : null,
         type: this.reportType,
-        post_id: this.isComment ? null : this.postId,
         comment_id: this.isComment ? this.commentId : null,
         details: this.reportReason === 'Other' ? this.customReason : '',
       };

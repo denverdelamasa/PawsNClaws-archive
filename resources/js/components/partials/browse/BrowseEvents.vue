@@ -209,7 +209,7 @@
                 </div>
             </div>
             <!--Load More-->
-            <div v-if="hasMore" class="text-center mt-4">
+            <div v-if="hasMore && !loading" class="text-center mt-4">
                 <button @click="loadMore" class="btn btn-accent">Load More</button>
             </div>
         </div>

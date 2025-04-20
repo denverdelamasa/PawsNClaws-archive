@@ -240,9 +240,6 @@ export default {
         this.showSuggestions = false;
       }
     },
-    triggerSearch() {
-      this.searchQuery = this.tempSearch;
-    },
     changeContent(content) {
       this.browseContent = content;  // Change content dynamically
     },

@@ -17,7 +17,7 @@ class Report extends Model
     protected $primaryKey = 'report_id';
 
     // Specify the fillable columns
-    protected $fillable = ['reporter_id', 'report_post_id', 'report_comment_id', 'reason', 'details', 'type'];
+    protected $fillable = ['reporter_id', 'report_post_id','report_announcement_id', 'report_event_id', 'report_comment_id', 'reason', 'details', 'type'];
 
     // Define the relationship with the User model
     public function user()

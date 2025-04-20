@@ -44,8 +44,10 @@ class ReportController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,user_id',
             'reason' => 'required|string',
-            'type' => 'required|in:post,comment',
+            'type' => 'required|in:post,comment,announcement,event',
             'report_post_id' => 'nullable|exists:posts,post_id',
+            'report_announcement_id' => 'nullable|exists:announcements,announcement_id',
+            'report_event_id' => 'nullabnle|exists:events,event_id',
             'report_comment_id' => 'nullable|exists:comments,comment_id',
             'details' => 'nullable|string',
         ]);
@@ -57,6 +59,8 @@ class ReportController extends Controller
             'type' => $request->type,
             'report_post_id' => $request->type === 'post' ? $request->post_id : null,
             'report_comment_id' => $request->type === 'comment' ? $request->comment_id : null,
+            'report_announcement_id' => $request->type === 'announcement' ? $request->announcement_id: null,
+            'report_event_id' => $request->type === 'event' ? $request->event_id: null,
             'details' => $request->details,
         ]);
 

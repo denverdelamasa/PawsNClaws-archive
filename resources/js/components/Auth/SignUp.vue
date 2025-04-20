@@ -48,25 +48,28 @@
                   >
                     {{ otpStatus === 'verified' ? 'Verified' : 'Verify' }}
                   </button>
-                  <!-- Add validation message -->
-                  <span 
-                    v-if="form.email && !isValidEmail"
-                    class="text-error text-sm"
-                  >
-                    Please enter a valid Gmail address
-                  </span>
                 </div>
               </div>
+              <!-- Validation: Invalid email format -->
+              <span 
+                v-if="form.email && !isValidEmail"
+                class="text-error text-sm"
+              >
+                Please enter a valid Gmail address
+              </span>
+
+              <!-- Validation: Email availability (only if valid email format) -->
               <span
-                v-if="availability.email && isValidEmail"
+                v-else-if="form.email && isValidEmail"
                 :class="{
-                  'text-success': availability.email.available,
-                  'text-error': !availability.email.available && isValidEmail
+                  'text-success': availability.email?.available,
+                  'text-error': !availability.email?.available
                 }"
                 class="text-sm"
               >
-                {{ availability.email.message }}
+                {{ availability.email?.message || 'Checking availability...' }}
               </span>
+
 
               <div>
                 <label

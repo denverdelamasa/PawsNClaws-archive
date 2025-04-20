@@ -22,7 +22,7 @@ class Event extends Model
     ];
 
     // Specify which columns are mass assignable (optional)
-    protected $fillable = ['shelter_id', 'event_title', 'event_description', 'event_date', 'event_location', 'event_location', 'event_thumbnail'];
+    protected $fillable = ['shelter_id', 'event_title', 'event_description', 'event_date', 'event_location', 'event_thumbnail'];
 
     // Define the relationship with the User model (shelter_id refers to user_id)
     public function shelter()

@@ -25,8 +25,7 @@ class BrowseController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%'.$search.'%')
-                  ->orWhere('email', 'like', '%'.$search.'%')
-                  ->orWhere('bio', 'like', '%'.$search.'%');
+                  ->orWhere('email', 'like', '%'.$search.'%');
             });
         }
     
@@ -47,8 +46,7 @@ class BrowseController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%'.$search.'%')
-                  ->orWhere('email', 'like', '%'.$search.'%')
-                  ->orWhere('bio', 'like', '%'.$search.'%');
+                  ->orWhere('email', 'like', '%'.$search.'%');
             });
         }
     
@@ -75,8 +73,7 @@ class BrowseController extends Controller
                 $q->where('caption', 'like', "%{$search}%")
                   ->orWhereHas('user', function($userQuery) use ($search) {
                       $userQuery->where('name', 'like', "%{$search}%")
-                                ->orWhere('username', 'like', "%{$search}%")
-                                ->orWhere('bio', 'like', "%{$search}%");
+                                ->orWhere('username', 'like', "%{$search}%");
                   });
             });
         }
@@ -148,8 +145,7 @@ class BrowseController extends Controller
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhereHas('shelter', function($userQuery) use ($search) {
                       $userQuery->where('name', 'like', "%{$search}%")
-                                ->orWhere('username', 'like', "%{$search}%")
-                                ->orWhere('bio', 'like', "%{$search}%");
+                                ->orWhere('username', 'like', "%{$search}%");
                   });
             });
         }
@@ -209,10 +205,10 @@ class BrowseController extends Controller
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('event_title', 'like', "%{$search}%")
+                ->orWhere('event_description', 'like', "%{$search}%")
                   ->orWhereHas('shelter', function($userQuery) use ($search) {
                       $userQuery->where('name', 'like', "%{$search}%")
-                                ->orWhere('username', 'like', "%{$search}%")
-                                ->orWhere('bio', 'like', "%{$search}%");
+                                ->orWhere('username', 'like', "%{$search}%");
                   });
             });
         }
@@ -223,7 +219,7 @@ class BrowseController extends Controller
         $formattedEvents = $events->map(function ($events) use ($userId) {
             $EventLikesCount = Like::where('event_id', $events->event_id)->count();
     
-            $isLikedAnnouncement = Like::where('event_id', $events->event_id)
+            $isLikedEvent = Like::where('event_id', $events->event_id)
                             ->where('user_id', $userId)
                             ->exists();
     
@@ -239,7 +235,7 @@ class BrowseController extends Controller
                 'created_at' => $events->created_at->diffForHumans(),
                 'updated_at' => $events->updated_at->diffForHumans(),
                 'likes_count' => $EventLikesCount,
-                'is_liked' => $isLikedAnnouncement,
+                'is_liked' => $isLikedEvent,
                 'comments_count' => $events->comments_count,
             ];
         });

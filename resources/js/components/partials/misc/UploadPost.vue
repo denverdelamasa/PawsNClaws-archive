@@ -237,15 +237,15 @@ export default {
   props: {
     fetchPostsProp: {
       type: Function,
-      required: true
+      required: false
     },
     fetchAnnouncementsProp: {
       type: Function,
-      required: true
+      required: false
     },
     fetchEventsProp: {
       type: Function,
-      required: true
+      required: false
     }
   },
   data() {

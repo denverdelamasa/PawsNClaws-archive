@@ -130,15 +130,9 @@
               {{ comments.length === 0 ? 'No comments available.' : 'No more comments available.' }}
             </div>
           </div>
-          <!-- Load More Button -->
-          <div v-if="!noMoreComments" class="text-center mt-4">
-            <button 
-              @click="fetchComments" 
-              class="btn btn-primary btn-sm"
-              :disabled="isLoading"
-            >
-              {{ isLoading ? 'Loading...' : 'Load More Comments' }}
-            </button>
+          <!-- Scroll Loading Indicator -->
+          <div v-if="isLoading && comments.length > 0" class="text-center py-4">
+            <div class="loading loading-spinner loading-md"></div>
           </div>
         </div>
 
@@ -156,6 +150,18 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import ReportComments from '../misc/Reports.vue';
 
+
+function throttle(func, wait) {
+  let timeout;
+  return function (...args) {
+    if (!timeout) {
+      timeout = setTimeout(() => {
+        timeout = null;
+        func.apply(this, args);
+      }, wait);
+    }
+  };
+}
 export default {
   name: 'CommentsModal',
   components: {
@@ -164,7 +170,7 @@ export default {
   props: {
     isCommentsModalOpen: {
       type: Boolean,
-      required: true
+      required: true 
     },
     postId: {
       type: [String, Number],
@@ -178,10 +184,6 @@ export default {
       type: [String, Number],
       required: false
     },
-    commentList: {
-      type: Array,
-      default: () => []
-    }
   },
   emits: ['close'],
   data() {
@@ -204,6 +206,13 @@ export default {
     };
   },
   methods: {
+    resetCommentState() {
+      this.comments = [];
+      this.currentPage = 1;
+      this.totalPages = 1;
+      this.noMoreComments = false;
+      this.commentsCount = 0;
+    },
     showModal(commentId) {
       if (modal) {
         modal.showModal();
@@ -258,7 +267,7 @@ export default {
     closeModal() {
       this.$emit('close'); // Emit the close event to the parent component
       this.$refs.commentsDialog.close(); // Close the dialog using its method
-      this.comments = [];
+      this.resetCommentState();
     },
     async fetchComments() {
       if (this.isLoading || this.currentPage > this.totalPages) return;
@@ -267,49 +276,73 @@ export default {
 
       let url = '';
       if (this.postId) {
-          url = `/api/comments/${this.postId}/post?page=${this.currentPage}`;
+        url = `/api/comments/${this.postId}/post?page=${this.currentPage}`;
       } else if (this.announcementId) {
-          url = `/api/comments/${this.announcementId}/announcement?page=${this.currentPage}`;
-      } else if (this.eventId){
-          url = `/api/comments/${this.eventId}/event?page=${this.currentPage}`;
-      }else {
-          console.error("No postId or announcementId provided");
-          this.isLoading = false;
-          return;
+        url = `/api/comments/${this.announcementId}/announcement?page=${this.currentPage}`;
+      } else if (this.eventId) {
+        url = `/api/comments/${this.eventId}/event?page=${this.currentPage}`;
+      } else {
+        console.error("No postId, announcementId, or eventId provided");
+        this.isLoading = false;
+        return;
       }
 
       try {
-          const response = await axios.get(url);
-          const data = response.data;
+        const response = await axios.get(url);
+        const data = response.data;
 
-          if (this.currentPage === 1) {
-              this.comments = data.data;  // Reset comments on first page
-              this.commentsCount = data.comments_count; // Store comments count
-          } else {
-              this.comments = [...this.comments, ...data.data];  // Append if paginating
+        console.log('API Response:', data);
+
+        const modal = this.$refs.commentsDialog;
+        const previousScrollHeight = modal ? modal.scrollHeight : 0;
+
+        if (this.currentPage === 1) {
+          this.comments = data.data || [];
+          this.commentsCount = data.comments_count || 0;
+        } else {
+          this.comments = [...this.comments, ...data.data];
+        }
+
+        this.currentPage++;
+        this.totalPages = data.last_page || 1;
+
+        if (this.currentPage > this.totalPages) {
+          this.noMoreComments = true;
+        }
+
+        this.$nextTick(() => {
+          if (modal && this.currentPage > 2) {
+            const newScrollHeight = modal.scrollHeight;
+            modal.scrollTop += newScrollHeight - previousScrollHeight;
           }
-
-          this.currentPage++;
-          this.totalPages = data.last_page;
-
-          if (this.currentPage > this.totalPages) {
-              this.noMoreComments = true;
-          }
+        });
       } catch (error) {
-          console.error("Error fetching comments:", error);
+        console.error("Error fetching comments:", error);
       } finally {
-          this.isLoading = false;
+        this.isLoading = false;
       }
     },
 
     handleCommentsScroll() {
       const modal = this.$refs.commentsDialog;
-      if (modal) {
-        const bottomOfModal = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 100;
-        console.log('Scroll event triggered', bottomOfModal, this.isLoading, this.noMoreComments);
-        if (bottomOfModal && !this.isLoading && !this.noMoreComments) {
-          this.fetchComments();
-        }
+      if (!modal) {
+        console.warn("Modal reference not found");
+        return;
+      }
+
+      const bottomOfModal = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 100;
+      console.log('Scroll Check:', {
+        scrollTop: modal.scrollTop,
+        clientHeight: modal.clientHeight,
+        scrollHeight: modal.scrollHeight,
+        bottomOfModal,
+        isLoading: this.isLoading,
+        noMoreComments: this.noMoreComments
+      });
+
+      if (bottomOfModal && !this.isLoading && !this.noMoreComments) {
+        console.log('Fetching more comments...');
+        this.fetchComments();
       }
     },
 
@@ -425,19 +458,45 @@ export default {
   watch: {
     isCommentsModalOpen(newVal) {
       if (newVal) {
-        this.$refs.commentsDialog.showModal(); // Open the dialog when the prop is true
-        this.fetchComments();  // Fetch comments when modal opens
+        this.$refs.commentsDialog.showModal();
+        this.resetCommentState();
+        this.fetchComments();
       } else {
-        this.$refs.commentsDialog.close(); // Close the modal when the prop is false
+        this.$refs.commentsDialog.close();
+        this.resetCommentState();
+      }
+    },
+    postId(newVal, oldVal) {
+      if (newVal !== oldVal && newVal) {
+        this.resetCommentState();
+        this.fetchComments();
+      }
+    },
+    announcementId(newVal, oldVal) {
+      if (newVal !== oldVal && newVal) {
+        this.resetCommentState();
+        this.fetchComments();
+      }
+    },
+    eventId(newVal, oldVal) {
+      if (newVal !== oldVal && newVal) {
+        this.resetCommentState();
+        this.fetchComments();
       }
     }
   },
   mounted(){
     this.checkAuthentication();
     window.addEventListener('keydown', this.handleEscKey);
+    if (this.$refs.commentsDialog) {
+      this.$refs.commentsDialog.addEventListener('scroll', this.handleCommentsScroll);
+    }
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleEscKey); // Clean up the event listener
+    if (this.$refs.commentsDialog) {
+      this.$refs.commentsDialog.removeEventListener('scroll', this.handleCommentsScroll);
+    }
   }
 };
 </script>
