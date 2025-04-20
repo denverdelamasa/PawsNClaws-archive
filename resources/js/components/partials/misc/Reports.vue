@@ -1,6 +1,7 @@
 <template>
   <!-- Success Modal -->
   <dialog ref="successDialog" class="modal">
+    <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     <div class="modal-box text-center p-8 transform transition-all duration-300">
       <div class="animate-scale-in">
         <!-- Animated checkmark -->
@@ -88,7 +89,7 @@
 
 <script>
 import axios from "axios";
-
+import LoginFirst from "./LoginFirst.vue";
 export default {
   props: {
     postId: {
@@ -116,11 +117,15 @@ export default {
       required: true,
     },
   },
+  components: {
+    LoginFirst
+  },
   data() {
     return {
       reportReason: '',
       customReason: '',
       errorMessage: '',
+      showLoginModal: false,
     };
   },
   computed: {
@@ -129,6 +134,15 @@ export default {
     }
   },
   methods: {
+    triggerLoginModal() {
+      this.showLoginModal = true;
+      this.$nextTick(() => {
+        const loginFirst = this.$refs.loginFirst;
+        if (loginFirst) {
+          loginFirst.showLoginModal();
+        }
+      });
+    },
     closeModal() {
       this.$refs.reportDialog.close();
       this.$emit('close');
@@ -173,7 +187,7 @@ export default {
     closeSuccessModal() {
       this.$refs.successDialog.close();
       this.$emit('close'); // Add this line
-    }
+    },
   },
   mounted(){
     this.$refs.reportDialog.showModal();

@@ -49,7 +49,7 @@
               {{ shelter.bio || 'No description available' }}
             </p>
             <div class="card-actions justify-end mt-4">
-              <button class="btn btn-primary gap-2">
+              <button class="btn btn-primary gap-2" @click="viewProfile(shelter.user_id)">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                   <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
@@ -120,6 +120,10 @@ export default {
         },
     },
     methods: {
+        viewProfile(userId) {
+            console.log('Navigating to profile with userId:', userId);
+            window.location.href = `/browse/view?user_id=${userId}`;
+        },
         loadMore() {
             this.currentPage += 1;
             this.fetchBrowseShelters(this.searchQuery);

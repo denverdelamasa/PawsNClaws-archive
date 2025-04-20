@@ -157,6 +157,7 @@
                 <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
               @endif
             @endauth
+            <li><a href="pages/profile">Settings</a></li>
             <li>
               <!-- Authentication -->
               <form method="POST" action="{{ route('logout') }}" style="margin: 0;">

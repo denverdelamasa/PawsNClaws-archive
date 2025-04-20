@@ -1,5 +1,6 @@
 <template>
   <UploadPost v-if="isAuthenticated" :fetchAnnouncementsProp="fetchAnnouncements" />
+  <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
   <div v-for="announcement in announcements" :key="announcement.announcement_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300 w-3/4">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4">
@@ -159,6 +160,13 @@
           </div>
     </div>
 </div>
+<div v-if="loading" class="text-center my-4">
+  <span class="loading loading-dots loading-lg"></span>
+</div>
+<!-- Display "No more posts available" when noMorePosts is true -->
+<div v-if="noMoreAnnouncements && announcement.length > 0" class="text-center py-4 text-gray-500">
+  No more announcement available.
+</div>
 </template>
 <script>
 import axios from 'axios';
@@ -166,12 +174,14 @@ import Swal from 'sweetalert2';
 import Comments from '../misc/Comments.vue';
 import UploadPost from '../misc/UploadPost.vue';
 import ReportModal  from '../misc/Reports.vue';
+import LoginFirst from '../misc/LoginFirst.vue';
 
 export default {
   components: {
     Comments,
     UploadPost,
     ReportModal,
+    LoginFirst
   },
   data() {
     return {
@@ -186,10 +196,24 @@ export default {
       currentUserId: null,
       isAuthenticated: false,
       selectedReportAnnouncementId: null,
+      showLoginModal: false,
     };
   },
   methods: {
+    triggerLoginModal() {
+      this.showLoginModal = true;
+      this.$nextTick(() => {
+        const loginFirst = this.$refs.loginFirst;
+        if (loginFirst) {
+          loginFirst.showLoginModal();
+        }
+      });
+    },
     openReportModal(announcementId) {
+      if(!this.isAuthenticated){
+        this.triggerLoginModal();
+        return;
+      }
       this.reportType = 'announcement';
       this.selectedReportAnnouncementId = announcementId;
     },
@@ -239,6 +263,10 @@ export default {
     },
     
     async likeAnnouncement(announcementId) {
+      if(!this.isAuthenticated){
+        this.triggerLoginModal();
+        return;
+      }
       try {
         await axios.post(`/api/like/${announcementId}/announcement`);
 

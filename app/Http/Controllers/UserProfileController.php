@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Announcement;
 use Carbon\Carbon;
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\Event;
+use App\Models\Announcement;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\DoneAdoptionForm;
@@ -272,6 +273,64 @@ class UserProfileController extends Controller
         ], 200);
     }
 
+    public function userEventList()
+    {
+        $userId = Auth::id(); // Get the authenticated user's ID
+    
+        // Fetch only the posts created by the authenticated user, paginated by 10 posts per page
+        $events = Event::with('shelter') // Eager load the user relationship
+            ->withCount('comments') // Count the number of comments using the defined relationship
+            ->where('shelter_id', $userId) // Filter posts by the authenticated user
+            ->orderBy('created_at', 'desc') // Order posts by latest
+            ->paginate(3); // Paginate the results, 10 posts per page
+    
+        // Format the response for each post
+        $formattedEvents = $events->map(function ($event) use ($userId) {
+            // Count the number of likes for each post
+            $likesCount = Like::where('event_id', $event->event_id)->count();
+    
+            // Check if the current user has liked the post
+            $isLiked = Like::where('announcement_id', $event->event_id)
+                            ->where('user_id', $userId)
+                            ->exists();
+    
+            // Check if the user has completed the adoption form for this post
+            $isDoneSendingAdoptionForm = DoneAdoptionForm::where('done_post_id', $announcement->announcement_id)
+                                ->where('done_user_id', $userId)
+                                ->exists();
+    
+            return [
+                'announcement_id' => $announcement->announcement_id,
+                'user_id' => $announcement->shelter_id,
+                'name' => $announcement->shelter ? $announcement->shelter->name : 'Unknown User',
+                'username' => $announcement->shelter ? $announcement->shelter->username : 'Unknown User', // Fetch username from the related user
+                'profile_picture' => $announcement->shelter && $announcement->shelter->profile_picture ? $announcement->shelter->profile_picture : 'default-profile.jpg', // Use default if no profile picture
+                'thumbnail' => $announcement->thumbnail ? json_decode($announcement->thumbnail, true) : [],
+                'title' => $announcement->title,
+                'description' => $announcement->description,
+                'created_at' => $announcement->created_at->diffForHumans(), // Format the created_at timestamp
+                'updated_at' => $announcement->updated_at->diffForHumans(), // Format the updated_at timestamp
+                'likes_count' => $likesCount,
+                'is_liked' => $isLiked, // Add the `is_liked` state for the current user
+                'comments_count' => $announcement->comments_count, // Include the count of comments from the `withCount` query
+                'is_adoptable' => $announcement->is_adoptable, // Include the adoptable status
+                'done_sending_adoption_form' => $isDoneSendingAdoptionForm // Add adoption form status
+            ];
+        });
+    
+        // Return the formatted response as JSON with pagination metadata
+        return response()->json([
+            'announcements' => $formattedAnnouncement,
+            'pagination' => [
+                'current_page' => $announcements->currentPage(),
+                'per_page' => $announcements->perPage(),
+                'total' => $announcements->total(),
+                'last_page' => $announcements->lastPage(),
+                'next_page_url' => $announcements->nextPageUrl(),
+                'prev_page_url' => $announcements->previousPageUrl(),
+            ]
+        ], 200);
+    }
     public function acceptApplication($id)
     {
         // Find the adoption application by its ID

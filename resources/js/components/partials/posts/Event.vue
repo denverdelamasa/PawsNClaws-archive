@@ -1,5 +1,6 @@
 <template>
     <UploadPost v-if="isAuthenticated" :fetchEventsProp="fetchEvents" />
+    <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     <div v-for="event in events" :key="event.event_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
         <!-- Header with Title and Menu -->
         <div class="flex flex-row items-end p-4 justify-between align-middle">
@@ -225,6 +226,13 @@
             </div>    
         </div>
     </div>
+    <div v-if="loading" class="text-center my-4">
+      <span class="loading loading-dots loading-lg"></span>
+    </div>
+    <!-- Display "No more posts available" when noMorePosts is true -->
+    <div v-if="noMoreEvents && event.length > 0" class="text-center py-4 text-gray-500">
+      No more events available.
+    </div>
 </template>
 <script>
 import axios from 'axios';
@@ -232,12 +240,14 @@ import Swal from 'sweetalert2';
 import Comments from '../misc/Comments.vue';
 import UploadPost from '../misc/UploadPost.vue';
 import ReportModal from '../misc/Reports.vue';
+import LoginFirst from '../misc/LoginFirst.vue';
 
 export default{
     components: {
         Comments,
         UploadPost,
         ReportModal,
+        LoginFirst
     },
     data(){
         return {
@@ -256,10 +266,15 @@ export default{
             selectedReportEventId: null,
             isAuthenticated: false,
             selectedReportEventId: null,
+            showLoginModal: false,
         }
     },
     methods: {
         openReportModal(eventId) {
+            if(!this.isAuthenticated){
+                this.triggerLoginModal();
+                return;
+            }
             this.reportType = 'event';
             this.selectedReportEventId = eventId;
         },
@@ -435,7 +450,20 @@ export default{
                 });
             });
         },
+        triggerLoginModal() {
+            this.showLoginModal = true;
+            this.$nextTick(() => {
+                const loginFirst = this.$refs.loginFirst;
+                if (loginFirst) {
+                loginFirst.showLoginModal();
+                }
+            });
+        },
         async likeEvent(eventId) {
+            if(!this.isAuthenticated){
+                this.triggerLoginModal();
+                return;
+            }
             try {
                 await axios.post(`/api/like/${eventId}/event`);
                 

@@ -79,13 +79,13 @@
                             @click="activeTab = 'posts'">
                         Posts
                     </button>
-                    <button v-if="user.role === 'Shelter', 'Admin'" 
+                    <button v-if="user.role === 'Shelter' && 'Admin'" 
                             class="text-xl font-bold hover:scale-105 transition-all duration-100"
                             :class="{ 'text-primary': activeTab === 'announcements' }"
                             @click="activeTab = 'announcements'">
                         Announcements
                     </button>
-                    <button v-if="user.role === 'Shelter', 'Admin'" class="text-xl font-bold hover:scale-105 transition-all duration-100"
+                    <button v-if="user.role === 'Shelter' && 'Admin'" class="text-xl font-bold hover:scale-105 transition-all duration-100"
                             :class="{ 'text-primary': activeTab === 'events' }"
                             @click="activeTab = 'events'">
                         Events

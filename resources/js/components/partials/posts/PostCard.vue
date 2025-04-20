@@ -1,5 +1,7 @@
 <template>
   <UploadPost v-if="isAuthenticated" :fetchPostsProp="fetchPosts" />
+
+  <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4 gap-x-2">
@@ -273,6 +275,7 @@ import UploadPost from "../misc/UploadPost.vue";
 import Comments from '../misc/Comments.vue';
 import ReportModal from "../misc/Reports.vue";
 import AdoptionForm from "../misc/AdoptionForm.vue";
+import LoginFirst from "../misc/LoginFirst.vue";
 
 export default {
   components: {
@@ -280,6 +283,7 @@ export default {
     Comments,
     ReportModal,
     AdoptionForm,
+    LoginFirst,
   },
   data() {
     return {
@@ -302,28 +306,13 @@ export default {
       isAdoptionModalOpen: false,
       adoptionPostId: null,
       receiverUserId: null,
+      showLoginModal: false
     };
   },
   methods: {
     openAdoptionModal(postId, userId) {
       if (!this.isAuthenticated) {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'You need to log in to send an adoption application.',
-          showConfirmButton: true,
-          confirmButtonText: 'Log In',
-          background: '#2c2f36',
-          color: '#fff',
-          confirmButtonColor: '#3085d6',
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = '/login';
-          }
-        });
+        this.triggerLoginModal();
         return;
       }
       this.adoptionPostId = postId;
@@ -543,6 +532,10 @@ export default {
         });
     },
     openReportModal(postId) {
+      if (!this.isAuthenticated) {
+        this.triggerLoginModal();
+        return;
+      }
       this.reportType = 'post';
       this.selectedReportPostId = postId;
     },
@@ -636,8 +629,21 @@ export default {
         this.fetchPosts(); // Fetch more posts
       }
     },
-
+    triggerLoginModal() {
+      this.showLoginModal = true;
+      this.$nextTick(() => {
+        const loginFirst = this.$refs.loginFirst;
+        if (loginFirst) {
+          loginFirst.showLoginModal();
+        }
+      });
+    },
     async likePost(postId) {
+      if (!this.isAuthenticated) {
+        this.triggerLoginModal();
+        return;
+      }
+      
       try {
         await axios.post(`/api/like/${postId}/post`);
         

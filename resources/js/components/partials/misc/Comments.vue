@@ -136,10 +136,26 @@
           </div>
         </div>
 
+        <div v-if="!noMoreComments" class="text-center mt-4 space-y-2">
+          <!-- Loading text or spinner -->
+          <div v-if="isLoading" class="text-gray-500 text-sm">
+            Loading...
+          </div>
+
+          <!-- Load More Button -->
+          <button 
+            @click="fetchComments" 
+            class="btn btn-primary btn-sm"
+            :disabled="isLoading"
+          >
+            Load More Comments
+          </button>
+        </div>
         <form method="dialog">
           <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
       </div>
+      <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     </dialog>
   </div>
 </template>
@@ -149,23 +165,13 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ReportComments from '../misc/Reports.vue';
+import LoginFirst from './LoginFirst.vue';
 
-
-function throttle(func, wait) {
-  let timeout;
-  return function (...args) {
-    if (!timeout) {
-      timeout = setTimeout(() => {
-        timeout = null;
-        func.apply(this, args);
-      }, wait);
-    }
-  };
-}
 export default {
   name: 'CommentsModal',
   components: {
-    ReportComments
+    ReportComments,
+    LoginFirst,
   },
   props: {
     isCommentsModalOpen: {
@@ -203,6 +209,7 @@ export default {
       totalPages: 1, // Total number of pages
       noMoreComments: false,
       commentsCount: 0,
+      showLoginModal: false,
     };
   },
   methods: {
@@ -346,29 +353,19 @@ export default {
       }
     },
 
+    triggerLoginModal() {
+      this.showLoginModal = true;
+      this.$nextTick(() => {
+        const loginFirst = this.$refs.loginFirst;
+        if (loginFirst) {
+          loginFirst.showLoginModal();
+        }
+      });
+    },
+
     postComment() {
       if (!this.isAuthenticated) {
-          Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'You need to log in to post a comment.',
-              showConfirmButton: true,
-              confirmButtonText: 'Log In',
-              background: '#2c2f36',
-              color: '#fff',
-              confirmButtonColor: '#3085d6',
-              toast: true,
-              timer: 3000,
-              timerProgressBar: true,
-              customClass: {
-                  container: 'swal2-container',
-                  container: 'Comment_Toast'
-              },
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  window.location.href = '/login';
-              }
-          });
+          this.triggerLoginModal();
           return;
       }
 

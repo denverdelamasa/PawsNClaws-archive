@@ -195,7 +195,7 @@ class BrowseController extends Controller
         $userId = Auth::id(); // Get the current user's ID
         $search = $request->input('search', '');
         $page = $request->input('page', 1);
-        $perPage = 3; // 3 posts per page
+        $perPage = 3;
     
         $query = Event::with('shelter')
             ->withCount('comments')
