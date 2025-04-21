@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MessagesController;
 use App\Models\User;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
@@ -115,6 +116,14 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/api/user/announcement/list',[UserProfileController::class, 'userAnnouncementList']);
     Route::get('/api/user/event/list',[UserProfileController::class, 'userEventList']);
     Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
+
+    //Bookmarks
+    Route::get('/api/user/bookmark/posts', [BookmarkController::class, 'userPostBookmarks']);
+    Route::get('/api/user/bookmark/announcements', [BookmarkController::class, 'userAnnouncementBookmarks']);
+    Route::get('/api/user/bookmark/events', [BookmarkController::class, 'userEventBookmarks']);
+
+    //Messages
+    Route::get('/api/user/ongoing', [MessagesController::class, 'listOngoingApplications']);
 });
 Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);
@@ -146,7 +155,7 @@ Route::get('/settings', [PageController::class, 'editprofile']);
 
 Route::get('/profile', [PageController::class, 'profile'])->name('profile'); 
 Route::get('/pages/editprofile', [PageController::class, 'editprofile'])->name('editprofile');
-Route::get('/pages/bookmarks', [PageController::class, 'bookmarks'])->name('bookmarks'); 
+Route::get('/bookmarks', [PageController::class, 'bookmarks'])->name('bookmarks'); 
 
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
 

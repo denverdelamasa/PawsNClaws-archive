@@ -157,6 +157,7 @@
                 <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
               @endif
             @endauth
+                <li><a href="/bookmarks">Bookmarks</a></li>
             @auth
               @if(Auth::user()->role === 'User' && 'Shelter' && 'Vet')
                 <li><a href="/user/settings">Settings</a></li>

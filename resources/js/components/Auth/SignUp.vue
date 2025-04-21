@@ -18,13 +18,13 @@
           </div>
 
           <!-- Centered form div -->
-          <div class="flex-shrink-0 m-auto space-y-4 md:space-y-6 sm:p-8 w-[80vw] md:w-1/2 bg-base-100 shadow-lg transition-all">
+          <div class="flex-shrink-0 m-auto space-y-4 md:space-y-6 sm:p-8 p-4 w-[80vw] md:w-1/2 bg-base-100 shadow-lg transition-all">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-content md:text-2xl">
               Create an account
             </h1>
             <form @submit.prevent="openTermsModal" class="space-y-4 md:space-y-6">
               <div class="w-full">
-                <label for="email" class="block mb-2 text-sm text-secondary font-medium">
+                <label for="email" class="block mb-2 text-sm font-medium">
                   Your Email
                 </label>
                 <div class="flex items-center gap-2">
@@ -169,7 +169,7 @@
               <p v-if="showVerifyMessage" class="text-error text-sm mt-2">
                 Please verify your email before creating an account.
               </p>
-              <p class="text-sm font-light text-secondary">
+              <p class="text-sm font-light">
                 Already have an account?
                 <a href="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
               </p>
@@ -197,7 +197,7 @@
                 </div>
                 <p v-if="otpError" class="text-red-500 mt-2 text-sm">{{ otpError }}</p>
                 <div class="flex justify-between items-center mt-4">
-                  <p class="text-sm text-secondary">Didn't receive the code?</p>
+                  <p class="text-sm">Didn't receive the code?</p>
                   <button
                     class="btn btn-link btn-sm text-primary p-0"
                     @click="resendOtp"
@@ -215,7 +215,7 @@
             <div v-if="showSuccessModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div class="bg-base-100 p-6 rounded-lg shadow-lg w-[90%] max-w-sm text-center">
                 <h2 class="text-xl font-bold text-success mb-2">🎉 Verified!</h2>
-                <p class="text-sm text-secondary">
+                <p class="text-sm">
                   {{ verificationMessage }}
                 </p>
                 <button class="btn btn-primary mt-4" @click="closeSuccessModal">OK</button>
@@ -394,6 +394,22 @@ export default {
     },
   },
   methods: {
+    openTermsModal(e) {
+      if (e.target.checked) {
+        this.$refs.termsModal.showModal();
+      }
+    },
+    closeTermsModal() {
+      this.$refs.termsModal.close();
+    },
+    openPrivacyModal(e) {
+      if (e.target.checked) {
+        this.$refs.privacyModal.showModal();
+      }
+    },
+    closePrivacyModal() {
+      this.$refs.privacyModal.close();
+    },
     toggleShowPassword() {
       this.showPassword = !this.showPassword;
     },

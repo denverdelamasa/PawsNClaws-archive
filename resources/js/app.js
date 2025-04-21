@@ -31,6 +31,8 @@ import BrowseAccounts from './components/partials/browse/BrowseAccounts.vue';
 import ViewAccount from './components/partials/misc/ViewAccount.vue';
 import PostDetail from './components/partials/posts/PostDetail.vue';
 import CombinedFeed from './components/partials/posts/CombinedFeed.vue';
+import Bookmarks from './components/partials/misc/Bookmarks.vue';
+import Messages from './components/Auth/Messages.vue';
 
 // Create the Vue app
 const app1 = createApp({});
@@ -65,6 +67,8 @@ app2.component('browse-accounts', BrowseAccounts);
 app2.component('view-account', ViewAccount);
 app2.component('post-detail', PostDetail);
 app2.component('combined-feed', CombinedFeed);
+app2.component('user-bookmarks', Bookmarks);
+app2.component('user-messages', Messages);
 
 app2.mount("#app2");
 

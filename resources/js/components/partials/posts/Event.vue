@@ -508,7 +508,7 @@ export default{
             } catch (error) {
                 console.error("Error liking/unliking announcements:", error);
             }
-            },
+        },
         async likeEvent(eventId) {
             if(!this.isAuthenticated){
                 this.triggerLoginModal();

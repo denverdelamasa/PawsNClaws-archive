@@ -247,12 +247,6 @@ export default {
         Comments,
         ReportModal
     },
-    props: {
-        userId: {
-        type: [Number, String],
-        required: true
-        }
-    },
     data(){
         return{
             events: [],
@@ -292,18 +286,27 @@ export default {
                 console.error("Error liking/unliking announcements:", error);
             }
         },
-        async UpdateEvents() {
-            this.loading = true;
-            try {
-                const response = await axios.get(`/api/accounts/view/event/${this.userId}`);
-                this.posts = response.data.posts || [];
-                this.hasMorePosts = !!response.data.pagination.next_page_url;
-                this.currentPage = 2; // Reset to next page for subsequent fetches
-            } catch (error) {
-                console.error('Error fetching user posts:', error);
-            } finally {
-                this.loading = false;
-            }
+        UpdateEvents() {
+            this.loading = true; // Show loader when starting request
+
+            axios.get('/api/user/bookmark/events')
+                .then(response => {
+                const newEvents = response.data.events || [];
+
+                // Replace the posts list with the new posts
+                this.events = newEvents;
+
+                // Optionally reset pagination info if you're still tracking it
+                this.totalPages = 1;
+                this.currentPage = 1;
+                this.hasMore = false;
+                })
+                .catch(error => {
+                console.error('Error fetching browse posts:', error);
+                })
+                .finally(() => {
+                this.loading = false; // Hide loader when done
+                });
         },
         handleScroll() {
             const scrollY = window.scrollY || window.pageYOffset;
@@ -511,18 +514,41 @@ export default {
         },
         async fetchEvents(initialLoad = false) {
             if (this.loading || !this.hasMoreEvents) return;
+
             this.loading = true;
+            this.errorMessage = null;
+
             try {
-                const response = await axios.get(`/api/accounts/view/event/${this.userId}?page=${this.currentPage}`);
+                const response = await axios.get(`/api/user/bookmark/events?page=${this.currentPage}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                console.log('Fetch Events Response:', response.data);
+
+                const events = (response.data.events || []).map(event => ({
+                    ...event,
+                    currentSlide: 0, // Initialize currentSlide
+                    expanded: false, // Initialize description state
+                    is_bookmarked: event.is_bookmarked || false, // Initialize bookmark state
+                }));
+
                 if (initialLoad) {
-                this.events = response.data.events || [];
+                    this.events = events;
                 } else {
-                this.events = [...this.events, ...response.data.events];
+                    this.events = [...this.events, ...events];
                 }
-                this.hasMoreEvents = !!response.data.pagination.next_page_url;
+
+                this.hasMoreEvents = !!response.data.pagination?.next_page_url;
                 this.currentPage++;
             } catch (error) {
-                console.error("Error fetching :", error);
+                console.error('Error fetching events:', error.response?.data || error.message);
+                this.errorMessage = error.response?.data?.message || 'Failed to load events. Please try again.';
+                if (error.response?.status === 401) {
+                    this.triggerLoginModal();
+                }
             } finally {
                 this.loading = false;
             }

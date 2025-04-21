@@ -239,12 +239,6 @@ export default {
   components: {
     Comments
   },
-  props: {
-    userId: {
-      type: [Number, String],
-      required: true
-    }
-  },
   data() {
     return {
       posts: [],
@@ -285,18 +279,27 @@ export default {
         console.error("Error liking/unliking post:", error);
       }
     },
-    async UpdatePosts() {
-      this.loading = true;
-      try {
-        const response = await axios.get(`/api/accounts/view/post/${this.userId}`);
-        this.posts = response.data.posts || [];
-        this.hasMorePosts = !!response.data.pagination.next_page_url;
-        this.currentPage = 2; // Reset to next page for subsequent fetches
-      } catch (error) {
-        console.error('Error fetching user posts:', error);
-      } finally {
-        this.loading = false;
-      }
+    UpdatePosts() {
+      this.loading = true; // Show loader when starting request
+
+      axios.get('/api/user/bookmark/posts')
+        .then(response => {
+          const newPosts = response.data.posts || [];
+
+          // Replace the posts list with the new posts
+          this.posts = newPosts;
+
+          // Optionally reset pagination info if you're still tracking it
+          this.totalPages = 1;
+          this.currentPage = 1;
+          this.hasMore = false;
+        })
+        .catch(error => {
+          console.error('Error fetching browse posts:', error);
+        })
+        .finally(() => {
+          this.loading = false; // Hide loader when done
+        });
     },
     openCommentsModal(postId) {
       this.isCommentsModalOpen = true;
@@ -470,14 +473,17 @@ export default {
     },
     async fetchPosts(initialLoad = false) {
       if (this.loading || !this.hasMorePosts) return;
+      
       this.loading = true;
       try {
-        const response = await axios.get(`/api/accounts/view/post/${this.userId}?page=${this.currentPage}`);
+        const response = await axios.get(`/api/user/bookmark/posts?page=${this.currentPage}`);
+        
         if (initialLoad) {
-          this.posts = response.data.posts || [];
+          this.posts = response.data.posts;
         } else {
           this.posts = [...this.posts, ...response.data.posts];
         }
+
         this.hasMorePosts = !!response.data.pagination.next_page_url;
         this.currentPage++;
       } catch (error) {

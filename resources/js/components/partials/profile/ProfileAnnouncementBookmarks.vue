@@ -142,12 +142,12 @@
           <!-- Bookmark Button -->
           <button @click="isBookmarked(announcement.announcement_id)" id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
             <svg v-if="announcement.is_bookmarked" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmarks-fill" viewBox="0 0 16 16">
-              <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5z"/>
-              <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1z"/>
+                <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5z"/>
+                <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1z"/>
             </svg>
             <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmarks" viewBox="0 0 16 16">
-              <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
-              <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
+                <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
+                <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
             </svg>
             <span id="bookmarkText">Add to bookmarks</span>
           </button>
@@ -156,11 +156,11 @@
 </div>
 <!-- Add loading indicator -->
 <div v-if="loading" class="text-center my-4">
-    <span class="loading loading-dots loading-lg"></span>
-  </div>
-  <div v-else-if="!hasMoreAnnouncement" class="text-center my-4">
-    No more announcement to load
-  </div>
+<span class="loading loading-dots loading-lg"></span>
+</div>
+<div v-else-if="!hasMoreAnnouncement" class="text-center my-4">
+No more announcement to load
+</div>
 </template>
 <script>
 import axios from 'axios';
@@ -187,26 +187,6 @@ export default {
     };
   },
   methods: {
-    UpdateAnnouncements() {
-      this.loading = true; // Show loader when starting request
-
-      axios.get('/api/announcements/list')
-        .then(response => {
-          const newAnnouncements = response.data.announcements || [];
-
-          this.announcements = newAnnouncements;
-
-          this.totalPages = 1;
-          this.currentPage = 1;
-          this.hasMore = false;
-        })
-        .catch(error => {
-          console.error('Error fetching browse posts:', error);
-        })
-        .finally(() => {
-          this.loading = false; // Hide loader when done
-        });
-    },
     async isBookmarked(announcementId) {
       if (!this.isAuthenticated) {
         this.triggerLoginModal();
@@ -228,6 +208,28 @@ export default {
         console.error("Error liking/unliking announcements:", error);
       }
     },
+    UpdateAnnouncements() {
+      this.loading = true; // Show loader when starting request
+
+      axios.get('/api/user/bookmark/announcements')
+        .then(response => {
+          const newAnnouncements = response.data.announcements || [];
+
+          // Replace the posts list with the new posts
+          this.announcements = newAnnouncements;
+
+          // Optionally reset pagination info if you're still tracking it
+          this.totalPages = 1;
+          this.currentPage = 1;
+          this.hasMore = false;
+        })
+        .catch(error => {
+          console.error('Error fetching browse posts:', error);
+        })
+        .finally(() => {
+          this.loading = false; // Hide loader when done
+        });
+    },
     editAnnouncement(announcement) {
       this.selectedAnnouncement = { ...announcement };     // Make sure to copy post data correctly
       const modal = document.getElementById(`editAnnouncementModal-${announcement.announcement_id}`);
@@ -245,7 +247,7 @@ export default {
       axios.put(`/api/announcement/edit/${this.selectedAnnouncement.announcement_id}`, this.selectedAnnouncement, {
         })
         .then(response => {
-            this.announcements = this.announcements.filter(announcement => announcement.announcement_id !== this.selectedAnnouncement);
+            this.UpdateAnnouncements();
             this.closeEditModal(this.selectedAnnouncement.announcement_id);  // Close the modal after success
             
             Swal.fire({
@@ -313,7 +315,7 @@ export default {
     confirmDelete(announcementId) {
       axios.delete(`/api/announcement/delete/${announcementId}`)
         .then(response => {
-          this.announcements = this.announcements.filter(announcement => announcement.announcement_id !== announcementId);
+          this.UpdateAnnouncements();
           this.closeDeleteModal(announcementId);
 
             Swal.fire({
@@ -353,7 +355,7 @@ export default {
       
       this.loading = true;
       try {
-        const response = await axios.get(`/api/user/announcement/list?page=${this.currentPage}`);
+        const response = await axios.get(`/api/user/bookmark/announcements?page=${this.currentPage}`);
         
         if (initialLoad) {
           this.announcements = response.data.announcements;
@@ -419,7 +421,7 @@ export default {
     closeCommentsModal() {
       this.isModalOpen = false;
       this.comments = [];  // Clear comments when modal is closed
-      this.fetchAnnouncements();
+      this.UpdateAnnouncements();
     },
     async fetchComments(announcementId) {
       try {

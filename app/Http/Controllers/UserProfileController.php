@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Event;
+use App\Models\Bookmark;
 use App\Models\Announcement;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -204,7 +205,10 @@ class UserProfileController extends Controller
             $isDoneSendingAdoptionForm = DoneAdoptionForm::where('done_post_id', $post->post_id)
                                 ->where('done_user_id', $userId)
                                 ->exists();
-    
+            
+            $isBookmarked = Bookmark::where('post_id', $post->post_id)
+                                ->where('user_id', $userId)
+                                ->exists();
             return [
                 'post_id' => $post->post_id,
                 'user_id' => $post->user_id,
@@ -219,7 +223,8 @@ class UserProfileController extends Controller
                 'is_liked' => $isLiked, // Add the `is_liked` state for the current user
                 'comments_count' => $post->comments_count, // Include the count of comments from the `withCount` query
                 'is_adoptable' => $post->is_adoptable, // Include the adoptable status
-                'done_sending_adoption_form' => $isDoneSendingAdoptionForm // Add adoption form status
+                'done_sending_adoption_form' => $isDoneSendingAdoptionForm, // Add adoption form status
+                'is_bookmarked' => $isBookmarked
             ];
         });
     
@@ -262,6 +267,10 @@ class UserProfileController extends Controller
             $isDoneSendingAdoptionForm = DoneAdoptionForm::where('done_post_id', $announcement->announcement_id)
                                 ->where('done_user_id', $userId)
                                 ->exists();
+
+            $isBookmarked = Bookmark::where('announcement_id', $announcement->announcement_id)
+                                ->where('user_id', $userId)
+                                ->exists();
     
             return [
                 'announcement_id' => $announcement->announcement_id,
@@ -278,7 +287,8 @@ class UserProfileController extends Controller
                 'is_liked' => $isLiked, // Add the `is_liked` state for the current user
                 'comments_count' => $announcement->comments_count, // Include the count of comments from the `withCount` query
                 'is_adoptable' => $announcement->is_adoptable, // Include the adoptable status
-                'done_sending_adoption_form' => $isDoneSendingAdoptionForm // Add adoption form status
+                'done_sending_adoption_form' => $isDoneSendingAdoptionForm, // Add adoption form status
+                'is_bookmarked' => $isBookmarked
             ];
         });
     
@@ -316,6 +326,10 @@ class UserProfileController extends Controller
             $isLiked = Like::where('event_id', $event->event_id)
                             ->where('user_id', $userId)
                             ->exists();
+
+            $isBookmarked = Bookmark::where('event_id', $event->event_id)
+                            ->where('user_id', $userId)
+                            ->exists();
     
             return [
                 'event_id' => $event->event_id,
@@ -333,6 +347,7 @@ class UserProfileController extends Controller
                 'likes_count' => $likesCount,
                 'is_liked' => $isLiked, // Add the `is_liked` state for the current user
                 'comments_count' => $event->comments_count, // Include the count of comments from the `withCount` query
+                'is_bookmarked' => $isBookmarked
             ];
         });
     

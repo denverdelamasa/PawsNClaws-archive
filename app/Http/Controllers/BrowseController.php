@@ -6,6 +6,7 @@ use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Event;
+use App\Models\Bookmark;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\DoneAdoptionForm;
@@ -319,6 +320,10 @@ class BrowseController extends Controller
                 $isDoneSendingAdoptionForm = $authUserId ? DoneAdoptionForm::where('done_post_id', $post->post_id)
                                         ->where('done_user_id', $authUserId)
                                         ->exists() : false;
+
+                $isBookmarked = $authUserId ? Bookmark::where('post_id', $post->post_id)
+                                        ->where('user_id', $authUserId)
+                                        ->exists() : false;
     
                 return [
                     'post_id' => $post->post_id,
@@ -335,7 +340,8 @@ class BrowseController extends Controller
                     'is_liked' => $isLiked,
                     'comments_count' => $post->comments_count,
                     'is_adoptable' => $post->is_adoptable,
-                    'done_sending_adoption_form' => $isDoneSendingAdoptionForm
+                    'done_sending_adoption_form' => $isDoneSendingAdoptionForm,
+                    'is_bookmarked' => $isBookmarked
                 ];
             });
     
@@ -393,6 +399,10 @@ class BrowseController extends Controller
                 $isLiked = $authUserId ? Like::where('announcement_id', $announcement->announcement_id)
                                         ->where('user_id', $authUserId)
                                         ->exists() : false;
+
+                $isBookmarked = $authUserId ? Bookmark::where('announcement_id', $announcement->announcement_id)
+                                        ->where('user_id', $authUserId)
+                                        ->exists() : false;
     
                 return [
                     'announcement_id' => $announcement->announcement_id,
@@ -409,6 +419,7 @@ class BrowseController extends Controller
                     'likes_count' => $likesCount,
                     'is_liked' => $isLiked,
                     'comments_count' => $announcement->comments_count,
+                    'is_bookmarked' => $isBookmarked
                 ];
             });
     
@@ -467,6 +478,10 @@ class BrowseController extends Controller
                     ->where('user_id', $authUserId)
                     ->exists() : false;
 
+                $isBookmarked = $authUserId ? Bookmark::where('event_id', $event->event_id)
+                    ->where('user_id', $authUserId)
+                    ->exists() : false;
+
                 return [
                     'event_id' => $event->event_id,
                     'shelter_id' => $event->shelter_id,
@@ -484,6 +499,7 @@ class BrowseController extends Controller
                     'likes_count' => $likesCount,
                     'is_liked' => $isLiked,
                     'comments_count' => $event->comments_count,
+                    'is_bookmarked' => $isBookmarked
                 ];
             });
 
