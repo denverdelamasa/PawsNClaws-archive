@@ -150,12 +150,12 @@
     <div class="card-body">
       <div class="flex items-center space-x-3">
         <div class="avatar">
-          <div class="w-12 h-12 rounded-full">
-            <img :src="`/storage/${post.profile_picture}`" alt="User Avatar" />
+          <div @click="viewProfile(post.user_id)" class="cursor-pointer w-12 h-12 rounded-full">
+            <img :src="`/storage/${post.profile_picture}`" alt="User Avatar"/>
           </div>
         </div>
         <div>
-          <p class="text-sm font-medium">{{ post.name }}</p>
+          <p class="cursor-pointer text-sm font-medium" @click="viewProfile(post.user_id)">{{ post.name }}</p>
           <div class="text-xs">
             <span class="font-small">{{ post.username }}</span>
             <br>
@@ -314,6 +314,10 @@ export default {
     };
   },
   methods: {
+    viewProfile(userId) {
+      console.log('Navigating to profile with userId:', userId);
+      window.location.href = `/browse/view?user_id=${userId}`;
+    },
     openAdoptionModal(postId, userId) {
       if (!this.isAuthenticated) {
         this.triggerLoginModal();

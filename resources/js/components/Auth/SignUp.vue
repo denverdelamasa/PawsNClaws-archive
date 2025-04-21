@@ -311,22 +311,22 @@
                       <p>Paws'N Claws respects intellectual property rights. By posting content, you confirm that you own or have the necessary rights to use and share it. You agree to indemnify Paws'N Claws from any claims, damages, or liabilities arising from copyright infringement related to your content.</p>
                       <p>If you believe your copyright has been infringed, please contact us at <a href="mailto:ad.official.pawsnclaws@gmail.com" class="text-primary">ad.official.pawsnclaws@gmail.com</a>, and we will take appropriate action, including removal or restriction of access to the infringing content.</p>
                     </section>
-                  </div>
-                  <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                      <input
-                        id="terms"
-                        type="checkbox"
-                        v-model="form.terms"
-                        class="checkbox checkbox-base-100"
-                        required
-                      />
-                    </div>
-                    <div class="ml-3 text-sm">
-                      <label for="terms" class="font-light text-secondary">
-                        I accept the
-                        <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/pages/terms-and-conditions">Terms and Conditions</a>
-                      </label>
+                    <div class="flex items-start">
+                      <div class="flex items-center h-5">
+                        <input
+                          id="terms"
+                          type="checkbox"
+                          v-model="form.terms"
+                          class="checkbox checkbox-base-100"
+                          required
+                        />
+                      </div>
+                      <div class="ml-3 text-sm">
+                        <label for="terms" class="font-light text-secondary">
+                          I accept the
+                          <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/pages/terms-and-conditions">Terms and Conditions</a>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
