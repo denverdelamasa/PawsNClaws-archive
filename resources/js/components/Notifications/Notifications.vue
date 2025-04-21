@@ -37,7 +37,7 @@
         <a 
           href="#" 
           :class="{'font-bold': !notification.read_at}" 
-          @click.prevent="markAsRead(notification)"
+          @click.prevent="handleNotificationClick(notification)"
         >
           <div class="flex items-center">
             <img 
@@ -46,7 +46,7 @@
             />
             <div>
               <strong v-if="notification.liker_name">
-                <span className="font-bold">{{notification.liker_name}}</span> <span className="font-normal">{{notification.type}}</span>
+                <span class="font-bold">{{ notification.liker_name }}</span> <span class="font-normal">{{ notification.type }}</span>
               </strong>
               <strong v-else-if="notification.commenter_name">
                 <span class="font-bold">{{ notification.commenter_name }}</span> <span class="font-normal">{{ notification.type }}</span>
@@ -80,9 +80,9 @@ export default {
   data() {
     return {
       notifications: [],
-      nextPageUrl: "/api/notifications", // API endpoint for notifications
-      loading: false, // Track loading state
-      isInfiniteScroll: false, // Track if infinite scrolling is enabled
+      nextPageUrl: "/api/notifications",
+      loading: false,
+      isInfiniteScroll: false,
       showDropdown: false,
     };
   },
@@ -104,9 +104,8 @@ export default {
         const response = await axios.get(this.nextPageUrl);
         const { notifications, pagination } = response.data;
 
-        // Append new notifications to the existing list
         this.notifications = [...this.notifications, ...notifications];
-        this.nextPageUrl = pagination.next_page_url; // Update next page URL
+        this.nextPageUrl = pagination.next_page_url;
       } catch (error) {
         console.error('Error fetching notifications:', error);
       } finally {
@@ -117,24 +116,31 @@ export default {
       if (!notification.read_at) {
         try {
           await axios.post(`/api/notifications/mark-as-read/${notification.notification_id}`);
-          notification.read_at = new Date().toISOString(); // Update read status locally
+          notification.read_at = new Date().toISOString();
         } catch (error) {
           console.error('Error marking notification as read:', error);
         }
       }
     },
+    async handleNotificationClick(notification) {
+      await this.markAsRead(notification); // Mark notification as read
+      if (notification.redirect_url) {
+        this.$router.push(notification.redirect_url); // Navigate to the redirect URL
+        this.showDropdown = false; // Close the dropdown
+      }
+    },
     handleScroll(event) {
-      if (!this.isInfiniteScroll) return; // Only trigger if infinite scrolling is enabled
+      if (!this.isInfiniteScroll) return;
 
       const { scrollTop, scrollHeight, clientHeight } = event.target;
 
       if (scrollTop + clientHeight >= scrollHeight - 10) {
-        this.fetchNotifications(); // Load more when scrolled to bottom
+        this.fetchNotifications();
       }
     },
     enableInfiniteScroll() {
-      this.isInfiniteScroll = true; // Enable infinite scrolling
-      this.fetchNotifications(); // Fetch the next set of notifications
+      this.isInfiniteScroll = true;
+      this.fetchNotifications();
     }
   }
 };
@@ -146,11 +152,10 @@ export default {
 }
 
 .dropdown-content {
-  max-height: 320px; /* Set max height for scrolling */
-  overflow-y: auto; /* Enable scrolling */
+  max-height: 320px;
+  overflow-y: auto;
 }
 
-/* List-style hover effect */
 .hover\:bg-gray-100:hover {
   background-color: #f3f4f6;
 }

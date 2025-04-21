@@ -13,6 +13,7 @@ const userIdFromUrl = urlParams.get('user_id') || null;
 
 // Import Vue and the component
 import { createApp } from 'vue';
+import router from './router';
 import Notification from './components/Notifications/Notifications.vue';
 import UploadPost from './components/partials/misc/UploadPost.vue';
 import PostCard from './components/partials/posts/PostCard.vue';
@@ -28,10 +29,13 @@ import AnnouncementWelcome from './components/partials/posts/AnnouncementWelcome
 import Event from './components/partials/posts/Event.vue';
 import BrowseAccounts from './components/partials/browse/BrowseAccounts.vue';
 import ViewAccount from './components/partials/misc/ViewAccount.vue';
+import PostDetail from './components/partials/posts/PostDetail.vue';
+import CombinedFeed from './components/partials/posts/CombinedFeed.vue';
 
 // Create the Vue app
 const app1 = createApp({});
 app1.component('notifications', Notification);
+app1.use(router);
 app1.mount('#app');
 
 // Create the event bus and attach it globally to the window
@@ -59,6 +63,8 @@ app2.component('announcement-cards', Announcement);
 app2.component('event-cards', Event);
 app2.component('browse-accounts', BrowseAccounts);
 app2.component('view-account', ViewAccount);
+app2.component('post-detail', PostDetail);
+app2.component('combined-feed', CombinedFeed);
 
 app2.mount("#app2");
 

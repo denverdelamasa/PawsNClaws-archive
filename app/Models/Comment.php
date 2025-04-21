@@ -47,8 +47,4 @@ class Comment extends Model
     {
         return $this->belongsTo(Announcement::class, 'announcement_comment_id');
     }
-    public function replies()
-    {
-        return $this->hasMany(CommentReply::class);
-    }
 }

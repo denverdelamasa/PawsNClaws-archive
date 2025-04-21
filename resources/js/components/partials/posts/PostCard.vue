@@ -225,10 +225,14 @@
     <Comments :isCommentsModalOpen="isCommentsModalOpen" @close="closeCommentsModal" :postId="selectedCommentPostId"/>
 
       <!-- Bookmark Button -->
-      <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
-        <svg id="bookmarkIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
-          <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-          <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"/>
+      <button @click="isBookmarked(post.post_id)" id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
+        <svg v-if="post.is_bookmarked" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmarks-fill" viewBox="0 0 16 16">
+          <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5z"/>
+          <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1z"/>
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmarks" viewBox="0 0 16 16">
+          <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
+          <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
         </svg>
         <span id="bookmarkText">Add to bookmarks</span>
       </button>
@@ -660,6 +664,27 @@ export default {
           loginFirst.showLoginModal();
         }
       });
+    },
+    async isBookmarked(postId) {
+      if (!this.isAuthenticated) {
+        this.triggerLoginModal();
+        return;
+      }
+      
+      try {
+        await axios.post(`/api/bookmark/${postId}/post`);
+        
+        // Find the post and update its like state
+        const post = this.posts.find(post => post.post_id === postId);
+        if (post) {
+          post.is_bookmarked = !post.is_bookmarked; // Toggle like state
+        }
+
+        // Fetch the updated likes count
+        await this.UpdatePosts();
+      } catch (error) {
+        console.error("Error liking/unliking post:", error);
+      }
     },
     async likePost(postId) {
       if (!this.isAuthenticated) {

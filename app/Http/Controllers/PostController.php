@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bookmark;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\User;
@@ -37,6 +38,10 @@ class PostController extends Controller
             $isLikedPost = Like::where('post_id', $post->post_id)
                             ->where('user_id', $userId)
                             ->exists();
+
+            $isBookmarked = Bookmark::where('post_id', $post->post_id)
+                            ->where('user_id', $userId)
+                            ->exists();
     
             $isLikedAnnouncement = Like::where('announcement_id', $post->post_id)
                             ->where('user_id', $userId)
@@ -60,7 +65,8 @@ class PostController extends Controller
                 'is_liked' => $isLikedPost || $isLikedAnnouncement, // If the user liked either, set to true
                 'comments_count' => $post->comments_count,
                 'is_adoptable' => $post->is_adoptable,
-                'done_sending_adoption_form' => $isDoneSendingAdoptionForm
+                'done_sending_adoption_form' => $isDoneSendingAdoptionForm,
+                'is_bookmarked' => $isBookmarked
             ];
         });
     

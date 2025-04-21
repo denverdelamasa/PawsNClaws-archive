@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Like;
 use App\Models\Notification;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -18,16 +17,26 @@ class NotificationsController extends Controller
         // Fetch notifications for the user, ordered by latest, and paginate the results
         $notifications = Notification::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
-            ->paginate(3); // Paginate with 10 notifications per page
+            ->paginate(3);
     
         // Map through notifications and format the response
         $formattedNotifications = $notifications->map(function ($notification) {
             $notificationData = [
-                'notification_id' => $notification->notification_id, // Use notification_id instead of id
+                'notification_id' => $notification->notification_id,
                 'user_id' => $notification->user_id,
                 'type' => $notification->type,
                 'time_ago' => Carbon::parse($notification->created_at)->diffForHumans(),
+                'read_at' => $notification->read_at,
             ];
+    
+            // Determine the redirect URL based on the notification type
+            if ($notification->post_id) {
+                $notificationData['redirect_url'] = "/posts/{$notification->post_id}"; // Changed to /posts/{id}
+            } elseif ($notification->announcement_id) {
+                $notificationData['redirect_url'] = "/announcements/{$notification->announcement_id}";
+            } elseif ($notification->event_id) {
+                $notificationData['redirect_url'] = "/events/{$notification->event_id}";
+            }
     
             // If the notification has a liker, get their info
             if ($notification->liker) {
@@ -41,7 +50,7 @@ class NotificationsController extends Controller
             }
             // If there's a receiver (notif_from_receiver), fetch their info
             elseif ($notification->notif_from_receiver) {
-                $receiver = $notification->receiver; // Use the `receiver` relationship
+                $receiver = $notification->receiver;
                 $notificationData['receiver_name'] = $receiver ? $receiver->name : null;
                 $notificationData['receiver_profile_picture'] = $receiver ? $receiver->profile_picture : null;
             }
@@ -75,7 +84,7 @@ class NotificationsController extends Controller
     
         return response()->json([
             'message' => 'Notification marked as read',
-            'notification' => $notification, // Return the updated notification
+            'notification' => $notification,
         ]);
     }
 }

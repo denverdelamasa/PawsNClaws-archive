@@ -150,12 +150,12 @@
                         </div>
                         <!-- Modal muna to -->
                         <div>
-                            <h1 
+                            <button 
                                 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
                                 onclick="adoptionModal.showModal()"
                             >
                                 Adoption Lists
-                            </h1>
+                            </button>
                         </div>
                     </div>
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">

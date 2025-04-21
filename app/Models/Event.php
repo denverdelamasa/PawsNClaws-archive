@@ -33,4 +33,8 @@ class Event extends Model
     {
         return $this->hasMany(Comment::class, 'event_comment_id', 'event_id');
     }
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class, 'event_id', 'event_id');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Like;
 use App\Models\Event;
+use App\Models\Bookmark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,6 +30,10 @@ class EventController extends Controller
             $isLiked = Like::where('event_id', $events->event_id)
                             ->where('user_id', $userId)
                             ->exists();
+            
+            $isBookmarked = Bookmark::where('event_id', $events->event_id)
+                            ->where('user_id', $userId)
+                            ->exists();
     
             // Return the formatted announcement data
             return [
@@ -48,6 +53,7 @@ class EventController extends Controller
                 'is_liked' => $isLiked, // Include the `is_liked` state for the current user
                 'comments_count' => $events->comments_count, // Include the count of comments from the `withCount` query
                 'is_adoptable' => $events->is_adoptable, // Include the adoptable status
+                'is_bookmarked' => $isBookmarked
             ];
         });
         

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BrowseController;
 use App\Models\User;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
@@ -9,15 +8,18 @@ use App\Http\Controllers\OtpController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\DashboardControllers;
 use App\Http\Middleware\TrackUserOnlineStatus;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdoptionFormController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\CombinedFeedController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ServerProfileController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
@@ -74,8 +76,8 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
 
 Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/user/settings', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
-    Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
-    Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
+    Route::patch('/client/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
+    Route::delete('/client/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
 
     //Post Modifiers
     Route::post('/api/posts/upload', [PostController::class, 'createPost']);
@@ -83,6 +85,7 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/api/like-count/{post_id}/{type}', [PostController::class, 'getLikesCount']);
     Route::put('/api/post/edit/{post_id}', [PostController::class, 'updatePost']);
     Route::delete('/api/posts/delete/{post_id}', [PostController::class, 'deletePost']);
+    Route::post('/api/bookmark/{type}/{id}', [BookmarkController::class, 'toggleBookmark']);
 
     //Announcement Modifiers
     Route::post('/api/announcement/upload', [AnnouncementController::class, 'createAnnouncement']);
@@ -113,6 +116,7 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
     Route::get('/api/user/event/list',[UserProfileController::class, 'userEventList']);
     Route::put('/api/user/update/profile', [UserProfileController::class, 'updateUser']);
 });
+Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 Route::get('/api/announcements/list', [AnnouncementController::class, 'announcementList']);
 Route::get('/api/events/list', [EventController::class, 'eventList']);  
@@ -140,7 +144,7 @@ Route::get('/browse', [PageController::class, 'browse'])->name('browse');
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/settings', [PageController::class, 'editprofile']);
 
-Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::get('/profile', [PageController::class, 'profile'])->name('profile'); 
 Route::get('/pages/editprofile', [PageController::class, 'editprofile'])->name('editprofile');
 Route::get('/pages/bookmarks', [PageController::class, 'bookmarks'])->name('bookmarks'); 
 

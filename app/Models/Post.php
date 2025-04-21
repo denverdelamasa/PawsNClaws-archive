@@ -41,4 +41,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class, 'post_comment_id', 'post_id');
     }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class, 'post_id', 'post_id');
+    }
 }

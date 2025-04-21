@@ -30,4 +30,9 @@ class Announcement extends Model
     {
         return $this->hasMany(Comment::class, 'announcement_comment_id', 'announcement_id');
     }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class, 'announcement_id', 'announcement_id');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\Bookmark;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,10 @@ class AnnouncementController extends Controller
             $isLiked = Like::where('announcement_id', $announcement->announcement_id)
                             ->where('user_id', $userId)
                             ->exists();
+
+            $isBookmarked = Bookmark::where('announcement_id', $announcement->announcement_id)
+                            ->where('user_id', $userId)
+                            ->exists();
     
             // Return the formatted announcement data
             return [
@@ -46,6 +51,7 @@ class AnnouncementController extends Controller
                 'is_liked' => $isLiked, // Include the `is_liked` state for the current user
                 'comments_count' => $announcement->comments_count, // Include the count of comments from the `withCount` query
                 'is_adoptable' => $announcement->is_adoptable, // Include the adoptable status
+                'is_bookmarked' => $isBookmarked
             ];
         });
     

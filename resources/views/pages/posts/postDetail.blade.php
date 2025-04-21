@@ -1,5 +1,5 @@
 @include('partials.main.head')
 
-    @include('partials.misc.loader')
+    <post-detail></post-detail>
 
 @include('partials.main.footer')
