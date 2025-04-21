@@ -25,6 +25,7 @@ class UserProfileController extends Controller
         return response()->json([
             'name' => $user->name,
             'username' => $user->username,
+            'email' => $user->email,
             'profile_picture' => $user->profile_picture,
             'role' => $user->role,
             'bio' => $user->bio,  // Make sure this field exists in the database or is properly fetched

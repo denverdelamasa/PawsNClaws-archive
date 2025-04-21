@@ -288,4 +288,82 @@ class BrowseController extends Controller
             ], 500);
         }
     }
+    
+    public function viewUserPosts($id)
+    {
+        try {
+            // Verify the user exists
+            $user = User::findOrFail($id);
+            
+            // Get the authenticated user's ID (if logged in)
+            $authUserId = Auth::id();
+            
+            // Fetch posts created by the specified user, paginated by 3 posts per page
+            $posts = Post::with('user') // Eager load the user relationship
+                ->withCount('comments') // Count the number of comments
+                ->where('user_id', $id) // Filter posts by the specified user
+                ->orderBy('created_at', 'desc') // Order posts by latest
+                ->paginate(3); // Paginate the results, 3 posts per page
+    
+            // Format the response for each post
+            $formattedPosts = $posts->map(function ($post) use ($authUserId) {
+                // Count the number of likes for each post
+                $likesCount = Like::where('post_id', $post->post_id)->count();
+    
+                // Check if the authenticated user has liked the post (if logged in)
+                $isLiked = $authUserId ? Like::where('post_id', $post->post_id)
+                                        ->where('user_id', $authUserId)
+                                        ->exists() : false;
+    
+                // Check if the authenticated user has completed the adoption form (if logged in)
+                $isDoneSendingAdoptionForm = $authUserId ? DoneAdoptionForm::where('done_post_id', $post->post_id)
+                                        ->where('done_user_id', $authUserId)
+                                        ->exists() : false;
+    
+                return [
+                    'post_id' => $post->post_id,
+                    'user_id' => $post->user_id,
+                    'name' => $post->user ? $post->user->name : 'Unknown User',
+                    'username' => $post->user ? $post->user->username : 'Unknown User',
+                    'profile_picture' => $post->user && $post->user->profile_picture ? $post->user->profile_picture : 'default-profile.jpg',
+                    'image_path' => $post->image_path ? json_decode($post->image_path, true) : [],
+                    'caption' => $post->caption,
+                    'created_at' => $post->created_at->diffForHumans(),
+                    'updated_at' => $post->updated_at->diffForHumans(),
+                    'likes_count' => $likesCount,
+                    'is_liked' => $isLiked,
+                    'comments_count' => $post->comments_count,
+                    'is_adoptable' => $post->is_adoptable,
+                    'done_sending_adoption_form' => $isDoneSendingAdoptionForm
+                ];
+            });
+    
+            // Return the formatted response as JSON with pagination metadata
+            return response()->json([
+                'success' => true,
+                'posts' => $formattedPosts,
+                'pagination' => [
+                    'current_page' => $posts->currentPage(),
+                    'per_page' => $posts->perPage(),
+                    'total' => $posts->total(),
+                    'last_page' => $posts->lastPage(),
+                    'next_page_url' => $posts->nextPageUrl(),
+                    'prev_page_url' => $posts->previousPageUrl(),
+                ]
+            ], 200);
+    
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+    
+        } catch (\Exception $e) {
+            Log::error('Error fetching user posts: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
 }

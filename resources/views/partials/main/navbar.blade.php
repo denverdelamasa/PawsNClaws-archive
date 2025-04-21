@@ -157,7 +157,14 @@
                 <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
               @endif
             @endauth
-            <li><a href="/settings">Settings</a></li>
+            @auth
+              @if(Auth::user()->role === 'User' && 'Shelter' && 'Vet')
+                <li><a href="/user/settings">Settings</a></li>
+              @endif
+              @if(Auth::user()->role === 'Admin')
+                <li><a href="/server/settings">Settings</a></li>
+              @endif
+            @endauth
             <li>
               <!-- Authentication -->
               <form method="POST" action="{{ route('logout') }}" style="margin: 0;">

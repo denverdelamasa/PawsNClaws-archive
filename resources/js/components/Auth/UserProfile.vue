@@ -7,7 +7,7 @@
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
                         <div class="flex flex-col items-center relative group">
                             <!-- Profile Picture -->
-                            <img :src="`/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
+                            <img :src="imagePreview || `/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
 
                             <!-- Camera Icon inside the Profile Picture, only shown when hovering over the image -->
                             <i class="fas fa-camera w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
@@ -172,6 +172,19 @@
                             <ProfileEvents/>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Cropper Modal -->
+        <div v-if="isModalOpen" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-base-100 rounded-lg p-6 shadow-lg w-full max-w-md">
+                <h3 class="text-lg font-bold mb-4">Crop Profile Picture</h3>
+                <div class="mb-4">
+                    <img ref="imageCropper" :src="imagePreview" class="max-w-full" alt="Crop Preview" />
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button @click="cancelCrop" class="btn btn-ghost">Cancel</button>
+                    <button @click="cropImage" class="btn btn-primary">Crop & Save</button>
                 </div>
             </div>
         </div>
@@ -493,6 +506,7 @@ export default {
       isModalOpen: false,
       imagePreview: null,
       selectedImage: null,
+      cropper: null,
       userAdoptionForms: [],
       showFormModal: false,
       selectedApplication: null,
@@ -517,6 +531,22 @@ export default {
     };
   },
   methods: {
+    openModal() {
+      this.isModalOpen = true;
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (event) => this.handleFileChange(event);
+      input.click();
+    },
+    closeModal() {
+      this.isModalOpen = false;
+      this.imagePreview = null;
+      if (this.cropper) {
+        this.cropper.destroy();
+        this.cropper = null;
+      }
+    },
     // Open the bio modal and populate the textarea with the current bio
     openBioModal() {
         this.bio = this.user.bio; // Set the input to the current bio
@@ -658,14 +688,100 @@ export default {
     },
     
     handleFileChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                this.imagePreview = reader.result;
-            };
-            reader.readAsDataURL(file);
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.imagePreview = e.target.result;
+          this.selectedImage = file;
+          this.$nextTick(() => {
+            const image = this.$refs.imageCropper;
+            if (image) {
+              this.cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 1,
+                cropBoxResizable: true,
+                cropBoxMovable: true,
+                background: false,
+                crop(event) {
+                  // Optional: Handle crop event if needed
+                },
+              });
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    cancelCrop() {
+      this.closeModal();
+    },
+    async cropImage() {
+      if (!this.cropper) return;
+
+      const canvas = this.cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+      });
+
+      // Create a circular canvas
+      const circleCanvas = document.createElement('canvas');
+      const size = 300;
+      circleCanvas.width = size;
+      circleCanvas.height = size;
+      const ctx = circleCanvas.getContext('2d');
+
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(canvas, 0, 0, size, size);
+
+      circleCanvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append('_method', 'PUT');
+        formData.append('name', this.user.name);
+        formData.append('bio', this.user.bio);
+        formData.append('profile_picture', blob, 'profile_picture.png');
+
+        try {
+          const response = await axios.post('/api/user/update/profile', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+          });
+
+          this.user = { ...this.user, ...response.data };
+          this.imagePreview = `/storage/${response.data.profile_picture}`;
+          Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Profile picture updated successfully!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+          });
+          this.closeModal();
+        } catch (error) {
+          console.error('Error updating profile picture:', error);
+          Swal.fire({
+            position: "bottom-end",
+            icon: "error",
+            title: "Failed to update profile picture.",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+          });
         }
+      }, 'image/png');
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
@@ -760,6 +876,11 @@ export default {
 </script>
 
 <style scoped>
+/* Ensure circular cropper */
+.cropper-crop-box,
+.cropper-view-box {
+  border-radius: 50% !important;
+}
     /* From Uiverse.io by cssbuttons-io */ 
     .GetVerifiedButton {
         position: relative;

@@ -57,7 +57,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
     })->where('any', '.*')->name('admin.any');
     
     Route::get('/server/dashboard',[ServerController::class, 'dashboard'])->name('server.dashboard');
-    Route::get('/server/profile', [ServerProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/server/settings', [ServerProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/server/profile', [ServerProfileController::class, 'update'])->name('profile.update');
     Route::delete('/server/profile', [ServerProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/api/dashboard/count', [DashboardControllers::class, 'getCounts']);
@@ -73,7 +73,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
 });
 
 Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
-    Route::get('/profile', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
+    Route::get('/user/settings', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
 
@@ -126,6 +126,7 @@ Route::get('/api/browse/posts', [BrowseController::class, 'browsePosts']);
 Route::get('/api/browse/announcements', [BrowseController::class, 'browseAnnouncements']);
 Route::get('/api/browse/events', [BrowseController::class, 'browseEvents']);
 Route::get('/api/accounts/view/{id}', [BrowseController::class, 'viewAccount']);
+Route::get('/api/accounts/view/post/{id}', [BrowseController::class, 'viewUserPosts']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');

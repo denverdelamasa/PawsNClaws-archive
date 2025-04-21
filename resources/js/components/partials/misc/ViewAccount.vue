@@ -97,7 +97,7 @@
                 <div class="bg-base-100 shadow-lg rounded-lg p-6">
                     <div v-if="activeTab === 'posts'">
                         <!-- Posts content -->
-                        <p>User posts will be displayed here</p>
+                        <OtherProfilePostCard :userId="userId"/>
                     </div>
                     <div v-else-if="activeTab === 'announcements'">
                         <!-- Announcements content -->
@@ -116,9 +116,13 @@
 
 <script>
 import axios from 'axios';
+import OtherProfilePostCard from '../profile/OtherProfilePostCard.vue';
 
 export default {
     name: 'ViewAccount',
+    components: {
+        OtherProfilePostCard
+    },
     props: {
         userId: {
             type: [String, Number],
