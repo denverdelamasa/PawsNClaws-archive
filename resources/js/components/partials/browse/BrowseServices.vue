@@ -1,5 +1,5 @@
 <template>
-<div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6">
+<div class="h-full w-full bg-base-100 overflow-auto gap-4">
   <!-- Services Section -->
   <div class="flex flex-col m-2 p-2">
     <!-- Header -->

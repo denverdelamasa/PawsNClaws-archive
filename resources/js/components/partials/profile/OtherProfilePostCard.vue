@@ -260,27 +260,18 @@ export default {
     };
   },
   methods: {
-    UpdatePosts() {
-      this.loading = true; // Show loader when starting request
-
-      axios.get('/api/user/posts/list')
-        .then(response => {
-          const newPosts = response.data.posts || [];
-
-          // Replace the posts list with the new posts
-          this.posts = newPosts;
-
-          // Optionally reset pagination info if you're still tracking it
-          this.totalPages = 1;
-          this.currentPage = 1;
-          this.hasMore = false;
-        })
-        .catch(error => {
-          console.error('Error fetching browse posts:', error);
-        })
-        .finally(() => {
-          this.loading = false; // Hide loader when done
-        });
+    async UpdatePosts() {
+      this.loading = true;
+      try {
+        const response = await axios.get(`/api/accounts/view/post/${this.userId}`);
+        this.posts = response.data.posts || [];
+        this.hasMorePosts = !!response.data.pagination.next_page_url;
+        this.currentPage = 2; // Reset to next page for subsequent fetches
+      } catch (error) {
+        console.error('Error fetching user posts:', error);
+      } finally {
+        this.loading = false;
+      }
     },
     openCommentsModal(postId) {
       this.isCommentsModalOpen = true;

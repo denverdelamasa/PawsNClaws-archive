@@ -1,4 +1,4 @@
-<div class="navbar bg-base-300 sticky top-0 z-20">
+<div class="navbar bg-base-300 lg:sticky relative top-0 z-20">
     <div class="navbar-start">
       <div class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">

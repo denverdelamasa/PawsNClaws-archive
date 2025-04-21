@@ -125,8 +125,11 @@ Route::get('/api/browse/shelters', [BrowseController::class, 'browseServices']);
 Route::get('/api/browse/posts', [BrowseController::class, 'browsePosts']);
 Route::get('/api/browse/announcements', [BrowseController::class, 'browseAnnouncements']);
 Route::get('/api/browse/events', [BrowseController::class, 'browseEvents']);
+Route::get('/browse/view', [PageController::class, 'others_profile']);
 Route::get('/api/accounts/view/{id}', [BrowseController::class, 'viewAccount']);
 Route::get('/api/accounts/view/post/{id}', [BrowseController::class, 'viewUserPosts']);
+Route::get('/api/accounts/view/announcement/{id}', [BrowseController::class, 'viewUserAnnouncements']);
+Route::get('/api/accounts/view/event/{id}', [BrowseController::class, 'viewUserEvents']);
 
 // page controller paayos nalang jahefglkag
 Route::get('/home', [PageController::class, 'home'])->name('home');
@@ -137,8 +140,9 @@ Route::get('/browse', [PageController::class, 'browse'])->name('browse');
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/settings', [PageController::class, 'editprofile']);
 
-Route::get('/profile', [PageController::class, 'profile'])->name('profile'); 
-Route::get('/browse/view', [PageController::class, 'others_profile']);
+Route::get('/pages/profile', [PageController::class, 'profile'])->name('profile'); 
+Route::get('/pages/editprofile', [PageController::class, 'editprofile'])->name('editprofile');
+Route::get('/pages/bookmarks', [PageController::class, 'bookmarks'])->name('bookmarks'); 
 
 Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name('suspend.user');
 

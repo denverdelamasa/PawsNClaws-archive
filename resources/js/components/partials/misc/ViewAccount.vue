@@ -80,13 +80,13 @@
                             @click="activeTab = 'posts'">
                         Posts
                     </button>
-                    <button v-if="user.role === 'Shelter' && 'Admin'" 
+                    <button v-if="user.role === 'Shelter' || user.role === 'Admin'" 
                             class="text-xl font-bold hover:scale-105 transition-all duration-100"
                             :class="{ 'text-primary': activeTab === 'announcements' }"
                             @click="activeTab = 'announcements'">
                         Announcements
                     </button>
-                    <button v-if="user.role === 'Shelter' && 'Admin'" class="text-xl font-bold hover:scale-105 transition-all duration-100"
+                    <button v-if="user.role === 'Shelter' || user.role === 'Admin'" class="text-xl font-bold hover:scale-105 transition-all duration-100"
                             :class="{ 'text-primary': activeTab === 'events' }"
                             @click="activeTab = 'events'">
                         Events
@@ -101,11 +101,11 @@
                     </div>
                     <div v-else-if="activeTab === 'announcements'">
                         <!-- Announcements content -->
-                        <p>Shelter announcements will be displayed here</p>
+                        <OtherProfileAnnouncementCard :userId="userId"/>
                     </div>
                     <div v-else-if="activeTab === 'events'">
                         <!-- Events content -->
-                        <p>Upcoming events will be displayed here</p>
+                        <OtherProfileEventCards :userId="userId"/>
                     </div>
                 </div>
             </div>
@@ -117,11 +117,15 @@
 <script>
 import axios from 'axios';
 import OtherProfilePostCard from '../profile/OtherProfilePostCard.vue';
+import OtherProfileAnnouncementCard from '../profile/OtherProfileAnnouncementCard.vue';
+import OtherProfileEventCards from '../profile/OtherProfileEventCards.vue';
 
 export default {
     name: 'ViewAccount',
     components: {
-        OtherProfilePostCard
+        OtherProfilePostCard,
+        OtherProfileAnnouncementCard,
+        OtherProfileEventCards
     },
     props: {
         userId: {

@@ -1,8 +1,8 @@
 <template>
-<div class="h-full w-full bg-base-100 overflow-auto gap-4 p-6">
+<div class="h-full w-full bg-base-100 overflow-auto gap-4">
     <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     <!-- Posts -->
-    <div class="flex flex-col m-2 p-2 border-b-2 border-base-300">
+    <div class="flex flex-col m-2 p-2">
         <div class="flex gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-12 h-12" viewBox="0 0 16 16">
                 <path d="M11 8h2V6h-2z"/>
