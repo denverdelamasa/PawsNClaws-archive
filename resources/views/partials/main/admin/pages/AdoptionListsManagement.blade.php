@@ -1,9 +1,9 @@
 <section class="body-font">
     <div class="container px-5 py-24 mx-auto flex flex-col justify-center items-center">
         <div class="flex flex-col text-center w-full mb-4">
-            <h1 class="sm:text-3xl text-2xl font-medium title-font text-primary">Adoption forms lists</h1>
-            <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-secondary">
-                Lahat ng adoption lists nandito
+            <h1 class="sm:text-3xl text-2xl font-medium title-font">Adoption forms lists</h1>
+            <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+                Review all submitted adoption requests from users and fosters in one place.
             </p>
         </div>
         <div class="flex flex-wrap gap-x-2 gap-y-2 align-middle items-center justify-center w-full m-4">

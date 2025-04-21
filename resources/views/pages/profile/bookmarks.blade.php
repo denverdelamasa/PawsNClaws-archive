@@ -11,12 +11,8 @@
                 <!-- Main Content -->
                 <div class="space-y-4">
                     <!-- POST BOOKMARKS 
-                    
-                    
-                    ngapala yung sa thumbnails nung posts, wag na icarousel
-                    bale yung first image nalang don sa post, yung first slide...
-                    
-                    
+                        ngapala yung sa thumbnails nung posts, wag na icarousel
+                        bale yung first image nalang don sa post, yung first slide...
                     --> 
                     <div x-show="selected === 'posts'" class="transition-all duration-300">
                         <h2 class="text-5xl font-bold mb-2 flex flex-row gap-x-1">

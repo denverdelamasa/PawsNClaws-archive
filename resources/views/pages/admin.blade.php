@@ -1,7 +1,7 @@
 @include('partials.main.admin.AdminNav')
     <div class="drawer lg:drawer-open z-1">
         <input id="AdminSideBar" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content flex flex-col items-center hide-scrollbar w-full">
+        <div class="drawer-content flex flex-col items-center overflow-scroll">
             @include('partials.main.admin.adminnavbar')
 
             @if(request()->is('admin/dashboard'))

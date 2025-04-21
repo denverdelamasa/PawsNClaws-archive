@@ -1,5 +1,5 @@
 <div class="container mx-auto p-4">
-    <div class="card bg-base-200 shadow-md p-24">
+    <div class="card bg-base-200 shadow-md lg:p-24 p-8">
       <h2 class="text-5xl font-bold mb-4">Privacy Policy</h2>
         <p class="text-lg mb-4">Effective Date: December 7, 2024</p>
         <p class="mb-4">Paws’N Claws PH Community Hub ("we," "our," or "us") values your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our services.</p>
