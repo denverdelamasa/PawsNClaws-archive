@@ -5,8 +5,15 @@
   <div v-for="post in posts" :key="post.post_id" class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
     <!-- Header with Title and Menu -->
     <div class="flex justify-end items-end p-4 gap-x-2">
+      <div class="badge badge-outline badge-primary gap-x-1">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-3 h-3" viewBox="0 0 16 16">
+            <path d="M8 4.5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0zm3.5.878c1.482-1.42 4.795 1.392 0 4.622-4.795-3.23-1.482-6.043 0-4.622M2.5 5a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z"/>
+            <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1z"/>
+          </svg>
+          Post
+      </div>
       <!-- Show "Open for Adoption" when is_adoptable is 1 -->
-      <div v-if="post.is_adoptable === 1" class="badge badge-warning badge-outline gap-2">
+      <div v-if="post.is_adoptable === 1" class="badge badge-indigo-800 badge-outline gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-heart" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M5 1.5A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm5 0a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5z"/>
           <path d="M3 1.5h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/>
@@ -63,7 +70,6 @@
         </ul>
       </div>
     </div>
-
     <!-- Thumbnail -->
     <div v-if="post.image_path && post.image_path.length > 0" 
         class="relative px-4 hover:cursor-pointer" 
@@ -257,239 +263,6 @@
         @confirmForm="submitAdoptionForm"
       />
     </div>
-    </div>
-
-    <!-- Wrapper nung comoloengkey -->
-    <div class="space-y-4 p-2 bg-base-200 w-auto max-w-full mx-4 border-t-2 border-info pt-6">
-      <!-- First coomet (may pianka maraming lieks ganon) -->
-      <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
-        <!-- Left side: Avatar + comment -->
-        <div class="flex flex-row gap-x-2">
-          <div class="avatar">
-            <div class="w-8 h-8 rounded-full">
-              <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                alt="Tailwind-CSS-Avatar-component" />
-            </div>
-          </div>
-          <div>
-            <p class="font-semibold text-sm">bolengkey 1</p>
-            <p class="text-xs text-base-content/80">OH MY GOODNESS!!!!</p>
-          </div>
-        </div>
-
-        <!-- Right side: Like button -->
-        <button 
-          class="btn btn-sm btn-primary text-base-300"
-          @click="post.is_liked = !post.is_liked"
-        >
-          <svg
-            v-if="post.is_liked"
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-          <svg
-            v-else
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-            />
-          </svg>
-          <span class="text-xs">1</span>
-        </button>
-      </div>
-
-
-      <!-- Hidden Comments (about 3??? omsim mga tatlo siguro...) -->
-      <div v-show="showMoreComments" class="space-y-4 transition-all duration-300">
-        <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
-          <!-- Left side: Avatar + comment -->
-          <div class="flex flex-row gap-x-2">
-            <div class="avatar">
-              <div class="w-8 h-8 rounded-full">
-                <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  alt="Tailwind-CSS-Avatar-component" />
-              </div>
-            </div>
-            <div>
-              <p class="font-semibold text-sm">shobolengkey</p>
-              <p class="text-xs text-base-content/80">Low taper fadeeee 😭!!!!! </p>
-            </div>
-          </div>
-
-          <!-- Right side: Like button -->
-          <button 
-            class="btn btn-sm btn-primary text-base-300"
-            @click="post.is_liked = !post.is_liked"
-          >
-            <svg
-              v-if="post.is_liked"
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            <svg
-              v-else
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-              />
-            </svg>
-            <span class="text-xs">1</span>
-          </button>
-        </div>
-        <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
-          <!-- Left side: Avatar + comment -->
-          <div class="flex flex-row gap-x-2">
-            <div class="avatar">
-              <div class="w-8 h-8 rounded-full">
-                <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  alt="Tailwind-CSS-Avatar-component" />
-              </div>
-            </div>
-            <div>
-              <p class="font-semibold text-sm">kolongkey</p>
-              <p class="text-xs text-base-content/80">I am tweaking 🙏</p>
-            </div>
-          </div>
-
-          <!-- Right side: Like button -->
-          <button 
-            class="btn btn-sm btn-primary text-base-300"
-            @click="post.is_liked = !post.is_liked"
-          >
-            <svg
-              v-if="post.is_liked"
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            <svg
-              v-else
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-              />
-            </svg>
-            <span class="text-xs">1</span>
-          </button>
-        </div>
-        <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
-          <!-- Left side: Avatar + comment -->
-          <div class="flex flex-row gap-x-2">
-            <div class="avatar">
-              <div class="w-8 h-8 rounded-full">
-                <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  alt="Tailwind-CSS-Avatar-component" />
-              </div>
-            </div>
-            <div>
-              <p class="font-semibold text-sm">tralaleo tralala</p>
-              <p class="text-xs text-base-content/80">ts is gas bruh 😭</p>
-            </div>
-          </div>
-
-          <!-- Right side: Like button -->
-          <button 
-            class="btn btn-sm btn-primary text-base-300"
-            @click="post.is_liked = !post.is_liked"
-          >
-            <svg
-              v-if="post.is_liked"
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            <svg
-              v-else
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-              />
-            </svg>
-            <span class="text-xs">1</span>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Load More/Show Less Button -->
-      <div class="text-center">
-        <button
-          class="btn btn-outline btn-sm"
-          @click="showMoreComments = !showMoreComments"
-        >
-          {{ showMoreComments ? 'Show less' : 'Load more' }}
-        </button>
-      </div>
     </div>
   </div>
 
