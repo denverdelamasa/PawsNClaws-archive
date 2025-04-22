@@ -124,6 +124,9 @@ Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
 
     //Messages
     Route::get('/api/user/ongoing', [MessagesController::class, 'listOngoingApplications']);
+    Route::get('/api/conversations', [MessagesController::class, 'getUserConversations']);
+    Route::post('/api/conversations/{applicationId}', [MessagesController::class, 'startConversation']);
+    Route::post('/api/conversations/{conversationId}/messages', [MessagesController::class, 'sendMessage']);
 });
 Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);
@@ -161,7 +164,7 @@ Route::post('/suspend-user', [UserController::class, 'extendSuspension'])->name(
 
 Route::get('/terms-of-service', [PageController::class, 'TermsOfService'])->name('terms-of-service');
 Route::get('/privacy-policy', [PageController::class, 'PrivacyPolicy'])->name('privacy-policy');
-Route::get('/messages', [PageController::class, 'messages'])->name('messages');
+Route::get('/messages/{id?}', [PageController::class, 'messages'])->name('messages');
 
 Route::post('/set-theme', function (Request $request) {
     $theme = $request->input('theme', 'light'); // Default to 'light' if no theme is provided

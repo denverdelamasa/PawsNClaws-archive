@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\Event;
 use App\Models\Bookmark;
 use App\Models\Announcement;
+use App\Models\Conversation;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\DoneAdoptionForm;
@@ -368,31 +369,51 @@ class UserProfileController extends Controller
     {
         // Find the adoption application by its ID
         $application = AdoptionApplication::findOrFail($id);
-    
+
+        // Verify the authenticated user is authorized (e.g., the receiver/post owner)
+        if ($application->receiver_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         // Update the status to "Ongoing"
         $application->status = 'Ongoing';
-    
-        // Save the application
         $application->save();
-    
+
+        // Check for an existing conversation
+        $existingConversation = Conversation::where(function ($query) use ($application) {
+            $query->where('sender_id', $application->sender_id)
+                  ->where('receiver_id', $application->receiver_id);
+        })->orWhere(function ($query) use ($application) {
+            $query->where('sender_id', $application->receiver_id)
+                  ->where('receiver_id', $application->sender_id);
+        })->where('application_id', $application->application_id)->first();
+
+        // Create a new conversation if none exists
+        if (!$existingConversation) {
+            $conversation = Conversation::create([
+                'sender_id' => $application->sender_id,
+                'receiver_id' => $application->receiver_id,
+                'application_id' => $application->application_id,
+            ]);
+        }
+
         // Create and send notification to the user who submitted the application
         $notification = new Notification([
-            'user_id' => $application->sender_id,  // The user who submitted the application
-            'type' => 'confirmed your adoption request form',  // Type of notification (e.g., 'info', 'warning')
-            'post_id' => null, // Optional, set this if the notification is related to a post
-            'liked_by_user_id' => null,  // Optional, if this is a like-related notification
-            'comment_by_user_id' => null,  // Optional, if this is comment-related
-            'notif_from_receiver' => Auth::id()
+            'user_id' => $application->sender_id, // The user who submitted the application
+            'type' => 'confirmed your adoption request form',
+            'post_id' => $application->post_id, // Link to the related post
+            'liked_by_user_id' => null,
+            'comment_by_user_id' => null,
+            'notif_from_receiver' => Auth::id(),
         ]);
-    
-        // Save the notification to the database
         $notification->save();
-    
-        // Optionally, you can return a response
+
+        // Return a response
         return response()->json([
-            'message' => 'Adoption application status updated to Ongoing.',
-            'application' => $application
-        ]);
+            'message' => 'Adoption application status updated to Ongoing and conversation initiated.',
+            'application' => $application,
+            'conversation_id' => $existingConversation ? $existingConversation->conversation_id : $conversation->conversation_id,
+        ], 200);
     }
 
     public function rejectApplication($id)

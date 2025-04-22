@@ -1,47 +1,58 @@
 <template>
-<li v-for="application in applications" :key="application.application_id" class="p-2 border-b-2 border-base-300">
-        <a>
-            <figure class="m-auto w-8 h-8 rounded-full overflow-hidden">
-                <img
-                    :src="`/storage/${application.sender.profile_picture}`"
-                    alt="User Avatar"
-                    class="w-full h-full object-cover" />
-            </figure>
-            <div class="flex flex-col">
-                <strong>{{ application.sender.username }}</strong>
-                <p>Hellow! ako po ay isang... </p>
-            </div>
-        </a>
-    </li>
+  <li
+    v-for="conversation in validConversations"
+    :key="conversation.conversation_id"
+    class="p-2 border-b-2 border-base-300 cursor-pointer hover:bg-base-300"
+    @click="$emit('select-conversation', conversation)"
+  >
+    <a class="flex items-center gap-2">
+      <figure class="m-auto w-8 h-8 rounded-full overflow-hidden">
+        <img
+          :src="conversation.other_user.profile_picture ? `/storage/${conversation.other_user.profile_picture}` : fallbackImage"
+          :alt="`${conversation.other_user.username} Avatar`"
+          class="w-full h-full object-cover"
+          @error="handleImageError"
+        />
+      </figure>
+      <div class="flex flex-col">
+        <strong>{{ conversation.other_user.username || 'Unknown User' }}</strong>
+        <p v-if="conversation.messages?.length > 0" class="text-sm truncate">
+          {{ conversation.messages[conversation.messages.length - 1].content }}
+        </p>
+        <p v-else class="text-sm text-base-content/50">
+          Related to: {{ conversation.application?.adopter_name || 'Unknown Application' }}
+        </p>
+      </div>
+    </a>
+  </li>
 </template>
+
 <script>
 export default {
-  name: 'OngoingApplications',
-  data() {
-    return {
-      applications: [],
-      loading: false,
-      error: null,
-    };
+  props: {
+    conversations: {
+      type: Array,
+      required: true,
+    },
+    fallbackImage: {
+      type: String,
+      required: true,
+    },
   },
-  async created() {
-    await this.fetchOngoingApplications();
+  computed: {
+    currentUserId() {
+      return parseInt(localStorage.getItem('user_id')) || null;
+    },
+    validConversations() {
+      // Filter out conversations where other_user is the current user
+      return this.conversations.filter(conversation => {
+        return conversation.other_user && conversation.other_user.user_id !== this.currentUserId;
+      });
+    },
   },
   methods: {
-    async fetchOngoingApplications() {
-      this.loading = true;
-      try {
-        const response = await fetch('/api/user/ongoing');
-        if (!response.ok) {
-          throw new Error('Failed to fetch adoption applications');
-        }
-        const data = await response.json();
-        this.applications = data.data;
-      } catch (err) {
-        this.error = err.message;
-      } finally {
-        this.loading = false;
-      }
+    handleImageError(event) {
+      event.target.src = this.fallbackImage;
     },
   },
 };

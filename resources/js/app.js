@@ -51,6 +51,7 @@ const app2 = createApp({
         };
     }
 });
+app2.use(router);
 
 app2.component('upload-post', UploadPost);
 app2.component('post-card', PostCard);
