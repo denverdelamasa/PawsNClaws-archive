@@ -27,7 +27,7 @@
       <!-- Hide both if is_adoptable is null or not set -->
       <div v-else class="hidden"></div>
       <!-- Dropdown Menu -->
-      <div class="dropdown dropdown-end z-[100]">
+      <div class="dropdown dropdown-end z-[19]">
         <label tabindex="0" class="btn btn-sm btn-ghost">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
@@ -258,6 +258,239 @@
       />
     </div>
     </div>
+
+    <!-- Wrapper nung comoloengkey -->
+    <div class="space-y-4 p-2 bg-base-200 w-auto max-w-full mx-4 border-t-2 border-info pt-6">
+      <!-- First coomet (may pianka maraming lieks ganon) -->
+      <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
+        <!-- Left side: Avatar + comment -->
+        <div class="flex flex-row gap-x-2">
+          <div class="avatar">
+            <div class="w-8 h-8 rounded-full">
+              <img
+                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                alt="Tailwind-CSS-Avatar-component" />
+            </div>
+          </div>
+          <div>
+            <p class="font-semibold text-sm">bolengkey 1</p>
+            <p class="text-xs text-base-content/80">OH MY GOODNESS!!!!</p>
+          </div>
+        </div>
+
+        <!-- Right side: Like button -->
+        <button 
+          class="btn btn-sm btn-primary text-base-300"
+          @click="post.is_liked = !post.is_liked"
+        >
+          <svg
+            v-if="post.is_liked"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+            />
+          </svg>
+          <span class="text-xs">1</span>
+        </button>
+      </div>
+
+
+      <!-- Hidden Comments (about 3??? omsim mga tatlo siguro...) -->
+      <div v-show="showMoreComments" class="space-y-4 transition-all duration-300">
+        <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
+          <!-- Left side: Avatar + comment -->
+          <div class="flex flex-row gap-x-2">
+            <div class="avatar">
+              <div class="w-8 h-8 rounded-full">
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  alt="Tailwind-CSS-Avatar-component" />
+              </div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">shobolengkey</p>
+              <p class="text-xs text-base-content/80">Low taper fadeeee 😭!!!!! </p>
+            </div>
+          </div>
+
+          <!-- Right side: Like button -->
+          <button 
+            class="btn btn-sm btn-primary text-base-300"
+            @click="post.is_liked = !post.is_liked"
+          >
+            <svg
+              v-if="post.is_liked"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+            <span class="text-xs">1</span>
+          </button>
+        </div>
+        <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
+          <!-- Left side: Avatar + comment -->
+          <div class="flex flex-row gap-x-2">
+            <div class="avatar">
+              <div class="w-8 h-8 rounded-full">
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  alt="Tailwind-CSS-Avatar-component" />
+              </div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">kolongkey</p>
+              <p class="text-xs text-base-content/80">I am tweaking 🙏</p>
+            </div>
+          </div>
+
+          <!-- Right side: Like button -->
+          <button 
+            class="btn btn-sm btn-primary text-base-300"
+            @click="post.is_liked = !post.is_liked"
+          >
+            <svg
+              v-if="post.is_liked"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+            <span class="text-xs">1</span>
+          </button>
+        </div>
+        <div class="bg-base-100 p-3 rounded-box shadow-sm flex flex-row justify-between items-start gap-x-4">
+          <!-- Left side: Avatar + comment -->
+          <div class="flex flex-row gap-x-2">
+            <div class="avatar">
+              <div class="w-8 h-8 rounded-full">
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  alt="Tailwind-CSS-Avatar-component" />
+              </div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">tralaleo tralala</p>
+              <p class="text-xs text-base-content/80">ts is gas bruh 😭</p>
+            </div>
+          </div>
+
+          <!-- Right side: Like button -->
+          <button 
+            class="btn btn-sm btn-primary text-base-300"
+            @click="post.is_liked = !post.is_liked"
+          >
+            <svg
+              v-if="post.is_liked"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <svg
+              v-else
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+              />
+            </svg>
+            <span class="text-xs">1</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Load More/Show Less Button -->
+      <div class="text-center">
+        <button
+          class="btn btn-outline btn-sm"
+          @click="showMoreComments = !showMoreComments"
+        >
+          {{ showMoreComments ? 'Show less' : 'Load more' }}
+        </button>
+      </div>
+    </div>
   </div>
 
   <div v-if="loading" class="text-center my-4">
@@ -269,459 +502,460 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import Swal from 'sweetalert2';
-import UploadPost from "../misc/UploadPost.vue";
-import Comments from '../misc/Comments.vue';
-import ReportModal from "../misc/Reports.vue";
-import AdoptionForm from "../misc/AdoptionForm.vue";
-import LoginFirst from "../misc/LoginFirst.vue";
+  import axios from "axios";
+  import Swal from 'sweetalert2';
+  import UploadPost from "../misc/UploadPost.vue";
+  import Comments from '../misc/Comments.vue';
+  import ReportModal from "../misc/Reports.vue";
+  import AdoptionForm from "../misc/AdoptionForm.vue";
+  import LoginFirst from "../misc/LoginFirst.vue";
 
-export default {
-  components: {
-    UploadPost,
-    Comments,
-    ReportModal,
-    AdoptionForm,
-    LoginFirst,
-  },
-  data() {
-    return {
-      posts: [],
-      currentIndex: {},
-      currentPage: 1, // Current page number
-      totalPages: 1, // Total number of pages
-      loading: false, // Loading state
-      noMorePosts: false, // Flag to check if there are no more posts
-      expanded: false,
-      isAuthenticated: false,
-      currentUserId: null,
-      selectedPost: { caption: '' },
-      isCommentsModalOpen: false,
-      selectedReportPostId: null,  // for report modal
-      selectedCommentPostId: null, // for comment modal
-      reportReason: '',
-      customReason: '',
-      invalidSocmedLink: false,
-      isAdoptionModalOpen: false,
-      adoptionPostId: null,
-      receiverUserId: null,
-      showLoginModal: false
-    };
-  },
-  methods: {
-    openAdoptionModal(postId, userId) {
-      if (!this.isAuthenticated) {
-        this.triggerLoginModal();
-        return;
-      }
-      this.adoptionPostId = postId;
-      this.receiverUserId = userId;
-      this.isAdoptionModalOpen = true;
+  export default {
+    components: {
+      UploadPost,
+      Comments,
+      ReportModal,
+      AdoptionForm,
+      LoginFirst,
     },
-    closeAdoptionModal() {
-      this.isAdoptionModalOpen = false;
-      this.UpdatePosts();;
+    data() {
+      return {
+        posts: [],
+        currentIndex: {},
+        currentPage: 1, // Current page number
+        totalPages: 1, // Total number of pages
+        loading: false, // Loading state
+        noMorePosts: false, // Flag to check if there are no more posts
+        expanded: false,
+        isAuthenticated: false,
+        currentUserId: null,
+        selectedPost: { caption: '' },
+        isCommentsModalOpen: false,
+        selectedReportPostId: null,  // for report modal
+        selectedCommentPostId: null, // for comment modal
+        reportReason: '',
+        customReason: '',
+        invalidSocmedLink: false,
+        isAdoptionModalOpen: false,
+        adoptionPostId: null,
+        receiverUserId: null,
+        showLoginModal: false,
+        showMoreComments: false
+      };
     },
-    handleFileChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.formData.govIdFile = file;
-      } else {
-        this.formData.govIdFile = null;
-      }
-    },
-    async submitAdoptionForm(formData) {
-      const formDataToSend = new FormData();
-      formDataToSend.append('receiver_id', this.receiverUserId);
-      formDataToSend.append('post_id', this.adoptionPostId);
-      formDataToSend.append('sender_id', this.currentUserId);
-      formDataToSend.append('adopter_name', formData.adopterName);
-      formDataToSend.append('contact_info', formData.contactInfo);
-      formDataToSend.append('adopt_type', formData.adoptType);
-      formDataToSend.append('employment_status', formData.employmentStatus);
-      formDataToSend.append('socmed', formData.socmed);
-      formDataToSend.append('location', formData.location);
-      formDataToSend.append('experience', formData.experience);
-      formDataToSend.append('reason', formData.reason);
-      formDataToSend.append('current_pets', formData.currentPets);
-      formDataToSend.append('gov_id', formData.govIdFile);
+    methods: {
+      openAdoptionModal(postId, userId) {
+        if (!this.isAuthenticated) {
+          this.triggerLoginModal();
+          return;
+        }
+        this.adoptionPostId = postId;
+        this.receiverUserId = userId;
+        this.isAdoptionModalOpen = true;
+      },
+      closeAdoptionModal() {
+        this.isAdoptionModalOpen = false;
+        this.UpdatePosts();;
+      },
+      handleFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+          this.formData.govIdFile = file;
+        } else {
+          this.formData.govIdFile = null;
+        }
+      },
+      async submitAdoptionForm(formData) {
+        const formDataToSend = new FormData();
+        formDataToSend.append('receiver_id', this.receiverUserId);
+        formDataToSend.append('post_id', this.adoptionPostId);
+        formDataToSend.append('sender_id', this.currentUserId);
+        formDataToSend.append('adopter_name', formData.adopterName);
+        formDataToSend.append('contact_info', formData.contactInfo);
+        formDataToSend.append('adopt_type', formData.adoptType);
+        formDataToSend.append('employment_status', formData.employmentStatus);
+        formDataToSend.append('socmed', formData.socmed);
+        formDataToSend.append('location', formData.location);
+        formDataToSend.append('experience', formData.experience);
+        formDataToSend.append('reason', formData.reason);
+        formDataToSend.append('current_pets', formData.currentPets);
+        formDataToSend.append('gov_id', formData.govIdFile);
 
-      try {
-        const response = await axios.post('/api/adoption/submit', formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'Your application has been submitted successfully!',
-          showConfirmButton: true,
-          confirmButtonText: 'OK',
-          background: '#2c2f36',
-          color: '#fff',
-          confirmButtonColor: '#3085d6',
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-        });
-        this.closeAdoptionModal();
-      } catch (error) {
-        console.error(error.response.data);
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Failed to submit the application.',
-          showConfirmButton: true,
-          background: '#2c2f36',
-          color: '#fff',
-          toast: true,
-          timer: 3000,
-        });
-      }
-    },
-    openCommentsModal(postId) {
-      this.isCommentsModalOpen = true;
-      this.fetchComments(postId);  // Fetch comments for the selected post  
-      this.selectedCommentPostId = postId;
-    },
-    closeCommentsModal() {
-      this.isCommentsModalOpen = false;
-      this.UpdatePosts();;
-    },
-    async fetchComments(postId) {
-      try {
-        const response = await axios.get(`/api/comments/${postId}/post`);
-        this.comments = response.data.data;  // Access the 'data' array from the API response
-        this.pagination = {
-          current_page: response.data.current_page,
-          last_page: response.data.last_page,
-          per_page: response.data.per_page,
-          total: response.data.total
-        };
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    },
-    openDeleteModal(postId) {
-      const modal = document.getElementById(`deletePostModal-${postId}`);
-      if (modal) {
-        modal.showModal();
-      }
-    },
-    closeDeleteModal(postId) {
-      const modal = document.getElementById(`deletePostModal-${postId}`);
-      if (modal) {
-        modal.close();
-      }
-    },
-    confirmDelete(postId) {
-      axios.delete(`/api/posts/delete/${postId}`)
-        .then(response => {
-          this.UpdatePosts();
-          this.closeDeleteModal(postId);
+        try {
+          const response = await axios.post('/api/adoption/submit', formDataToSend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your application has been submitted successfully!',
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            background: '#2c2f36',
+            color: '#fff',
+            confirmButtonColor: '#3085d6',
+            toast: true,
+            timer: 3000,
+            timerProgressBar: true,
+          });
+          this.closeAdoptionModal();
+        } catch (error) {
+          console.error(error.response.data);
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Failed to submit the application.',
+            showConfirmButton: true,
+            background: '#2c2f36',
+            color: '#fff',
+            toast: true,
+            timer: 3000,
+          });
+        }
+      },
+      openCommentsModal(postId) {
+        this.isCommentsModalOpen = true;
+        this.fetchComments(postId);  // Fetch comments for the selected post  
+        this.selectedCommentPostId = postId;
+      },
+      closeCommentsModal() {
+        this.isCommentsModalOpen = false;
+        this.UpdatePosts();;
+      },
+      async fetchComments(postId) {
+        try {
+          const response = await axios.get(`/api/comments/${postId}/post`);
+          this.comments = response.data.data;  // Access the 'data' array from the API response
+          this.pagination = {
+            current_page: response.data.current_page,
+            last_page: response.data.last_page,
+            per_page: response.data.per_page,
+            total: response.data.total
+          };
+        } catch (error) {
+          console.error("Error fetching comments:", error);
+        }
+      },
+      openDeleteModal(postId) {
+        const modal = document.getElementById(`deletePostModal-${postId}`);
+        if (modal) {
+          modal.showModal();
+        }
+      },
+      closeDeleteModal(postId) {
+        const modal = document.getElementById(`deletePostModal-${postId}`);
+        if (modal) {
+          modal.close();
+        }
+      },
+      confirmDelete(postId) {
+        axios.delete(`/api/posts/delete/${postId}`)
+          .then(response => {
+            this.UpdatePosts();
+            this.closeDeleteModal(postId);
 
-            Swal.fire({
-              position: "bottom-end",
-              icon: "success",
-              title: "Your post has been deleted successfully!",
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-              background: "#1e293b", // Dark background
-              color: "#ffffff", // Light text color
-              toast: true, // Toast-style alert
-              didOpen: (toast) => {
-                const progressBar = Swal.getTimerProgressBar();
-                if (progressBar) {
-                  progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
-                }
-              },
+              Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Your post has been deleted successfully!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b", // Dark background
+                color: "#ffffff", // Light text color
+                toast: true, // Toast-style alert
+                didOpen: (toast) => {
+                  const progressBar = Swal.getTimerProgressBar();
+                  if (progressBar) {
+                    progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                  }
+                },
+              });
+            })
+            .catch(error => {
+              console.error("Error deleting post:", error);
+
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                showConfirmButton: false,
+                text: "Something went wrong while uploading your post!",
+                background: "#1e293b", // Dark background
+                color: "#ffffff", // Light text color
+                toast: true,
+                });
             });
+      },
+      editPost(post) {
+          this.selectedPost = { ...post };     // Make sure to copy post data correctly
+          const modal = document.getElementById(`editPostModal-${post.post_id}`);
+          if (modal) {
+              modal.showModal();
+          }
+      },
+
+      // Close the edit modal
+      closeEditModal(postId) {
+        const modal = document.getElementById(`editPostModal-${postId}`);
+        if (modal) {
+            modal.close();  // This will close the modal
+        }
+      },
+
+      // Submit the edit form
+      submitEditPost() {
+        console.log(this.selectedPost); // Log selectedPost to check category_id
+
+        axios.put(`/api/post/edit/${this.selectedPost.post_id}`, this.selectedPost, {
+          })
+          .then(response => {
+              this.$emit('post-updated', response.data);  // Emit event to parent if needed
+              this.UpdatePosts();  // Refresh the posts list
+              this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
+              
+              Swal.fire({
+                  position: "bottom-end",
+                  icon: "success",
+                  title: "Your post has been updated successfully!",
+                  showConfirmButton: false,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  background: "#1e293b", // Dark background
+                  color: "#ffffff", // Light text color
+                  toast: true, // Toast-style alert
+                  didOpen: (toast) => {
+                  const progressBar = Swal.getTimerProgressBar();
+                  if (progressBar) {
+                      progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                  }
+                  },
+              });
           })
           .catch(error => {
-            console.error("Error deleting post:", error);
+              if (error.response && error.response.status === 422) {
+              this.errors = error.response.data.errors;
+              let errorMessages = '';
+              for (let key in this.errors) {
+                  errorMessages += `${this.errors[key].join(', ')}\n`;
+              }
 
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              showConfirmButton: false,
-              text: "Something went wrong while uploading your post!",
-              background: "#1e293b", // Dark background
-              color: "#ffffff", // Light text color
-              toast: true,
+              // Optionally, you can display the errors using a custom method
+              console.error('Validation Failed:', errorMessages.trim());
+              } else {
+              console.error('Error updating post:', error);
+              }
+              Swal.fire({
+                  position: "bottom-end",
+                  icon: "success",
+                  title: "Something went wrong",
+                  showConfirmButton: false,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  background: "#1e293b", // Dark background
+                  color: "#ffffff", // Light text color
+                  toast: true, // Toast-style alert
+                  didOpen: (toast) => {
+                  const progressBar = Swal.getTimerProgressBar();
+                  if (progressBar) {
+                      progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
+                  }
+                  },
               });
           });
-    },
-    editPost(post) {
-        this.selectedPost = { ...post };     // Make sure to copy post data correctly
-        const modal = document.getElementById(`editPostModal-${post.post_id}`);
-        if (modal) {
-            modal.showModal();
+      },
+      openReportModal(postId) {
+        if (!this.isAuthenticated) {
+          this.triggerLoginModal();
+          return;
         }
-    },
+        this.reportType = 'post';
+        this.selectedReportPostId = postId;
+      },
+      closeReportModal() {
+        this.selectedReportPostId = null;
+      },
+      toggleDescription(post) {
+        if (!("expanded" in post)) {
+          post.expanded = false; // Initialize if it doesn't exist
+        }
+        post.expanded = !post.expanded;
+      },
+      showModal(postId) {
+        console.log("Opening modal for post:", postId);
 
-    // Close the edit modal
-    closeEditModal(postId) {
-      const modal = document.getElementById(`editPostModal-${postId}`);
-      if (modal) {
-          modal.close();  // This will close the modal
-      }
-    },
+        // Ensure the index is set to 0 if undefined
+        if (!(postId in this.currentIndex)) {
+          this.currentIndex[postId] = 0;
+        }
 
-    // Submit the edit form
-    submitEditPost() {
-      console.log(this.selectedPost); // Log selectedPost to check category_id
-
-      axios.put(`/api/post/edit/${this.selectedPost.post_id}`, this.selectedPost, {
-        })
-        .then(response => {
-            this.$emit('post-updated', response.data);  // Emit event to parent if needed
-            this.UpdatePosts();  // Refresh the posts list
-            this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
-            
-            Swal.fire({
-                position: "bottom-end",
-                icon: "success",
-                title: "Your post has been updated successfully!",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                background: "#1e293b", // Dark background
-                color: "#ffffff", // Light text color
-                toast: true, // Toast-style alert
-                didOpen: (toast) => {
-                const progressBar = Swal.getTimerProgressBar();
-                if (progressBar) {
-                    progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
-                }
-                },
-            });
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 422) {
-            this.errors = error.response.data.errors;
-            let errorMessages = '';
-            for (let key in this.errors) {
-                errorMessages += `${this.errors[key].join(', ')}\n`;
-            }
-
-            // Optionally, you can display the errors using a custom method
-            console.error('Validation Failed:', errorMessages.trim());
-            } else {
-            console.error('Error updating post:', error);
-            }
-            Swal.fire({
-                position: "bottom-end",
-                icon: "success",
-                title: "Something went wrong",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                background: "#1e293b", // Dark background
-                color: "#ffffff", // Light text color
-                toast: true, // Toast-style alert
-                didOpen: (toast) => {
-                const progressBar = Swal.getTimerProgressBar();
-                if (progressBar) {
-                    progressBar.style.backgroundColor = "#ffffff"; // Customize progress bar color if needed
-                }
-                },
-            });
-        });
-    },
-    openReportModal(postId) {
-      if (!this.isAuthenticated) {
-        this.triggerLoginModal();
-        return;
-      }
-      this.reportType = 'post';
-      this.selectedReportPostId = postId;
-    },
-    closeReportModal() {
-      this.selectedReportPostId = null;
-    },
-    toggleDescription(post) {
-      if (!("expanded" in post)) {
-        post.expanded = false; // Initialize if it doesn't exist
-      }
-      post.expanded = !post.expanded;
-    },
-    showModal(postId) {
-      console.log("Opening modal for post:", postId);
-
-      // Ensure the index is set to 0 if undefined
-      if (!(postId in this.currentIndex)) {
-        this.currentIndex[postId] = 0;
-      }
-
-      const modal = document.getElementById(`thumbnailModal-${postId}`);
-      if (modal) {
-        modal.showModal();
-      } else {
-        console.log("Modal not found");
-      }
-    },
-    closeThumbnailModal(postId) {
         const modal = document.getElementById(`thumbnailModal-${postId}`);
         if (modal) {
-        modal.close();
-        }
-    },
-    nextImage(postId) {
-      const post = this.posts.find(post => post.post_id === postId);
-      if (post && post.image_path.length > 0) {
-        this.currentIndex[postId] = (this.currentIndex[postId] + 1) % post.image_path.length;
-      } else {
-        console.error("Post or image path not found for postId:", postId);
-      }
-    },
-    prevImage(postId) {
-      const post = this.posts.find(post => post.post_id === postId);
-      if (post && post.image_path.length > 0) {
-        this.currentIndex[postId] = (this.currentIndex[postId] - 1 + post.image_path.length) % post.image_path.length;
-      } else {
-        console.error("Post or image path not found for postId:", postId);
-      }
-    },
-    UpdatePosts() {
-      this.loading = true; // Show loader when starting request
-
-      axios.get('/api/posts/list')
-        .then(response => {
-          const newPosts = response.data.posts || [];
-
-          // Replace the posts list with the new posts
-          this.posts = newPosts;
-
-          // Optionally reset pagination info if you're still tracking it
-          this.totalPages = 1;
-          this.currentPage = 1;
-          this.hasMore = false;
-        })
-        .catch(error => {
-          console.error('Error fetching browse posts:', error);
-        })
-        .finally(() => {
-          this.loading = false; // Hide loader when done
-        });
-    },
-
-    async fetchPosts(reset = false) {
-      if (this.loading || (this.noMorePosts && !reset)) return; // Prevent multiple requests unless resetting
-
-      this.loading = true;
-
-      try {
-        if (reset) {
-          // Reset the posts array and current page if reset is true
-          this.posts = [];
-          this.currentPage = 1;
-          this.noMorePosts = false;
-        }
-
-        const response = await axios.get(`/api/posts/list?page=${this.currentPage}`);
-        const newPosts = response.data.posts;
-
-        if (newPosts.length > 0) {
-          if (reset) {
-            // Replace the posts array with the new posts
-            this.posts = newPosts;
-          } else {
-            // Append new posts to the existing list
-            this.posts = [...this.posts, ...newPosts];
-          }
-          this.currentPage++;
+          modal.showModal();
         } else {
-          this.noMorePosts = true; // No more posts to load
+          console.log("Modal not found");
         }
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    handleScroll() {
-      const bottomOfWindow =
-        document.documentElement.scrollTop + window.innerHeight >=
-        document.documentElement.offsetHeight - 100; // 100px buffer
-
-      if (bottomOfWindow && !this.loading && !this.noMorePosts) {
-        this.fetchPosts(); // Fetch more posts
-      }
-    },
-    triggerLoginModal() {
-      this.showLoginModal = true;
-      this.$nextTick(() => {
-        const loginFirst = this.$refs.loginFirst;
-        if (loginFirst) {
-          loginFirst.showLoginModal();
+      },
+      closeThumbnailModal(postId) {
+          const modal = document.getElementById(`thumbnailModal-${postId}`);
+          if (modal) {
+          modal.close();
+          }
+      },
+      nextImage(postId) {
+        const post = this.posts.find(post => post.post_id === postId);
+        if (post && post.image_path.length > 0) {
+          this.currentIndex[postId] = (this.currentIndex[postId] + 1) % post.image_path.length;
+        } else {
+          console.error("Post or image path not found for postId:", postId);
         }
-      });
-    },
-    async likePost(postId) {
-      if (!this.isAuthenticated) {
-        this.triggerLoginModal();
-        return;
-      }
-      
-      try {
-        await axios.post(`/api/like/${postId}/post`);
+      },
+      prevImage(postId) {
+        const post = this.posts.find(post => post.post_id === postId);
+        if (post && post.image_path.length > 0) {
+          this.currentIndex[postId] = (this.currentIndex[postId] - 1 + post.image_path.length) % post.image_path.length;
+        } else {
+          console.error("Post or image path not found for postId:", postId);
+        }
+      },
+      UpdatePosts() {
+        this.loading = true; // Show loader when starting request
+
+        axios.get('/api/posts/list')
+          .then(response => {
+            const newPosts = response.data.posts || [];
+
+            // Replace the posts list with the new posts
+            this.posts = newPosts;
+
+            // Optionally reset pagination info if you're still tracking it
+            this.totalPages = 1;
+            this.currentPage = 1;
+            this.hasMore = false;
+          })
+          .catch(error => {
+            console.error('Error fetching browse posts:', error);
+          })
+          .finally(() => {
+            this.loading = false; // Hide loader when done
+          });
+      },
+
+      async fetchPosts(reset = false) {
+        if (this.loading || (this.noMorePosts && !reset)) return; // Prevent multiple requests unless resetting
+
+        this.loading = true;
+
+        try {
+          if (reset) {
+            // Reset the posts array and current page if reset is true
+            this.posts = [];
+            this.currentPage = 1;
+            this.noMorePosts = false;
+          }
+
+          const response = await axios.get(`/api/posts/list?page=${this.currentPage}`);
+          const newPosts = response.data.posts;
+
+          if (newPosts.length > 0) {
+            if (reset) {
+              // Replace the posts array with the new posts
+              this.posts = newPosts;
+            } else {
+              // Append new posts to the existing list
+              this.posts = [...this.posts, ...newPosts];
+            }
+            this.currentPage++;
+          } else {
+            this.noMorePosts = true; // No more posts to load
+          }
+        } catch (error) {
+          console.error("Error fetching posts:", error);
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      handleScroll() {
+        const bottomOfWindow =
+          document.documentElement.scrollTop + window.innerHeight >=
+          document.documentElement.offsetHeight - 100; // 100px buffer
+
+        if (bottomOfWindow && !this.loading && !this.noMorePosts) {
+          this.fetchPosts(); // Fetch more posts
+        }
+      },
+      triggerLoginModal() {
+        this.showLoginModal = true;
+        this.$nextTick(() => {
+          const loginFirst = this.$refs.loginFirst;
+          if (loginFirst) {
+            loginFirst.showLoginModal();
+          }
+        });
+      },
+      async likePost(postId) {
+        if (!this.isAuthenticated) {
+          this.triggerLoginModal();
+          return;
+        }
         
-        // Find the post and update its like state
-        const post = this.posts.find(post => post.post_id === postId);
-        if (post) {
-          post.is_liked = !post.is_liked; // Toggle like state
-        }
+        try {
+          await axios.post(`/api/like/${postId}/post`);
+          
+          // Find the post and update its like state
+          const post = this.posts.find(post => post.post_id === postId);
+          if (post) {
+            post.is_liked = !post.is_liked; // Toggle like state
+          }
 
-        // Fetch the updated likes count
-        await this.fetchLikesCount(postId);
-      } catch (error) {
-        console.error("Error liking/unliking post:", error);
-      }
-    },
-    async fetchLikesCount(postId) {
-      try {
-        const response = await axios.get(`/api/like-count/${postId}/post`);
-        const post = this.posts.find(post => post.post_id === postId);
-        if (post) {
-          post.likes_count = response.data.likesCount; // Update only post likes count
+          // Fetch the updated likes count
+          await this.fetchLikesCount(postId);
+        } catch (error) {
+          console.error("Error liking/unliking post:", error);
         }
-      } catch (error) {
-        console.error("Error fetching likes count:", error);
-      }
-    },
-    async checkAuthentication() {
-      try {
-          const response = await axios.get('/api/auth/status');
-          this.isAuthenticated = response.data.authenticated;
-          this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
-      } catch (error) {
-          console.error("Error checking authentication status:", error);
-      }
-    },
-    validateSocmedLink() {
-      const socmedPattern = /^(https?:\/\/)?(www\.)?(facebook|instagram|x|twitter|tiktok|linkedin)\.(com|co|io)\/[a-zA-Z0-9_.-]+(\/)?$/;
+      },
+      async fetchLikesCount(postId) {
+        try {
+          const response = await axios.get(`/api/like-count/${postId}/post`);
+          const post = this.posts.find(post => post.post_id === postId);
+          if (post) {
+            post.likes_count = response.data.likesCount; // Update only post likes count
+          }
+        } catch (error) {
+          console.error("Error fetching likes count:", error);
+        }
+      },
+      async checkAuthentication() {
+        try {
+            const response = await axios.get('/api/auth/status');
+            this.isAuthenticated = response.data.authenticated;
+            this.currentUserId = response.data.user_id; // Fetch the authenticated user's ID
+        } catch (error) {
+            console.error("Error checking authentication status:", error);
+        }
+      },
+      validateSocmedLink() {
+        const socmedPattern = /^(https?:\/\/)?(www\.)?(facebook|instagram|x|twitter|tiktok|linkedin)\.(com|co|io)\/[a-zA-Z0-9_.-]+(\/)?$/;
 
-      if (this.formData.socmed && !socmedPattern.test(this.formData.socmed)) {
-        this.invalidSocmedLink = true; // Set to true if invalid
-      } else {
-        this.invalidSocmedLink = false; // Set to false if valid
-      }
+        if (this.formData.socmed && !socmedPattern.test(this.formData.socmed)) {
+          this.invalidSocmedLink = true; // Set to true if invalid
+        } else {
+          this.invalidSocmedLink = false; // Set to false if valid
+        }
+      },
     },
-  },
-  mounted() {
-    this.checkAuthentication();
-    this.fetchPosts(true); // Fetch the first page of posts
-    this.fetchComments();
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll); // Clean up scroll event listener
-  },
-};
+    mounted() {
+      this.checkAuthentication();
+      this.fetchPosts(true); // Fetch the first page of posts
+      this.fetchComments();
+      window.addEventListener('scroll', this.handleScroll);
+    },
+    beforeDestroy() {
+      window.removeEventListener('scroll', this.handleScroll); // Clean up scroll event listener
+    },
+  };
 </script>
 
 <style scoped>

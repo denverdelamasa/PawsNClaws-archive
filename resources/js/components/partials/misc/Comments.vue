@@ -2,7 +2,7 @@
   <div>
     <!-- Comments Modal -->
     <dialog ref="commentsDialog" class="modal">
-      <div class="modal-box relative max-w-full w-9/12 h-screen p-8 scrollbar-hidden overflow-auto">
+      <div class="modal-box relative max-w-full w-[90%] h-screen p-8 scrollbar-hidden overflow-auto">
         <h3 class="text-xl font-bold my-4">{{ commentsCount }} {{ commentsCount === 1 ? 'Comment' : 'Comments' }}</h3>
         
         <!-- Comment Input -->
