@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\VerifyApplicationController;
 use App\Models\User;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
@@ -127,6 +128,9 @@ Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () 
     Route::get('/api/conversations', [MessagesController::class, 'getUserConversations']);
     Route::post('/api/conversations/{applicationId}', [MessagesController::class, 'startConversation']);
     Route::post('/api/conversations/{conversationId}/messages', [MessagesController::class, 'sendMessage']);
+
+    //Get Verified
+    Route::post('/api/verify/apply', [VerifyApplicationController::class, 'applyForVerification']);
 });
 Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);

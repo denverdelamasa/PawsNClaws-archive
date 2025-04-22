@@ -16,6 +16,7 @@ class VerifyApplication extends Model
     protected $fillable = [
         'user_id',
         'documents',
+        'role'  
     ];
 
     // Enable timestamps for created_at and updated_at

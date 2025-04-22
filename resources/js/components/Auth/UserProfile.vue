@@ -199,56 +199,24 @@
             </form>
             <h3 class="text-3xl font-bold">Get Verified</h3>
             <p class="py-2">
-            Complete the registration form to begin the verification process and become an official shelter, pet shop, or pet clinic partner. Once verified, you'll gain access to all the features and benefits available to verified organizations.
+            Complete the registration form to begin the verification process and become an official shelter or pet clinic partner. Once verified, you'll gain access to all the features and benefits available to verified organizations.
             </p>
 
             <!-- Form Inputs -->
             <form @submit.prevent="submitVerificationForm" enctype="multipart/form-data">
-            <!-- CSRF Token (if needed for non-API Laravel form submission) -->
-            <input type="hidden" name="_token" :value="csrfToken">
-
-            <!-- Username (Autofilled, Read-only) -->
-            <div class="form-control w-full">
-                <label class="label">
-                <span class="label-text">Username</span>
-                </label>
-                <input
-                type="text"
-                name="username"
-                v-model="user.username"
-                class="input input-bordered w-full"
-                readonly
-                >
-            </div>
-
-            <!-- Email (Autofilled, Editable) -->
-            <div class="form-control w-full mt-4">
-                <label class="label">
-                <span class="label-text">Email</span>
-                </label>
-                <input
-                type="email"
-                name="email"
-                v-model="user.email"
-                class="input input-bordered w-full"
-                required
-                >
-            </div>
-
-            <!-- Dropdown -->
+            <!-- Role Dropdown -->
             <div class="form-control w-full mt-4">
                 <label class="label">
                 <span class="label-text">Select Type of Organization:</span>
                 </label>
                 <select
-                name="type"
-                v-model="form.type"
+                v-model="form.role"
                 class="select select-bordered w-full"
                 required
                 >
-                    <option value="" disabled>Select an option</option>
-                    <option value="Pet Shelter">Pet Shelter</option>
-                    <option value="Pet Clinic">Pet Clinic</option>
+                <option value="" disabled>Select an option</option>
+                <option value="shelter">Pet Shelter</option>
+                <option value="vet">Pet Clinic</option>
                 </select>
             </div>
 
@@ -259,7 +227,6 @@
                 </label>
                 <input
                 type="file"
-                name="documents[]"
                 @change="handleFileChange"
                 class="file-input file-input-bordered w-full"
                 accept="image/*,.pdf"
@@ -531,6 +498,69 @@ export default {
     };
   },
   methods: {
+    closeVerificationModal() {
+      document.getElementById('GetVerifiedModal').close();
+      this.form.role = '';
+      this.form.documents = [];
+      this.form.errors = [];
+      this.form.isSubmitting = false;
+    },
+    async submitVerificationForm() {
+      this.form.isSubmitting = true;
+      this.form.errors = [];
+
+      // Create FormData object
+      const formData = new FormData();
+      formData.append('role', this.form.role);
+      this.form.documents.forEach((file, index) => {
+        formData.append(`documents[${index}]`, file);
+      });
+
+      try {
+        const response = await axios.post('/api/verify/apply', formData, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        // Show success message
+        Swal.fire({
+          position: "bottom-end",
+          icon: "success",
+          title: "Verification application submitted successfully!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
+        });
+
+        // Reset form and close modal
+        this.closeVerificationModal();
+      } catch (error) {
+        // Handle errors
+        if (error.response?.data?.errors) {
+          this.form.errors = Object.values(error.response.data.errors).flat();
+        } else {
+          this.form.errors = ['Failed to submit application. Please try again.'];
+        }
+        Swal.fire({
+          position: "bottom-end",
+          icon: "error",
+          title: "Failed to submit verification application.",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
+        });
+      } finally {
+        this.form.isSubmitting = false;
+      }
+    },
     openModal() {
       this.isModalOpen = true;
       const input = document.createElement('input');
@@ -689,6 +719,7 @@ export default {
     
     handleFileChange(event) {
       const file = event.target.files[0];
+      this.form.documents = Array.from(event.target.files);
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
