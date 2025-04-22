@@ -75,7 +75,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
     Route::get('/api/reports/lists', [ReportController::class, 'reportsList']);
 });
 
-Route::middleware(['auth', 'TrackUserOnlineStatus', 'api'])->group(function () {
+Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () {
     Route::get('/user/settings', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
     Route::patch('/client/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
     Route::delete('/client/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');

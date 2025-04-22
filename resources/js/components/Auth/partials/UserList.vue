@@ -39,6 +39,7 @@ export default {
       required: true,
     },
   },
+  emits: ['select-conversation'],
   computed: {
     currentUserId() {
       return parseInt(localStorage.getItem('user_id')) || null;
@@ -53,6 +54,9 @@ export default {
   methods: {
     handleImageError(event) {
       event.target.src = this.fallbackImage;
+    },
+    selectConversation(conversation) {
+      this.$emit('select-conversation', conversation);
     },
   },
 };

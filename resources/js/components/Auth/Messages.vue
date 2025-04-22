@@ -1,11 +1,11 @@
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-screen">
     <div class="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content flex flex-col items-center justify-start overflow-y-auto">
+      <div class="drawer-content flex flex-col items-center justify-start">
         <div class="w-full max-w-full h-full bg-base-100 rounded-xl shadow-xl flex flex-col">
           <div v-if="error" class="alert-error mb-4">{{ error }}</div>
-          <div v-if="selectedConversation" class="flex items-center justify-between border-b border-base-300 w-full px-2 py-2">
+          <div v-if="selectedConversation" class="sticky top-0 z-20 bg-base-100 border-b border-base-300 w-full px-2 py-2 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="avatar">
                 <div class="w-10 rounded-full">
@@ -16,7 +16,7 @@
                 </div>
               </div>
               <div>
-                <h2 class="font-bold text-lg">{{ selectedConversation.other_user.username }}</h2>
+                <h2 class="font-bold text-lg">{{ selectedConversation.other_user.name }}</h2>
                 <p class="text-sm text-base-content/50">{{ selectedConversation.other_user.is_online ? 'Online' : 'Offline' }}</p>
               </div>
             </div>
@@ -41,7 +41,7 @@
               class="input input-bordered w-full"
               @keyup.enter="sendMessage"
             />
-            <button class="btn btn-primary" :disabled="loading || !newMessage.trim()" @click="sendMessage">
+            <button class="btn btn-primary" :disabled="isSendButtonDisabled" @click="sendMessage">
               Send
             </button>
           </div>
@@ -102,6 +102,11 @@ export default {
         return (other.username?.toLowerCase()?.includes(query) || other.name?.toLowerCase()?.includes(query));
       });
     },
+    isSendButtonDisabled() {
+        const disabled = this.loading || !this.newMessage.trim();
+        console.log('Send button disabled:', disabled, { loading: this.loading, newMessage: this.newMessage });
+        return disabled;
+    },
   },
   async created() {
     await this.fetchConversations();
@@ -142,23 +147,24 @@ export default {
       }
     },
     async sendMessage() {
-      if (!this.newMessage.trim() || !this.selectedConversation) return;
-      this.loading = true;
-      this.error = null;
-      try {
-        const response = await axios.post(
-          `/api/conversations/${this.selectedConversation.conversation_id}/messages`,
-          { content: this.newMessage },
-          { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-        );
-        this.selectedConversation.messages.push(response.data.message);
-        this.fetchConversations();
-        this.newMessage = '';
-      } catch (err) {
-        this.error = err.response?.data?.message || 'Failed to send message';
-      } finally {
-        this.loading = false;
-      }
+        if (!this.newMessage.trim() || !this.selectedConversation) return;
+        this.loading = true;
+        this.error = null;
+        try {
+            const response = await axios.post(
+            `/api/conversations/${this.selectedConversation.conversation_id}/messages`,
+            { content: this.newMessage },
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            );
+            this.selectedConversation.messages.push(response.data.new_message);
+            this.newMessage = '';
+            // Optionally refresh conversations to update metadata
+            await this.fetchConversations();
+        } catch (err) {
+            this.error = err.response?.data?.message || 'Failed to send message';
+        } finally {
+            this.loading = false;
+        }
     },
     visitProfile(userId) {
       window.location.href = `/browse/view?user_id=${userId}`;

@@ -125,19 +125,21 @@ class MessagesController extends Controller
     
         if ($existingConversation) {
             // Fetch sender and receiver details for existing conversation
-            $sender = User::findOrFail($existingConversation->sender_id, ['user_id', 'username', 'profile_picture']);
-            $receiver = User::findOrFail($existingConversation->receiver_id, ['user_id', 'username', 'profile_picture']);
+            $sender = User::findOrFail($existingConversation->sender_id, ['user_id', 'username', 'name', 'profile_picture']);
+            $receiver = User::findOrFail($existingConversation->receiver_id, ['user_id', 'username', 'name', 'profile_picture']);
     
             return response()->json([
                 'success' => true,
                 'conversation_id' => $existingConversation->conversation_id,
                 'sender' => [
                     'user_id' => $sender->user_id,
+                    'name' => $sender->name,
                     'username' => $sender->username,
                     'profile_picture' => $sender->profile_picture,
                 ],
                 'receiver' => [
                     'user_id' => $receiver->sender_id,
+                    'name' => $receiver->name,
                     'username' => $receiver->username,
                     'profile_picture' => $receiver->sender_profile_picture,
                 ],
@@ -152,19 +154,21 @@ class MessagesController extends Controller
         ]);
     
         // Fetch sender and receiver details for new conversation
-        $sender = User::findOrFail($conversation->sender_id, ['id', 'username', 'profile_picture']);
-        $receiver = User::findOrFail($conversation->receiver_id, ['id', 'username', 'profile_picture']);
+        $sender = User::findOrFail($conversation->sender_id, ['user_id', 'username','name','profile_picture']);
+        $receiver = User::findOrFail($conversation->receiver_id, ['user_id', 'username', 'name', 'profile_picture']);
     
         return response()->json([
             'success' => true,
             'conversation_id' => $conversation->conversation_id,
             'sender' => [
-                'user_id' => $sender->id,
+                'user_id' => $sender->user_id,
+                'name' => $sender->name,
                 'username' => $sender->username,
                 'profile_picture' => $sender->profile_picture,
             ],
             'receiver' => [
-                'user_id' => $receiver->id,
+                'user_id' => $receiver->user_id,
+                'name' => $receiver->name,
                 'username' => $receiver->username,
                 'profile_picture' => $receiver->profile_picture,
             ],
@@ -179,26 +183,60 @@ class MessagesController extends Controller
         $request->validate([
             'content' => 'required|string|max:1000',
         ]);
-
+    
         $userId = Auth::id();
         $conversation = Conversation::findOrFail($conversationId);
-
+    
+        // Verify user is part of the conversation
         if ($conversation->sender_id !== $userId && $conversation->receiver_id !== $userId) {
             abort(403, 'Unauthorized');
         }
-
+    
+        // Create the new message
         $message = Message::create([
             'conversation_id' => $conversationId,
             'sender_id' => $userId,
             'content' => $request->content,
         ]);
-
-        $message->load('sender:user_id,username,profile_picture');
-
+    
+        // Load sender details
+        $message->load(['sender' => function ($query) {
+            $query->select('user_id', 'name', 'username', 'profile_picture');
+        }]);
+    
+        // Fetch the latest page of messages (including the new message)
+        $perPage = $request->input('per_page', 20); // Match getMessages pagination
+        $messages = Message::where('conversation_id', $conversationId)
+            ->with(['sender' => function ($query) {
+                $query->select('user_id', 'name', 'username', 'profile_picture');
+            }])
+            ->orderBy('created_at', 'desc') // Latest messages first
+            ->paginate($perPage);
+    
         return response()->json([
             'success' => true,
-            'message' => $message,
-            'message' => 'Message sent successfully'
+            'data' => $messages->items(), // Messages for the current page
+            'meta' => [
+                'current_page' => $messages->currentPage(),
+                'last_page' => $messages->lastPage(),
+                'per_page' => $messages->perPage(),
+                'total' => $messages->total(),
+                'next_page_url' => $messages->nextPageUrl(),
+                'prev_page_url' => $messages->previousPageUrl(),
+            ],
+            'new_message' => [
+                'message_id' => $message->message_id,
+                'conversation_id' => $message->conversation_id,
+                'sender_id' => $message->sender_id,
+                'content' => $message->content,
+                'created_at' => $message->created_at,
+                'sender' => [
+                    'user_id' => $message->sender->user_id,
+                    'name' => $message->sender->name,
+                    'username' => $message->username,
+                    'profile_picture' => $message->sender->profile_picture,
+                ],
+            ],
         ], 201);
     }
 }
