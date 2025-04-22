@@ -34,11 +34,11 @@
                             <!-- Get Verified -->
                             <div  class="flex flex-col">
                                 <ul class="flex flex-wrap gap-x-2 gap-y-2">
-                                    <button class="GetVerifiedButton m-auto"  onclick="GetVerifiedModal.showModal()">
+                                    <button class="GetVerifiedButton m-auto"  @click="hasPendingApplication ? openVerificationStatusModal() : openGetVerifiedModal()">
                                         <span class="GetVerifiedShadow"></span>
                                         <span class="GetVerifiedEdge"></span>
                                         <span class="front text flex-col flex">
-                                            Get Verified
+                                            {{ hasPendingApplication ? 'Ongoing' : 'Get Verified' }}
                                         </span>
                                     </button>
                                 </ul>
@@ -137,12 +137,12 @@
                                 Posts
                             </button>
                             <!-- If shelter Acooutt -->
-                            <button v-if="user.role === 'Shelter', 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                            <button v-if="user.role === 'Shelter' || user.role === 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
                                     :class="{ 'text-primary': activeTab === 'announcements' }"
                                     @click="activeTab = 'announcements'">
                                 Announcement
                             </button>
-                            <button v-if="user.role === 'Shelter', 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                            <button v-if="user.role === 'Shelter' || user.role === 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
                                     :class="{ 'text-primary': activeTab === 'events' }"
                                     @click="activeTab = 'events'">
                                 Events
@@ -252,6 +252,55 @@
             </form>
         </div>
     </dialog>
+
+    <dialog id="VerificationStatusModal" class="modal">
+        <div class="modal-box bg-base-100 text-base-content max-w-4xl w-full">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-3xl font-bold">Verification Applications</h3>
+            <p class="py-2">
+                View the status of your verification applications below.
+            </p>
+            <div class="overflow-x-auto mt-4">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Rejection Reason</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="application in verificationApplications" :key="application.verify_id">
+                            <td>{{ application.verify_id }}</td>
+                            <td>{{ application.role === 'shelter' ? 'Pet Shelter' : 'Pet Clinic' }}</td>
+                            <td>
+                                <span :class="{
+                                    'badge badge-primary': application.status === 'pending',
+                                    'badge badge-success': application.status === 'approved',
+                                    'badge badge-error': application.status === 'rejected'
+                                }">
+                                    {{ application.status.charAt(0).toUpperCase() + application.status.slice(1) }}
+                                </span>
+                            </td>
+                            <td>{{ application.rejection_reason || '-' }}</td>
+                            <td>{{ new Date(application.created_at).toLocaleDateString() }}</td>
+                        </tr>
+                        <tr v-if="verificationApplications.length === 0">
+                            <td colspan="5" class="text-center">No applications found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="closeVerificationStatusModal">Close</button>
+            </div>
+        </div>
+    </dialog>
+
 
     <!-- EZ MODAL WTF -->
     <dialog id="adoptionModal" class="modal">
@@ -494,10 +543,56 @@ export default {
         role: '',
         bio: '',
       },
-      activeTab: 'posts'
+      activeTab: 'posts',
+      hasPendingApplication: false,
+      verificationApplications: []
+
     };
   },
   methods: {
+    
+    async fetchVerificationApplications() {
+        try {
+            const response = await axios.get('/api/verify/user-applications/', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            this.verificationApplications = response.data.applications;
+            this.hasPendingApplication = this.verificationApplications.some(app => app.status === 'pending');
+        } catch (error) {
+            console.error('Error fetching verification applications:', error);
+            Swal.fire({
+                position: "bottom-end",
+                icon: "error",
+                title: "Failed to fetch verification applications.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+                toast: true,
+            });
+        }
+    },
+    openGetVerifiedModal() {
+        document.getElementById('GetVerifiedModal').showModal();
+    },
+    closeVerificationModal() {
+        document.getElementById('GetVerifiedModal').close();
+        this.form.role = '';
+        this.form.documents = [];
+        this.form.errors = [];
+        this.form.isSubmitting = false;
+    },
+    openVerificationStatusModal() {
+        this.fetchVerificationApplications();
+        document.getElementById('VerificationStatusModal').showModal();
+    },
+    closeVerificationStatusModal() {
+        document.getElementById('VerificationStatusModal').close();
+        this.verificationApplications = [];
+    },
     closeVerificationModal() {
       document.getElementById('GetVerifiedModal').close();
       this.form.role = '';
@@ -506,60 +601,57 @@ export default {
       this.form.isSubmitting = false;
     },
     async submitVerificationForm() {
-      this.form.isSubmitting = true;
-      this.form.errors = [];
+        this.form.isSubmitting = true;
+        this.form.errors = [];
 
-      // Create FormData object
-      const formData = new FormData();
-      formData.append('role', this.form.role);
-      this.form.documents.forEach((file, index) => {
-        formData.append(`documents[${index}]`, file);
-      });
-
-      try {
-        const response = await axios.post('/api/verify/apply', formData, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'multipart/form-data',
-          },
+        const formData = new FormData();
+        formData.append('role', this.form.role);
+        this.form.documents.forEach((file, index) => {
+            formData.append(`documents[${index}]`, file);
         });
 
-        // Show success message
-        Swal.fire({
-          position: "bottom-end",
-          icon: "success",
-          title: "Verification application submitted successfully!",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: "#1e293b",
-          color: "#ffffff",
-          toast: true,
-        });
+        try {
+            const response = await axios.post('/api/verify/apply', formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-        // Reset form and close modal
-        this.closeVerificationModal();
-      } catch (error) {
-        // Handle errors
-        if (error.response?.data?.errors) {
-          this.form.errors = Object.values(error.response.data.errors).flat();
-        } else {
-          this.form.errors = ['Failed to submit application. Please try again.'];
+            Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Verification application submitted successfully!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+                toast: true,
+            });
+
+            this.hasPendingApplication = true; // Update button state
+            this.closeVerificationModal();
+        } catch (error) {
+            if (error.response?.data?.errors) {
+                this.form.errors = Object.values(error.response.data.errors).flat();
+            } else {
+                this.form.errors = ['Failed to submit application. Please try again.'];
+            }
+            Swal.fire({
+                position: "bottom-end",
+                icon: "error",
+                title: "Failed to submit verification application.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+                toast: true,
+            });
+        } finally {
+            this.form.isSubmitting = false;
         }
-        Swal.fire({
-          position: "bottom-end",
-          icon: "error",
-          title: "Failed to submit verification application.",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          background: "#1e293b",
-          color: "#ffffff",
-          toast: true,
-        });
-      } finally {
-        this.form.isSubmitting = false;
-      }
     },
     openModal() {
       this.isModalOpen = true;
@@ -902,6 +994,7 @@ export default {
   mounted() {
     this.fetchUserProfileInfo();
     this.fetchUserAdoptionApplications();
+    this.fetchVerificationApplications()
   },
 };
 </script>

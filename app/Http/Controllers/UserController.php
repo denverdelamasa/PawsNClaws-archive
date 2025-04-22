@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\VerifyApplication;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -14,14 +15,19 @@ class UserController extends Controller
     public function getUsersList()
     {
         // Fetch users with 'last_online' field
-        $users = User::select('user_id', 'name', 'email', 'profile_picture', 'role', 'status', 'is_online', 'last_online')->get();
+        $users = User::select('user_id', 'name', 'email', 'profile_picture', 'role', 'status', 'is_online', 'last_online')
+            ->get();
         
         $users->each(function ($user) {
             // Check if last_online exists and format it using Carbon
             if ($user->last_online) {
-                // Ensure last_online is in the past and calculate the difference from the current time
-                $user->last_online = Carbon::parse($user->last_online)->diffForHumans(Carbon::now(), true); // 'true' ensures a human-readable format without "from now"
+                $user->last_online = Carbon::parse($user->last_online)->diffForHumans(Carbon::now(), true);
             }
+    
+            // Check for pending verification applications
+            $user->has_pending_verification = VerifyApplication::where('user_id', $user->user_id)
+                ->where('status', 'pending')
+                ->exists();
         });
         
         // Return the users as a JSON response

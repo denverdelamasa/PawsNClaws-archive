@@ -131,6 +131,9 @@ Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () 
 
     //Get Verified
     Route::post('/api/verify/apply', [VerifyApplicationController::class, 'applyForVerification']);
+    Route::get('/api/verify/user-applications/{userId?}', [VerifyApplicationController::class, 'getApplicationsByUserId']);
+    Route::put('/api/verify/applications/{verifyId}/accept', [VerifyApplicationController::class, 'acceptApplication']);
+    Route::put('/api/verify/applications/{verifyId}/reject', [VerifyApplicationController::class, 'rejectApplication']);
 });
 Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);
