@@ -30,8 +30,10 @@ class NotificationsController extends Controller
             ];
     
             // Determine the redirect URL based on the notification type
-            if ($notification->post_id) {
-                $notificationData['redirect_url'] = "/posts/{$notification->post_id}"; // Changed to /posts/{id}
+            if ($notification->type === 'submitted an adoption application') {
+                $notificationData['redirect_url'] = '/profile';
+            } elseif ($notification->post_id) {
+                $notificationData['redirect_url'] = "/posts/{$notification->post_id}";
             } elseif ($notification->announcement_id) {
                 $notificationData['redirect_url'] = "/announcements/{$notification->announcement_id}";
             } elseif ($notification->event_id) {

@@ -550,7 +550,12 @@ export default {
     };
   },
   methods: {
-    
+    openAdoptionModal() {
+      const modal = document.getElementById('adoptionModal');
+      if (modal) {
+        modal.showModal();
+      }
+    },
     async fetchVerificationApplications() {
         try {
             const response = await axios.get('/api/verify/user-applications/', {
@@ -562,17 +567,6 @@ export default {
             this.hasPendingApplication = this.verificationApplications.some(app => app.status === 'pending');
         } catch (error) {
             console.error('Error fetching verification applications:', error);
-            Swal.fire({
-                position: "bottom-end",
-                icon: "error",
-                title: "Failed to fetch verification applications.",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                background: "#1e293b",
-                color: "#ffffff",
-                toast: true,
-            });
         }
     },
     openGetVerifiedModal() {
@@ -994,7 +988,12 @@ export default {
   mounted() {
     this.fetchUserProfileInfo();
     this.fetchUserAdoptionApplications();
-    this.fetchVerificationApplications()
+    this.fetchVerificationApplications();
+    if (this.$route.query.openAdoptionModal === 'true') {
+      this.openAdoptionModal();
+      // Optionally, clear the query parameter to avoid re-opening on refresh
+      this.$router.replace({ query: {} });
+    }
   },
 };
 </script>

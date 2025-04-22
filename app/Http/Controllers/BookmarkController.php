@@ -70,14 +70,6 @@ class BookmarkController extends Controller
                     'event' => 'bookmarked your event',
                     default => null,
                 };
-
-                Notification::create([
-                    'user_id' => $ownerId,
-                    'type' => $message,
-                    'bookmarked_by_user_id' => $userId,
-                    'read_at' => null,
-                    $type.'_id' => $itemId,
-                ]);
             }
 
             return response()->noContent();

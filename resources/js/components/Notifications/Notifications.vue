@@ -103,7 +103,7 @@ export default {
       try {
         const response = await axios.get(this.nextPageUrl);
         const { notifications, pagination } = response.data;
-
+        console.log('Notifications:', notifications);
         this.notifications = [...this.notifications, ...notifications];
         this.nextPageUrl = pagination.next_page_url;
       } catch (error) {
@@ -123,9 +123,21 @@ export default {
       }
     },
     async handleNotificationClick(notification) {
+      console.log('Handling notification click:', notification); // Debug notification
       await this.markAsRead(notification); // Mark notification as read
+
       if (notification.redirect_url) {
-        this.$router.push(notification.redirect_url); // Navigate to the redirect URL
+        // Check if the notification is related to an adoption form submission
+        if (notification.type === 'submitted an adoption application' || notification.type.includes('adoption')) {
+          console.log('Redirecting to profile with adoption modal'); // Debug redirect
+          this.$router.push({
+            path: '/profile',
+            query: { openAdoptionModal: 'true' },
+          });
+        } else {
+          console.log('Redirecting to:', notification.redirect_url); // Debug other redirects
+          this.$router.push(notification.redirect_url);
+        }
         this.showDropdown = false; // Close the dropdown
       }
     },

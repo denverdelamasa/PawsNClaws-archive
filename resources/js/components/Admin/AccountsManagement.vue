@@ -172,86 +172,116 @@
           </div>
         </div>
       </div>
+      <div v-if="isVerificationModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300" :class="{ 'opacity-0': !isVerificationModalOpen }" aria-modal="true" role="dialog">
+        <div class="bg-base-100 p-6 rounded-xl shadow-2xl w-full max-w-4xl mx-4 sm:mx-6 lg:mx-8 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100" :class="{ 'scale-95 opacity-0': !isVerificationModalOpen }">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-semibold text-base-content">Verification Application</h3>
+                <button @click="closeVerificationModal" class="btn btn-sm btn-circle btn-ghost hover:bg-base-200" aria-label="Close modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
 
-      <!-- Verification Application Modal -->
-      <div v-if="isVerificationModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-        <div class="bg-base-200 p-6 rounded-md shadow-lg w-full max-w-4xl">
-          <h3 class="text-lg font-semibold mb-4">Verification Application</h3>
-          <div v-if="selectedApplication" class="flex flex-col gap-4">
-            <!-- Existing fields -->
-            <div class="flex flex-col items-center">
-              <img
-                :src="currentUser?.profile_picture ? '/storage/' + currentUser.profile_picture : defaultProfilePicture"
-                alt="Profile Picture"
-                class="w-16 h-16 rounded-full object-cover mb-2"
-              />
-              <p class="text-lg font-medium">{{ currentUser?.name }}</p>
-              <p class="text-sm text-gray-600">{{ currentUser?.email }}</p>
+            <!-- Content -->
+            <div v-if="selectedApplication" class="flex flex-col gap-6">
+                <!-- User Info -->
+                <div class="flex flex-col items-center bg-base-200 p-4 rounded-lg shadow-sm">
+                    <img
+                        :src="currentUser?.profile_picture ? '/storage/' + currentUser.profile_picture : defaultProfilePicture"
+                        alt="Profile Picture"
+                        class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-base-300 shadow-md mb-3"
+                    />
+                    <p class="text-lg sm:text-xl font-medium text-base-content">{{ currentUser?.name }}</p>
+                    <p class="text-sm text-base-content/70">{{ currentUser?.email }}</p>
+                </div>
+
+                <!-- Application Details -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm font-medium text-base-content/70">Applied Role</p>
+                        <p class="text-base font-semibold capitalize">{{ selectedApplication.role }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-base-content/70">Status</p>
+                        <p class="text-base font-semibold">
+                            <span :class="{
+                                'badge badge-primary': selectedApplication.status === 'pending',
+                                'badge badge-success': selectedApplication.status === 'approved',
+                                'badge badge-error': selectedApplication.status === 'rejected'
+                            }">
+                                {{ selectedApplication.status.charAt(0).toUpperCase() + selectedApplication.status.slice(1) }}
+                            </span>
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-base-content/70">Submitted</p>
+                        <p class="text-base font-semibold">{{ new Date(selectedApplication.created_at).toLocaleString() }}</p>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div>
+                    <p class="text-sm font-medium text-base-content/70 mb-2">Documents</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div v-for="(doc, index) in selectedApplication.documents" :key="index" class="bg-base-200 p-4 rounded-lg shadow-sm">
+                            <a :href="doc" target="_blank" class="link link-primary text-sm truncate block mb-2">{{ doc.split('/').pop() }}</a>
+                            <iframe
+                                v-if="doc.endsWith('.pdf')"
+                                :src="doc"
+                                class="w-full h-64 sm:h-80 rounded-lg"
+                                frameborder="0"
+                            ></iframe>
+                            <img
+                                v-else
+                                :src="doc"
+                                alt="Document"
+                                class="w-full h-auto rounded-lg object-contain max-h-64 sm:max-h-80"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rejection Reason -->
+                <div v-if="selectedApplication.status === 'pending' && showRejectionInput" class="mt-4">
+                    <label for="rejectionReason" class="block text-sm font-medium text-base-content/70 mb-2">Rejection Reason</label>
+                    <textarea
+                        v-model="rejectionReason"
+                        id="rejectionReason"
+                        class="textarea textarea-bordered w-full text-base resize-y"
+                        placeholder="Enter reason for rejection (optional)"
+                        rows="4"
+                    ></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div v-if="selectedApplication.status === 'pending'" class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+                    <button
+                        v-if="!showRejectionInput"
+                        class="btn btn-error w-full sm:w-auto"
+                        @click="showRejectionInput = true"
+                    >Reject</button>
+                    <button
+                        v-if="showRejectionInput"
+                        class="btn btn-error w-full sm:w-auto"
+                        @click="updateApplicationStatus('rejected')"
+                    >Confirm Reject</button>
+                    <button
+                        v-if="showRejectionInput"
+                        class="btn btn-ghost w-full sm:w-auto"
+                        @click="showRejectionInput = false; rejectionReason = ''"
+                    >Cancel</button>
+                    <button
+                        v-if="!showRejectionInput"
+                        class="btn btn-success w-full sm:w-auto"
+                        @click="updateApplicationStatus('approved')"
+                    >Approve</button>
+                </div>
             </div>
-            <p><strong>Applied Role:</strong> {{ selectedApplication.role }}</p>
-            <p><strong>Status:</strong> {{ selectedApplication.status }}</p>
-            <p><strong>Submitted:</strong> {{ new Date(selectedApplication.created_at).toLocaleString() }}</p>
-            <div>
-              <strong>Documents:</strong>
-              <div v-for="(doc, index) in selectedApplication.documents" :key="index" class="mt-2">
-                <a :href="doc" target="_blank" class="link link-primary">{{ doc.split('/').pop() }}</a>
-                <iframe
-                  v-if="doc.endsWith('.pdf')"
-                  :src="doc"
-                  width="100%"
-                  height="300px"
-                  class="mt-2 rounded-lg"
-                  frameborder="0"
-                ></iframe>
-                <img
-                  v-else
-                  :src="doc"
-                  alt="Document"
-                  class="mt-2 rounded-lg max-w-full"
-                />
-              </div>
+            <div v-else class="text-center py-6">
+                <p class="text-base text-base-content/70">No verification application found.</p>
             </div>
-            <!-- Rejection Reason Input (shown only when rejecting) -->
-            <div v-if="selectedApplication.status === 'pending' && showRejectionInput" class="mt-4">
-              <label for="rejectionReason" class="block text-sm font-medium">Rejection Reason:</label>
-              <textarea
-                v-model="rejectionReason"
-                id="rejectionReason"
-                class="textarea textarea-bordered w-full"
-                placeholder="Enter reason for rejection (optional)"
-                rows="4"
-              ></textarea>
-            </div>
-            <!-- Buttons -->
-            <div v-if="selectedApplication.status === 'pending'" class="flex justify-end gap-2 mt-4">
-              <button
-                class="btn btn-error"
-                @click="showRejectionInput = true"
-                v-if="!showRejectionInput"
-              >Reject</button>
-              <button
-                v-if="showRejectionInput"
-                class="btn btn-error"
-                @click="updateApplicationStatus('rejected')"
-              >Confirm Reject</button>
-              <button
-                v-if="showRejectionInput"
-                class="btn btn-gray"
-                @click="showRejectionInput = false; rejectionReason = ''"
-              >Cancel</button>
-              <button
-                class="btn btn-success"
-                @click="updateApplicationStatus('approved')"
-                v-if="!showRejectionInput"
-              >Approve</button>
-            </div>
-          </div>
-          <div v-else class="text-center">
-            <p>No verification application found.</p>
-          </div>
-          <div class="flex justify-end mt-4">
-            <button @click="closeVerificationModal" class="btn btn-sm bg-gray-500 text-white">Close</button>
-          </div>
         </div>
       </div>
     </div>

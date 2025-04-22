@@ -220,7 +220,11 @@ class PostController extends Controller
             // **Check if the current user is not the post/announcement owner before creating notification**
             if ($userId !== $postOwner) {
                 // Determine the notification message
-                $notificationType = $type === 'post' ? 'liked your post' : 'liked your announcement';
+                $notificationType = $type === 'post' 
+                    ? 'liked your post' 
+                    : ($type === 'announcement' 
+                        ? 'liked your announcement' 
+                        : 'liked your event');
     
                 // Create notification
                 $notificationData = [

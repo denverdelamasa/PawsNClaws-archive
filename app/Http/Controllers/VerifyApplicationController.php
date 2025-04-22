@@ -6,7 +6,10 @@ use App\Models\User;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\VerifyApplication;
+use App\Mail\VerificationApproved;
+use App\Mail\VerificationRejected;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -184,6 +187,9 @@ class VerifyApplicationController extends Controller
                 $newRole = $application->role === 'shelter' ? 'Shelter' : 'Vet Clinic';
                 $user->role = $newRole;
                 $user->save();
+
+                // Send approval email
+                Mail::to($user->email)->queue(new VerificationApproved($application, $user));
             } else {
                 Log::warning("User not found for application ID: {$verifyId}");
             }
@@ -222,11 +228,7 @@ class VerifyApplicationController extends Controller
     }
 
     /**
-     * Reject a verification application.
-     *
-     * @param Request $request
-     * @param int $verifyId
-     * @return \Illuminate\Http\JsonResponse
+     * Reject a verification application and send rejection email.
      */
     public function rejectApplication(Request $request, $verifyId)
     {
@@ -275,6 +277,14 @@ class VerifyApplicationController extends Controller
                 $application->rejection_reason = $request->input('reason');
             }
             $application->save();
+
+            // Fetch the user and send rejection email
+            $user = User::find($application->user_id);
+            if ($user) {
+                Mail::to($user->email)->queue(new VerificationRejected($application, $user));
+            } else {
+                Log::warning("User not found for application ID: {$verifyId}");
+            }
 
             // Create notification for the user
             Notification::create([

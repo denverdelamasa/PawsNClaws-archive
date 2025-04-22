@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PostDetail from '../components/partials/posts/PostDetail.vue';
 import Messages from '../components/Auth/Messages.vue';
+import UserProfile from '../components/Auth/UserProfile.vue';
 
 const routes = [
   {
@@ -9,6 +10,11 @@ const routes = [
     name: 'PostDetail',
     component: PostDetail,
     props: true,
+  },
+  {
+    path: '/profile',
+    name: 'UserProfile',
+    component: UserProfile
   },
   {
     path: '/messages',

@@ -74,6 +74,7 @@ app2.component('user-messages', Messages);
 app2.mount("#app2");
 
 const app3 = createApp({});
+app3.use(router);
 
 app3.component('announcement-welcome', AnnouncementWelcome);
 app3.mount("#app3")
