@@ -29,14 +29,17 @@ import AnnouncementWelcome from './components/partials/posts/AnnouncementWelcome
 import Event from './components/partials/posts/Event.vue';
 import BrowseAccounts from './components/partials/browse/BrowseAccounts.vue';
 import ViewAccount from './components/partials/misc/ViewAccount.vue';
-import PostDetail from './components/partials/posts/PostDetail.vue';
 import CombinedFeed from './components/partials/posts/CombinedFeed.vue';
 import Bookmarks from './components/partials/misc/Bookmarks.vue';
 import Messages from './components/Auth/Messages.vue';
+import ContentDetail from './components/Notifications/partials/ContentDetail.vue';
+import AdoptionPendingCount from './components/partials/misc/AdoptionPendingCount.vue';
+import CombinedFeedShelter from './components/partials/posts/CombinedFeedShelter.vue';
 
 // Create the Vue app
 const app1 = createApp({});
 app1.component('notifications', Notification);
+app1.component('adoption-pending-count', AdoptionPendingCount);
 app1.use(router);
 app1.mount('#app');
 
@@ -66,10 +69,11 @@ app2.component('announcement-cards', Announcement);
 app2.component('event-cards', Event);
 app2.component('browse-accounts', BrowseAccounts);
 app2.component('view-account', ViewAccount);
-app2.component('post-detail', PostDetail);
 app2.component('combined-feed', CombinedFeed);
 app2.component('user-bookmarks', Bookmarks);
 app2.component('user-messages', Messages);
+app2.component('content-detail', ContentDetail);
+app2.component('combined-feed-shelter', CombinedFeedShelter);
 
 app2.mount("#app2");
 

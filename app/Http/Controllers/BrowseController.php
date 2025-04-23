@@ -72,6 +72,7 @@ class BrowseController extends Controller
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('caption', 'like', "%{$search}%")
+                  ->orWhere('pet', 'like', "%{$search}%") // Add pet field to search
                   ->orWhereHas('user', function($userQuery) use ($search) {
                       $userQuery->where('name', 'like', "%{$search}%")
                                 ->orWhere('username', 'like', "%{$search}%");
@@ -113,6 +114,7 @@ class BrowseController extends Controller
                 'comments_count' => $post->comments_count,
                 'is_adoptable' => $post->is_adoptable,
                 'done_sending_adoption_form' => $isDoneSendingAdoptionForm,
+                'pet' => $post->pet,
             ];
         });
     

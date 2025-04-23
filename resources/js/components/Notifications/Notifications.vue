@@ -123,23 +123,20 @@ export default {
       }
     },
     async handleNotificationClick(notification) {
-      console.log('Handling notification click:', notification); // Debug notification
-      await this.markAsRead(notification); // Mark notification as read
+      console.log('Handling notification click:', notification);
+      await this.markAsRead(notification);
 
-      if (notification.redirect_url) {
-        // Check if the notification is related to an adoption form submission
-        if (notification.type === 'submitted an adoption application' || notification.type.includes('adoption')) {
-          console.log('Redirecting to profile with adoption modal'); // Debug redirect
-          this.$router.push({
-            path: '/profile',
-            query: { openAdoptionModal: 'true' },
-          });
-        } else {
-          console.log('Redirecting to:', notification.redirect_url); // Debug other redirects
-          this.$router.push(notification.redirect_url);
-        }
-        this.showDropdown = false; // Close the dropdown
+      // Handle adoption notifications
+      if (notification.type === 'submitted an adoption application' || notification.type.includes('adoption')) {
+        console.log('Redirecting to profile with adoption modal');
+        window.location.href = `/profile`;
+        
+      } else {
+        // Navigate to ContentDetail for posts, events, or announcements
+        console.log('Redirecting to content detail:', `/content/detail/${notification.notification_id}`);
+        this.$router.push(`/content/detail/${notification.notification_id}`);
       }
+      this.showDropdown = false;
     },
     handleScroll(event) {
       if (!this.isInfiniteScroll) return;

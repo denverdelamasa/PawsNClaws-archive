@@ -7,10 +7,7 @@
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
                         <div class="flex flex-col items-center relative group">
                             <!-- Profile Picture -->
-                            <img :src="imagePreview || `/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
-
-                            <!-- Camera Icon inside the Profile Picture, only shown when hovering over the image -->
-                            <i class="fas fa-camera w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
+                            <img :src="`/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
 
                             <div class="flex flex-row gap-x-2 align-middle items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16" @click="toggleEditing">
@@ -150,12 +147,17 @@
                         </div>
                         <!-- Modal muna to -->
                         <div>
-                            <button 
-                                class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
-                                onclick="adoptionModal.showModal()"
-                            >
-                                Adoption Lists
-                            </button>
+                            <div>
+                                <button 
+                                    class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100 relative"
+                                    onclick="adoptionModal.showModal()"
+                                >
+                                    Adoption Lists
+                                    <span v-if="pendingApplicationsCount > 0" class="badge badge-primary badge-sm absolute -top-2 -right-4">
+                                    {{ pendingApplicationsCount }}
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
@@ -310,19 +312,6 @@
             </form>
         
             <h3 class="text-lg font-bold mb-4">Adoption Requests</h3>
-        
-            <!-- Search and Filter Section -->
-            <div class="flex flex-wrap items-center justify-between mb-4">
-            <!-- Filter Button -->
-            <div>
-                <button class="btn btn-outline btn-primary">Filter</button>
-            </div>
-        
-            <!-- Search Input -->
-            <div class="form-control w-full max-w-md">
-                <input type="text" placeholder="Search requests..." class="input input-bordered" />
-            </div>
-            </div>
         
             <!-- Table Section -->
             <div class="overflow-x-auto z-10">
@@ -545,14 +534,27 @@ export default {
       },
       activeTab: 'posts',
       hasPendingApplication: false,
-      verificationApplications: []
-
+      verificationApplications: [],
+      pendingApplicationsCount: 0,
     };
   },
   methods: {
+    async fetchPendingApplicationsCount() {
+      try {
+        const response = await axios.get('/api/user/adoption/pending-count', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        this.pendingApplicationsCount = response.data.pending_count;
+      } catch (error) {
+        console.error('Error fetching pending applications count:', error);
+      }
+    },
     openAdoptionModal() {
       const modal = document.getElementById('adoptionModal');
       if (modal) {
+        this.fetchPendingApplicationsCount();
         modal.showModal();
       }
     },
@@ -708,6 +710,7 @@ export default {
                 color: "#ffffff",
             });
             this.fetchUserAdoptionApplications();
+            this.fetchPendingApplicationsCount();
             this.closeReviewModal(); // Close the modal after success
         })
         .catch((error) => {
@@ -741,6 +744,7 @@ export default {
                 color: "#ffffff",
             });
             this.fetchUserAdoptionApplications();
+            this.fetchPendingApplicationsCount();
             this.closeReviewModal(); // Close the modal after success
         })
         .catch((error) => {
@@ -759,6 +763,7 @@ export default {
         .then((response) => {
             alert('Adoption application completed!');
             this.fetchUserAdoptionApplications();
+            this.fetchPendingApplicationsCount();
             this.closeReviewModal();
         })
         .catch((error) => {
@@ -988,7 +993,11 @@ export default {
   mounted() {
     this.fetchUserProfileInfo();
     this.fetchUserAdoptionApplications();
+    this.fetchPendingApplicationsCount();
     this.fetchVerificationApplications();
+    setInterval(() => {
+        this.fetchPendingApplicationsCount();
+    }, 30000);
     if (this.$route.query.openAdoptionModal === 'true') {
       this.openAdoptionModal();
       // Optionally, clear the query parameter to avoid re-opening on refresh

@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public function contentDetail()
+    {
+        return view('pages.notifications.content-details');
+    }
     public function showPage(Request $request)
     {
         // Fetch theme from session or default to 'light'

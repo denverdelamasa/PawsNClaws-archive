@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\MessagesController;
-use App\Http\Controllers\VerifyApplicationController;
 use App\Models\User;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
@@ -16,6 +14,7 @@ use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\DashboardControllers;
 use App\Http\Middleware\TrackUserOnlineStatus;
 use App\Http\Controllers\UserProfileController;
@@ -23,7 +22,9 @@ use App\Http\Controllers\AdoptionFormController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CombinedFeedController;
 use App\Http\Controllers\ClientProfileController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\ServerProfileController;
+use App\Http\Controllers\VerifyApplicationController;
 use App\Http\Controllers\PageController; // ETO NA RAGH
 
 Route::get('/', function () {
@@ -65,6 +66,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
     Route::patch('/server/profile', [ServerProfileController::class, 'update'])->name('profile.update');
     Route::delete('/server/profile', [ServerProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/api/dashboard/count', [DashboardControllers::class, 'getCounts']);
+    
     //Users Management
     Route::get('/api/users/lists', [UserController::class, 'getUsersList']);
     Route::get('/api/users/check/role', [UserController::class, 'getCurrentUserRole']);
@@ -77,9 +79,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
 });
 
 Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () {
-    Route::get('/user/settings', [ClientProfileController::class, 'edit'])->name('client.profile.edit');
-    Route::patch('/client/profile', [ClientProfileController::class, 'update'])->name('client.profile.update');
-    Route::delete('/client/profile', [ClientProfileController::class, 'destroy'])->name('client.profile.destroy');
+    Route::get('/api/user/adoption/pending-count', [AdoptionFormController::class, 'getPendingApplicationsCount']);
 
     //Post Modifiers
     Route::post('/api/posts/upload', [PostController::class, 'createPost']);
@@ -134,8 +134,12 @@ Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () 
     Route::get('/api/verify/user-applications/{userId?}', [VerifyApplicationController::class, 'getApplicationsByUserId']);
     Route::put('/api/verify/applications/{verifyId}/accept', [VerifyApplicationController::class, 'acceptApplication']);
     Route::put('/api/verify/applications/{verifyId}/reject', [VerifyApplicationController::class, 'rejectApplication']);
+
+    Route::get('/api/notifications/{notificationId}/content', [NotificationsController::class, 'getNotificationContent']);
+    Route::get('/content/detail/{notificationId}',[PageController::class,'contentDetail']);
 });
 Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
+Route::get('/api/feed/shelter/list', [CombinedFeedController::class, 'combinedFeedShelters']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);
 Route::get('/api/announcements/list', [AnnouncementController::class, 'announcementList']);
 Route::get('/api/events/list', [EventController::class, 'eventList']);  
@@ -158,7 +162,7 @@ Route::get('/api/accounts/view/event/{id}', [BrowseController::class, 'viewUserE
 Route::get('/home', [PageController::class, 'home'])->name('home');
 Route::get('/announcements', [PageController::class, 'announcements'])->name('announcements');
 Route::get('/events', [PageController::class, 'events'])->name('events');
-Route::get('/Services', [PageController::class, 'Services'])->name('Services'); 
+//Route::get('/Services', [PageController::class, 'Services'])->name('Services'); 
 Route::get('/browse', [PageController::class, 'browse'])->name('browse'); 
 Route::get('/posts', [PageController::class, 'posts'])->name('posts'); 
 Route::get('/settings', [PageController::class, 'editprofile']);

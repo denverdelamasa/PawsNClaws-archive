@@ -45,20 +45,50 @@
           </div>
         </div>
 
-        <!-- 4. Social Media Links -->
+        <!--Social Media-->
         <div class="mb-4">
-          <label for="socmed" class="block text-sm font-medium">Social Media Links</label>
+          <label for="socmed" class="block text-sm font-medium text-base-content">Social Media Links</label>
           <p class="m-2 text-xs text-secondary">(Optional)</p>
-          <input
-            type="url"
-            id="socmed"
-            v-model="formData.socmed"
-            name="socmed"
-            class="input input-bordered w-full"
-            @input="validateSocmedLink"
-            placeholder="Enter social media link (Facebook, Instagram, etc.)"
-          >
-          <p v-if="invalidSocmedLink" class="text-xs text-red-500 mt-1">Please enter a valid social media link (e.g., Facebook, Instagram, X).</p>
+          <div class=" flex-col sm:flex-row items-start sm:items-center gap-2">
+              <div class="flex gap-2 mb-2 sm:mb-0">
+                  <button
+                      type="button"
+                      class="btn btn-sm btn-ghost text-blue-600 hover:bg-base-200"
+                      @click="prependSocialUrl('https://facebook.com/')"
+                      title="Facebook"
+                  >
+                      <i class="fab fa-facebook-f"></i>
+                  </button>
+                  <button
+                      type="button"
+                      class="btn btn-sm btn-ghost text-pink-500 hover:bg-base-200"
+                      @click="prependSocialUrl('https://instagram.com/')"
+                      title="Instagram"
+                  >
+                      <i class="fab fa-instagram"></i>
+                  </button>
+                  <button
+                      type="button"
+                      class="btn btn-sm btn-ghost text-base-content hover:bg-base-200"
+                      @click="prependSocialUrl('https://x.com/')"
+                      title="X"
+                  >
+                      <i class="fab fa-x-twitter"></i>
+                  </button>
+              </div>
+              <div class="w-full">
+                  <input
+                      type="url"
+                      id="socmed"
+                      v-model="formData.socmed"
+                      name="socmed"
+                      class="input input-bordered w-full text-sm bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                      @input="validateSocmedLink"
+                      placeholder="Enter social media link (e.g., facebook.com/username)"
+                  >
+                  <p v-if="invalidSocmedLink" class="text-xs text-red-500 mt-1">Please enter a valid social media link (e.g., Facebook, Instagram, X).</p>
+              </div>
+          </div>
         </div>
 
         <!-- 5. Complete Location -->

@@ -1,7 +1,3 @@
 @include('partials.main.head')
-
-
-    <combined-feed-shelter></combined-feed-shelter>
-
-
+    <content-detail></content-detail>
 @include('partials.main.footer')

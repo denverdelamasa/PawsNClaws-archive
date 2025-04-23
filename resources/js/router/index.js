@@ -1,20 +1,20 @@
 // resources/js/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import PostDetail from '../components/partials/posts/PostDetail.vue';
 import Messages from '../components/Auth/Messages.vue';
 import UserProfile from '../components/Auth/UserProfile.vue';
+import ContentDetail from '../components/Notifications/partials/ContentDetail.vue';
 
 const routes = [
-  {
-    path: '/post/detail/:id',
-    name: 'PostDetail',
-    component: PostDetail,
-    props: true,
-  },
   {
     path: '/profile',
     name: 'UserProfile',
     component: UserProfile
+  },
+  {
+    path: '/content/detail/:notificationId',
+    name: 'ContentDetail',
+    component: ContentDetail,
+    props: true,
   },
   {
     path: '/messages',

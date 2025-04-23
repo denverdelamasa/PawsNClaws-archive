@@ -91,6 +91,7 @@ class PostController extends Controller
             'caption' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10000', // Validate each image in the array
             'is_adoptable' => 'nullable|boolean',
+            'pet' => 'nullable|string'
         ]);
 
         // Handle multiple image uploads
@@ -108,6 +109,7 @@ class PostController extends Controller
         // Create the post
         $post = new Post();
         $post->caption = $request->input('caption');
+        $post->pet = $request->input('pet');
         $post->user_id = Auth::id();
         $post->is_adoptable = $request->input('is_adoptable', false); // Default to false
         $post->post_path = Str::random(15   ); // Generate post_path

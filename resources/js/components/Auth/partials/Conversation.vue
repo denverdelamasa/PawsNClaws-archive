@@ -175,6 +175,11 @@ export default {
       }
     },
   },
+  mounted(){
+    setInterval(() => {
+        this.fetchMessages();
+    }, 5000);
+  }
 };
 </script>
 

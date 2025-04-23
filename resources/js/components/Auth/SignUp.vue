@@ -163,9 +163,13 @@
                   {{ passwordsMatch ? "Passwords match!" : "Passwords do not match." }}
                 </span>
               </div>
-              <button type="submit" class="btn btn-primary w-full">
-                Create an account
+              <button type="submit" class="btn btn-primary w-full" :disabled="isCreatingAccount">
+                <span v-if="isCreatingAccount" class="p-3 animate-spin drop-shadow-2xl bg-gradient-to-bl from-pink-400 via-purple-400 to-indigo-600 h-8 w-8 aspect-square rounded-full">
+                  <span class="rounded-full h-full w-full bg-slate-100 dark:bg-zinc-900 background-blur-md"></span>
+                </span>
+                <span v-else>Create an account</span>
               </button>
+              
               <p v-if="showVerifyMessage" class="text-error text-sm mt-2">
                 Please verify your email before creating an account.
               </p>
@@ -324,7 +328,7 @@
                       <div class="ml-3 text-sm">
                         <label for="terms" class="font-light text-secondary">
                           I accept the
-                          <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/pages/terms-and-conditions">Terms and Conditions</a>
+                          <a class="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/pages/terms-and-conditions">Terms of Service</a>
                         </label>
                       </div>
                     </div>
@@ -383,6 +387,7 @@ export default {
       verificationMessage: "",
       showTermsModal: false,
       hasScrolledToBottom: false,
+      isCreatingAccount: false,
     };
   },
   computed: {

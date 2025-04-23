@@ -58,5 +58,15 @@ class AdoptionFormController extends Controller
     
         return response()->json(['message' => 'Application submitted successfully!'], 201);
     }
+
+    public function getPendingApplicationsCount(Request $request)
+    {
+        $userId = $request->user()->user_id; // Get the authenticated user's ID
+        $pendingCount = AdoptionApplication::where('receiver_id', $userId)
+            ->where('status', 'Pending')
+            ->count();
+    
+        return response()->json(['pending_count' => $pendingCount], 200);
+    }
     
 }

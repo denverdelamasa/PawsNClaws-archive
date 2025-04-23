@@ -126,7 +126,7 @@
           </button>
 
           <!-- Hidden File Input for Image -->
-          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" multiple/>
+          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" multiple :required="modalData.is_adoptable"/>
 
           <!-- Image Preview -->
           <div v-if="modalData.image_previews.length > 0" class="my-4">
@@ -155,6 +155,17 @@
             />
             <span>This post is for adoption</span>
           </label>
+        </div>
+
+        <div v-if="modalData.is_adoptable" class="mt-2">
+          <label class="block font-medium mb-1">Pet</label>
+          <input 
+            type="text" 
+            class="input input-bordered w-full" 
+            v-model="modalData.pet" 
+            placeholder="What pet is that?" 
+            required
+          />
         </div>
 
         <!-- Submit Button -->
@@ -245,6 +256,10 @@ export default {
       type: Function,
       required: false
     },
+    fetchFeedProp: {
+      type: Function,
+      required: false
+    },
     fetchAnnouncementsProp: {
       type: Function,
       required: false
@@ -271,6 +286,7 @@ export default {
         event_start_date: "",
         event_end_date: "",
         event_thumbnail: null,
+        pet: "",
       },
       userProfile: {
         profile_picture: "",
@@ -342,6 +358,7 @@ export default {
 
       const formData = new FormData();
       formData.append("caption", this.modalData.caption);
+      formData.append("pet", this.modalData.pet);
 
       this.modalData.image_path.forEach((image, index) => {
         formData.append(`images[${index}]`, image);
@@ -357,6 +374,8 @@ export default {
         // Fetch the latest posts after creating a new post
         if (typeof this.fetchPostsProp === 'function') {
           this.fetchPostsProp(true);
+        } else if (typeof this.fetchFeedProp === 'function') {
+          this.fetchFeedProp(true);
         }
 
         Swal.fire({
@@ -394,6 +413,8 @@ export default {
           
           if (typeof this.fetchAnnouncementsProp === 'function') {
             this.fetchAnnouncementsProp(true);
+          } else if (typeof this.fetchFeedProp === 'function') {
+            this.fetchFeedProp(true);
           }
 
           Swal.fire({
@@ -443,6 +464,8 @@ export default {
 
           if (typeof this.fetchEventsProp === 'function') {
             this.fetchEventsProp(true);
+          } else if (typeof this.fetchFeedProp === 'function') {
+            this.fetchFeedProp(true);
           }
 
           Swal.fire({
