@@ -5,7 +5,7 @@
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="$emit('close')">✕</button>
       </form>
       
-      <h3 class="text-lg font-bold mb-4">Adoption Application</h3>
+      <h3 class="text-2xl font-bold mb-4">Adoption Application</h3>
       
       <!-- Adoption Form -->
       <form @submit.prevent="submitForm">
@@ -97,7 +97,13 @@
 
         <!-- 9. Valid Gov. ID -->
         <div class="mb-4">
-          <label for="govId" class="block text-sm font-medium">Valid Government ID (Upload)</label>
+          <label for="govId" class="block text-sm font-medium">Upload a Valid Government ID (Must show a face)</label>
+          <label for="govId" class="block text-xs font-light italic text-warning mb-2">
+            <strong>Identity Verification required</strong>
+            To comply with <strong>Republic Act No. 11055 (Philippine Identification Act)</strong>, we are required to verify your identity
+            using a valid government-issued ID.
+            This ensures the authenticity of your form submission and protects both you and our platform. Thank you for your understanding!
+          </label>
           <input type="file" id="gov_id" name="gov_id" @change="handleFileChange" class="file-input file-input-bordered w-full" accept=".jpg,.jpeg,.png,.pdf" required>
         </div>
 
@@ -109,7 +115,7 @@
             </svg>
             <span>Submit Application</span>
           </button>
-          <p class="m-2 text-xs text-secondary">
+          <p class="mt-2 mb-6 text-xs text-secondary">
             By pressing submit button you are agreeing to our 
             <a href="#" class="underline">Terms of Service</a>.
           </p>

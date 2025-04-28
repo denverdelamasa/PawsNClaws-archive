@@ -26,7 +26,7 @@
   <footer class="footer bg-base-300 text-base-content border-base-300 border-t px-10 py-4">
     <aside class="grid-flow-col items-center">
       <p>
-        Paws'N Claws
+        © 2025 Paws'n Claws. All rights reserved.
       </p>
     </aside>
     <nav class="md:place-self-center md:justify-self-end">
