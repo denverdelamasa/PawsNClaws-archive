@@ -10,31 +10,12 @@
         </p>
       </div>
 
-      <!-- Filter & Search -->
-      <div class="flex flex-wrap justify-center items-center w-full gap-2 mb-6">
-        <div class="dropdown">
-          <div tabindex="0" role="button" class="btn btn-outline">Filter by</div>
-          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-[1]">
-            <li><a>Date Descending</a></li>
-            <li><a>Date Ascending</a></li>
-            <li><a>Account</a></li>
-            <li><a>Post</a></li>
-            <li><a>Announcement</a></li>
-            <li><a>Event</a></li>
-          </ul>
-        </div>
-
-        <input 
-          v-model="searchQuery" 
-          type="text" 
-          placeholder="Search here..." 
-          class="input input-bordered w-full max-w-md" 
-        />
-      </div>
-
       <!-- Report Table -->
       <div class="overflow-x-auto w-full">
-        <table class="table w-full">
+        <div v-if="reports.length === 0" class="text-center py-8">
+          <p class="text-lg text-gray-500">No reports available at this time.</p>
+        </div>
+        <table v-else class="table w-full">
           <thead>
             <tr class="text-sm text-base-content">
               <th>Reporter</th>
@@ -54,16 +35,28 @@
               <td>{{ report.type }}</td>
               <td>
                 <button 
-                  v-if="report.type === 'Comment'" 
+                  v-if="report.type === 'comment'" 
                   class="btn btn-sm btn-primary"
                   @click="openReviewCommentModal(report)"
                 >Review Comment</button>
 
                 <button 
-                  v-else-if="report.type === 'Post'" 
+                  v-else-if="report.type === 'post'" 
                   class="btn btn-sm btn-primary"
                   @click="openReviewPostModal(report)"
                 >Review Post</button>
+
+                <button 
+                  v-else-if="report.type === 'announcement'" 
+                  class="btn btn-sm btn-primary"
+                  @click="openReviewAnnouncementModal(report)"
+                >Review Announcement</button>
+
+                <button 
+                  v-else-if="report.type === 'event'" 
+                  class="btn btn-sm btn-primary"
+                  @click="openReviewEventModal(report)"
+                >Review Event</button>
               </td>
             </tr>
           </tbody>
@@ -75,7 +68,7 @@
         <div class="modal-box">
           <h3 class="font-bold text-lg">Review Comment Report</h3>
 
-          <div v-if="selectedReport.type === 'Comment'" class="space-y-4">
+          <div v-if="selectedReport.type === 'comment'" class="space-y-4">
             <div class="flex items-center space-x-4">
               <div class="avatar">
                 <div class="w-12 h-12 rounded-full">
@@ -100,6 +93,7 @@
 
           <div class="modal-action">
             <button class="btn btn-error" @click="closeReviewCommentModal">Close</button>
+            <button class="btn btn-warning" @click="takeDownContent(selectedReport, 'comment')">Take Down</button>
           </div>
         </div>
       </div>
@@ -109,9 +103,9 @@
         <div class="modal-box">
           <h3 class="font-bold text-lg">Review Post Report</h3>
 
-          <div v-if="selectedReport.type === 'Post'">
+          <div v-if="selectedReport.type === 'post'">
             <div class="card bg-base-200 border border-base-300 shadow-md">
-              <div class="px-4 pt-4">
+              <div class="px-4 pt-4" v-if="report_post_image">
                 <img 
                   :src="`/storage/${selectedReport.report_post_image}`" 
                   alt="Reported Post" 
@@ -141,41 +135,96 @@
 
           <div class="modal-action">
             <button class="btn btn-error" @click="closeReviewPostModal">Close</button>
+            <button class="btn btn-warning" @click="takeDownContent(selectedReport, 'post')">Take Down</button>
           </div>
         </div>
       </div>
 
-      <!-- Pagination Placeholder -->
-      <div class="join mt-8">
-        <button class="join-item btn btn-sm">1</button>
-        <button class="join-item btn btn-sm">2</button>
-        <button class="join-item btn btn-sm">3</button>
-        <button class="join-item btn btn-sm">4</button>
+      <!-- Announcement Modal -->
+      <div v-if="showAnnouncementModal" class="modal modal-open">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">Review Announcement Report</h3>
+
+          <div v-if="selectedReport.type === 'announcement'">
+            <div class="card bg-base-200 border border-base-300 shadow-md">
+              <div class="px-4 pt-4">
+                <img 
+                  :src="`/storage/${selectedReport.report_announcement_thumbnail}`" 
+                  alt="Reported Announcement" 
+                  class="w-full max-h-[500px] rounded-lg object-cover"
+                />
+              </div>
+              <div class="card-body">
+                <div class="flex items-center space-x-3">
+                  <div class="avatar">
+                    <div class="w-12 h-12 rounded-full">
+                      <img 
+                        :src="selectedReport.report_announcement_author_profile ? `/storage/${selectedReport.report_announcement_author_profile}` : 'https://picsum.photos/200'" 
+                        alt="Author Avatar"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p class="font-semibold">{{ selectedReport.report_announcement_author }}</p>
+                    <p class="text-sm text-gray-500">{{ selectedReport.report_announcement_created_at }}</p>
+                  </div>
+                </div>
+                <p class="mt-4">{{ selectedReport.report_announcement_description }}</p>
+                <p class="text-sm text-gray-600 mt-2">Reported {{ selectedReport.report_announcement_count }} time(s)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-action">
+            <button class="btn btn-error" @click="closeReviewAnnouncementModal">Close</button>
+            <button class="btn btn-warning" @click="takeDownContent(selectedReport, 'announcement')">Take Down</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Modal -->
+      <div v-if="showEventModal" class="modal modal-open">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">Review Event Report</h3>
+
+          <div v-if="selectedReport.type === 'event'">
+            <div class="card bg-base-200 border border-base-300 shadow-md">
+              <div class="px-4 pt-4">
+                <img 
+                  :src="`/storage/${selectedReport.report_event_thumbnail}`" 
+                  alt="Reported Event" 
+                  class="w-full max-h-[500px] rounded-lg object-cover"
+                />
+              </div>
+              <div class="card-body">
+                <div class="flex items-center space-x-3">
+                  <div class="avatar">
+                    <div class="w-12 h-12 rounded-full">
+                      <img 
+                        :src="selectedReport.report_event_author_profile ? `/storage/${selectedReport.report_event_author_profile}` : 'https://picsum.photos/200'" 
+                        alt="Author Avatar"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <p class="font-semibold">{{ selectedReport.report_event_author }}</p>
+                    <p class="text-sm text-gray-500">{{ selectedReport.report_event_created_at }}</p>
+                  </div>
+                </div>
+                <p class="mt-4">{{ selectedReport.report_event_description }}</p>
+                <p class="text-sm text-gray-600 mt-2">Reported {{ selectedReport.report_event_count }} time(s)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-action">
+            <button class="btn btn-error" @click="closeReviewEventModal">Close</button>
+            <button class="btn btn-warning" @click="takeDownContent(selectedReport, 'event')">Take Down</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-
-  <!--
-    <div class="max-w-md w-full bg-base-100 rounded-lg shadow p-4 md:p-6">
-      <div class="flex justify-between">
-        <div>
-          <h5 class="leading-none text-3xl font-bold text-primary pb-2">{{ reportCount }}</h5>
-          <p class="text-base font-normal text-base-content">Reports this week</p>
-        </div>
-      </div>
-      <div id="area-chart"></div>
-      <div class="grid grid-cols-1 items-center border-t border-base-200 justify-between">
-        <div class="flex justify-between items-center pt-5">
-          <a href="#reports" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-primary hover:bg-base-200 hover:text-primary-focus px-3 py-2">
-            Content Reports
-            <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  -->
 </template>
 
 <script>
@@ -190,6 +239,8 @@ export default {
       searchQuery: '',
       showCommentModal: false,
       showPostModal: false,
+      showAnnouncementModal: false,
+      showEventModal: false,
       selectedReport: null,
       chartOptions: {
         chart: {
@@ -241,15 +292,17 @@ export default {
           console.error('Error fetching reports:', error);
         });
     },
+
     openReviewCommentModal(report) {
-        this.selectedReport = report;
-        this.showCommentModal = true;
+      this.selectedReport = report;
+      this.showCommentModal = true;
     },
 
     closeReviewCommentModal() {
-        this.showCommentModal = false;
-        this.selectedReport = null;
+      this.showCommentModal = false;
+      this.selectedReport = null;
     },
+
     openReviewPostModal(report) {
       this.selectedReport = report;
       this.showPostModal = true;
@@ -258,6 +311,45 @@ export default {
     closeReviewPostModal() {
       this.showPostModal = false;
       this.selectedReport = null;
+    },
+
+    openReviewAnnouncementModal(report) {
+      this.selectedReport = report;
+      this.showAnnouncementModal = true;
+    },
+
+    closeReviewAnnouncementModal() {
+      this.showAnnouncementModal = false;
+      this.selectedReport = null;
+    },
+
+    openReviewEventModal(report) {
+      this.selectedReport = report;
+      this.showEventModal = true;
+    },
+
+    closeReviewEventModal() {
+      this.showEventModal = false;
+      this.selectedReport = null;
+    },
+
+    takeDownContent(report, type) {
+      axios.post('/api/reports/take-down', {
+        report_id: report.report_id,
+        type: type
+      })
+        .then(response => {
+          alert(response.data.message);
+          this.fetchReports(); // Refresh the reports list
+          this.closeReviewCommentModal();
+          this.closeReviewPostModal();
+          this.closeReviewAnnouncementModal();
+          this.closeReviewEventModal();
+        })
+        .catch(error => {
+          console.error('Error taking down content:', error);
+          alert('Failed to take down content.');
+        });
     },
 
     renderChart() {

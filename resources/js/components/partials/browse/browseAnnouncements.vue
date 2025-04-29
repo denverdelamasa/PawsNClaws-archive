@@ -92,11 +92,19 @@
                     </div>
                 
                     <!-- Thumbnail -->
-                    <div v-if="announcement.thumbnail" class="m-4 carousel rounded-lg max-h-[200px] overflow-hidden">
-                        <div id="slide1" class="carousel-item relative w-full">
-                            <img :src="`/storage/${announcement.thumbnail}`" class="w-full h-full object-cover" />
+                    <div v-if="announcement.thumbnail" class="m-4 rounded-lg max-h-[200px] overflow-hidden cursor-pointer" @click="openImageModal(announcement.thumbnail, announcement.announcement_id)">
+                        <div class="carousel-item relative w-full">
+                        <img :src="`/storage/${announcement.thumbnail}`" class="w-full h-full object-cover" />
                         </div>
                     </div>
+
+                    <!-- Image Modal -->
+                    <dialog :id="`imageModal-${announcement.announcement_id}`" class="modal">
+                        <div class="modal-box w-full max-w-4xl p-4">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeImageModal(announcement.announcement_id)">✕</button>
+                        <img :src="selectedImage" class="w-full h-auto object-contain max-h-[80vh]" />
+                        </div>
+                    </dialog>
 
                     <ReportModal v-if="selectedReportAnnouncementId" :announcementId="selectedReportAnnouncementId" :reportType="'announcement'" :currentUserId="currentUserId" @close="closeReportModal()"/>
 
@@ -205,6 +213,7 @@ export default {
             currentUserId: null,
             selectedReportAnnouncementId: null,
             showLoginModal: false,
+            selectedImage: null,
         }
     },
     watch: {
@@ -215,6 +224,20 @@ export default {
         },
     },
     methods: {
+        openImageModal(image, announcementId) {
+            this.selectedImage = `/storage/${image}`;
+            const modal = document.getElementById(`imageModal-${announcementId}`);
+            if (modal) {
+                modal.showModal();
+            }
+        },
+        closeImageModal(announcementId) {
+            const modal = document.getElementById(`imageModal-${announcementId}`);
+            if (modal) {
+                modal.close();
+                this.selectedImage = null;
+            }
+        },
         triggerLoginModal() {
             this.showLoginModal = true;
             this.$nextTick(() => {

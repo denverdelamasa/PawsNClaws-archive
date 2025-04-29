@@ -14,14 +14,20 @@
           <details class="dropdown">
             <summary class="btn btn-sm">Filter by</summary>
             <ul class="menu dropdown-content bg-base-100 rounded-box z-10 w-52 p-2 shadow">
-              <li><a>Alphabetical</a></li>
-              <li><a>Recent</a></li>
-              <li><a>Oldest</a></li>
-              <li><a>Most Active</a></li>
-              <li><a>Least Active</a></li>
+              <li><a @click="setFilter('alphabetical')">Alphabetical</a></li>
+              <li><a @click="setFilter('recent')">Recent</a></li>
+              <li><a @click="setFilter('oldest')">Oldest</a></li>
+              <li><a @click="setFilter('most_active')">Most Active</a></li>
+              <li><a @click="setFilter('least_active')">Least Active</a></li>
             </ul>
           </details>
-          <input type="text" placeholder="Search users..." class="input input-bordered input-sm w-full max-w-xs" />
+          <input
+            type="text"
+            v-model="searchQuery"
+            @input="debouncedFetchUsers"
+            placeholder="Search users..."
+            class="input input-bordered input-sm w-full max-w-xs"
+          />
         </div>
       </div>
 
@@ -36,7 +42,7 @@
               <th>Role</th>
               <th>Status</th>
               <th>Last Login</th>
-              <th>Actions</th>
+              <th v-if="showActionsColumn">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -82,7 +88,7 @@
                     <i class="fas fa-file-alt"></i> <span class="hidden sm:inline">View Verification</span>
                   </button>
                   <!-- Other Action Buttons -->
-                  <button class="btn btn-xs bg-red-500 text-white" @click="checkAdminAndOpenSuspendUserModal(user)">
+                  <!--<button class="btn btn-xs bg-red-500 text-white" @click="checkAdminAndOpenSuspendUserModal(user)">
                     <i class="fas fa-ban"></i> <span class="hidden sm:inline">Suspend</span>
                   </button>
                   <button class="btn btn-xs bg-yellow-500 text-white" @click="warnUser(user.user_id)">
@@ -90,7 +96,7 @@
                   </button>
                   <button class="btn btn-xs bg-red-700 text-white" @click="checkAdminAndOpenDeleteModal(user)">
                     <i class="fas fa-trash"></i> <span class="hidden sm:inline">Delete</span>
-                  </button>
+                  </button>-->
                 </div>
               </td>
             </tr>
@@ -310,20 +316,34 @@ export default {
       defaultProfilePicture: 'https://via.placeholder.com/150', // Adjust as needed
       rejectionReason: '', // New: Store rejection reason input
       showRejectionInput: false, // New: Toggle rejection reason input
+      searchQuery: '', // New: Store search input
+      selectedFilter: 'alphabetical', // New: Default filter
     };
   },
+  computed: {
+    showActionsColumn() {
+      return !this.users.some(user => user.has_pending_verification);
+    }
+  },
   methods: {
+    setFilter(filter) {
+      this.selectedFilter = filter;
+      this.fetchUsers();
+    },
     async fetchUsers() {
       try {
         const response = await axios.get('/api/users/lists', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
+          params: {
+            search: this.searchQuery,
+            filter: this.selectedFilter,
+          },
         });
-        // Add has_pending_verification flag based on API response or separate check
         this.users = response.data;
       } catch (error) {
-        console.error('There was an error fetching users:', error);
+        console.error('Error fetching users:', error);
         Swal.fire({
           position: 'bottom-end',
           icon: 'error',

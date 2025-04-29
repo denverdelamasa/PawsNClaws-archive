@@ -70,13 +70,18 @@
     </div>
   
     <!-- Thumbnail -->
-    <div v-if="announcement.thumbnail" class="m-4 rounded-lg max-h-[200px] overflow-hidden">
-        <div id="slide1" class="carousel-item relative w-full">
-            <img
-                :src="`/storage/${announcement.thumbnail}`"
-                class="w-full h-full object-cover" />
-        </div>
+    <div v-if="announcement.thumbnail" class="m-4 rounded-lg max-h-[200px] overflow-hidden cursor-pointer" @click="openImageModal(announcement.thumbnail)">
+      <div class="carousel-item relative w-full">
+        <img :src="`/storage/${announcement.thumbnail}`" class="w-full h-full object-cover" />
+      </div>
     </div>
+
+    <dialog :id="`imageModal-${announcement.announcement_id}`" class="modal">
+      <div class="modal-box w-full max-w-4xl p-4">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeImageModal(announcement.announcement_id)">✕</button>
+        <img :src="selectedImage" class="w-full h-auto object-contain max-h-[80vh]" />
+      </div>
+    </dialog>
 
     <ReportModal v-if="selectedReportAnnouncementId" :announcementId="selectedReportAnnouncementId" :reportType="'announcement'" :currentUserId="currentUserId" @close="closeReportModal"/>
 
@@ -209,9 +214,24 @@ export default {
       isAuthenticated: false,
       selectedReportAnnouncementId: null,
       showLoginModal: false,
+      selectedImage: null,
     };
   },
   methods: {
+    openImageModal(image) {
+      this.selectedImage = `/storage/${image}`;
+      const modal = document.getElementById(`imageModal-${this.announcements.find(ann => ann.thumbnail === image).announcement_id}`);
+      if (modal) {
+        modal.showModal();
+      }
+    },
+    closeImageModal(announcementId) {
+      const modal = document.getElementById(`imageModal-${announcementId}`);
+      if (modal) {
+        modal.close();
+        this.selectedImage = null;
+      }
+    },
     UpdateAnnouncements() {
       this.loading = true; // Show loader when starting request
 

@@ -76,6 +76,7 @@ Route::middleware(['auth', 'CheckRole:Admin','TrackUserOnlineStatus'])->group(fu
 
     //Reports Management
     Route::get('/api/reports/lists', [ReportController::class, 'reportsList']);
+    Route::post('/api/reports/take-down', [ReportController::class, 'takeDownContent']);
 });
 
 Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () {

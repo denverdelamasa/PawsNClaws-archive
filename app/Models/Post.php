@@ -18,7 +18,7 @@ class Post extends Model
     protected $primaryKey = 'post_id';
 
     // Specify which columns are mass assignable (optional, for mass assignment protection)
-    protected $fillable = ['user_id', 'image_path', 'caption', 'post_path', 'pet'];
+    protected $fillable = ['user_id', 'image_path', 'caption', 'post_path', 'pet', 'status'];
 
     protected $casts = [
         'image_path' => 'array', // Cast JSON column to an array

@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Post;
 use App\Models\Report;
+use App\Models\Comment;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
+use App\Models\Event;
 
 class ReportController extends Controller
 {
@@ -24,7 +28,7 @@ class ReportController extends Controller
             $report->report_comment_created_at = Carbon::parse($report->comment->created_at ?? null)->diffForHumans();
             $report->report_post_author = $report->post->user->name ?? 'Unknown Author';
             $report->report_post_author_profile = $report->post->user->profile_picture ?? null;
-            $report->report_post_image = $report->post->image_path ?? null;
+            $report->report_post_image = $report->post && $report->post->image_path ? $report->post->image_path : [];
             $report->report_post_caption = $report->post->caption ?? 'No content available';
             $report->report_post_created_at = Carbon::parse($report->post->created_at ?? null)->diffForHumans();
     
@@ -84,5 +88,36 @@ class ReportController extends Controller
             ->get();
 
         return response()->json($reports);
+    }
+
+    public function takeDownContent(Request $request)
+    {
+        $request->validate([
+            'report_id' => 'required|exists:reports,report_id',
+            'type' => 'required|in:post,comment,announcement,event',
+        ]);
+
+        $report = Report::findOrFail($request->report_id);
+
+        switch ($request->type) {
+            case 'post':
+                $content = Post::findOrFail($report->report_post_id);
+                break;
+            case 'comment':
+                $content = Comment::findOrFail($report->report_comment_id);
+                break;
+            case 'announcement':
+                $content = Announcement::findOrFail($report->report_announcement_id);
+                break;
+            case 'event':
+                $content = Event::findOrFail($report->report_event_id);
+                break;
+            default:
+                return response()->json(['message' => 'Invalid content type.'], 400);
+        }
+
+        $content->delete();
+
+        return response()->json(['message' => 'Content taken down successfully.'], 200);
     }
 }

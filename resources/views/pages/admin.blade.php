@@ -59,12 +59,12 @@
                         </a></li>
                     </summary>
                     <div class="collapse-content ml-2 flex flex-col gap-y-2">
-                        <li><a href="{{ url('/admin/dashboard/contents') }}" class="{{ Request::is('admin/dashboard/contents') ? 'active' : '' }}">
+                        <!--<li><a href="{{ url('/admin/dashboard/contents') }}" class="{{ Request::is('admin/dashboard/contents') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-view-list h-6 w-6" viewBox="0 0 16 16">
                                 <path d="M3 4.5h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2m0 1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1zM1 2a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 2m0 12a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 14"/>
                             </svg>
                             Contents Management
-                        </a></li>
+                        </a></li>-->
                         <li><a href="{{ url('/admin/dashboard/reports') }}" class="{{ Request::is('admin/dashboard/reports') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-house h-6 w-6" viewBox="0 0 16 16">
                                 <path d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353zM5.1 1 1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1z"/>
@@ -78,13 +78,13 @@
                           </svg>
                           Accounts Management
                         </a></li>
-                        <li><a href="{{ url('/admin/dashboard/adoptions') }}" class="{{ Request::is('admin/dashboard/adoptions') ? 'active' : '' }}">
+                        <!--<li><a href="{{ url('/admin/dashboard/adoptions') }}" class="{{ Request::is('admin/dashboard/adoptions') ? 'active' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person-gear w-6 h-6" viewBox="0 0 16 16">
                                 <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
                                 <path d="M4.5 12.5A.5.5 0 0 1 5 12h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m0-2A.5.5 0 0 1 5 10h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5m1.639-3.708 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V8.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V8s1.54-1.274 1.639-1.208M6.25 6a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5"/>
                             </svg>
                             Adoption lists Management
-                        </a></li>
+                        </a></li>-->
                     </div>
                 </details>
                 <details class="collapse bg-base-200" open>

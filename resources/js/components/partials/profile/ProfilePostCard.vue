@@ -101,34 +101,63 @@
     </dialog>
 
     <!-- Modal Thumbnail -->
-    <dialog v-if="post.image_path" :id="'thumbnailModal-' + post.post_id" class="modal">
-      <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen relative">
-        <!-- Close Button -->
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
-
-        <!-- Image Carousel -->
-        <div class="flex justify-center items-center h-full relative">
-          <!-- Left Arrow (Only show if NOT on the first image) -->
+    <dialog v-if="post.image_path" :id="`thumbnailModal-`+ post.post_id" class="modal backdrop-blur-sm">
+      <div class="modal-box w-full max-w-4xl max-h-[90vh] p-0 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden relative transform transition-all duration-300">
+          <!-- Close Button -->
           <button 
-            v-if="post.image_path.length > 1 && currentIndex[post.post_id] > 0"
-            class="absolute left-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
-            @click="prevImage(post.post_id)"
+          class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 z-10 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          @click="closeThumbnailModal(post.post_id)"
+          aria-label="Close modal"
           >
-            &lt;
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
           </button>
 
-          <!-- Image Display -->
-          <img :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
-
-          <!-- Right Arrow (Only show if NOT on the last image) -->
+          <!-- Image Carousel -->
+          <div class="relative h-[60vh] md:h-[70vh] flex items-center justify-center">
+          <!-- Previous Button -->
           <button 
-            v-if="post.image_path.length > 1 && currentIndex[post.post_id] < post.image_path.length - 1"
-            class="absolute right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full"
-            @click="nextImage(post.post_id)"
+              v-if="post.image_path.length > 1 && currentIndex[post.post_id] > 0" 
+              class="absolute left-4 p-3 bg-gray-900/60 hover:bg-gray-900/80 text-white rounded-full transition-all duration-200 hover:scale-110"
+              @click="prevImage(post.post_id)"
+              aria-label="Previous image"
           >
-            &gt;
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
           </button>
-        </div>
+
+          <!-- Image -->
+          <img 
+              :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" 
+              alt="Thumbnail" 
+              class="max-w-full max-h-full object-contain rounded-lg transition-opacity duration-300"
+              :class="{ 'opacity-100': true, 'opacity-0': false }"
+          />
+
+          <!-- Next Button -->
+          <button 
+              v-if="post.image_path.length > 1 && currentIndex[post.post_id] < post.image_path.length - 1" 
+              class="absolute right-4 p-3 bg-gray-900/60 hover:bg-gray-900/80 text-white rounded-full transition-all duration-200 hover:scale-110"
+              @click="nextImage(post.post_id)"
+              aria-label="Next image"
+          >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+          </button>
+          </div>
+
+          <!-- Image Counter -->
+          <div v-if="post.image_path.length > 1" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-900/70 text-white px-3 py-1 rounded-full text-sm">
+          {{ currentIndex[post.post_id] + 1 }} / {{ post.image_path.length }}
+          </div>
+
+          <!-- Caption (optional, can be customized) -->
+          <div class="p-4 text-center text-gray-600 dark:text-gray-300 text-sm">
+          <p>{{ post.caption || 'Image preview' }}</p>
+          </div>
       </div>
     </dialog>
 
