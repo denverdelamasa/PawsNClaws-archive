@@ -31,7 +31,7 @@
         </section>
 
         <section class="min-h-[80vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-300">
-            <div class="container flex flex-col md:flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
+            <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
               <div class="flex md:w-1/2 w-auto m-6 md:m-auto gap-2"> <!-- Add gap property here -->
                 <div class="w-full min-h-[50vh] bg-base-100 overflow-scroll hide-scrollbar rounded-xl shadow-xl hover:scale-105 tsansition-all duration-200">
                     <div id="app3">
@@ -50,7 +50,7 @@
             
         <section id="LearnMoreSection" class="min-h-[90vh] text-base-content body-font align-middle items-center justify-center m-auto flex bg-base-200">
             <div class="container flex flex-wrap w-full h-full"> <!-- Make sure the container stretches fully -->
-              <div class="flex flex-col text-start justify-start md:w-1/2 w-full m-auto p-6">
+              <div class="flex flex-col text-end justify-end md:w-1/2 w-full m-auto p-6">
                 <h1 class="sm:text-5xl text-2xl font-medium title-font">Why Become Part of Our Community?</h1>
                 <p class="leading-relaxed text-base">
                     Discover a platform designed to connect pet lovers, Services, and fosters. Share experiences, find new furry friends, and access exclusive resources that make a real difference in the world of pet adoption and care.
@@ -261,7 +261,7 @@
     <footer class="footer bg-base-300 text-base-content border-base-300 border-t px-10 py-4">
         <aside class="grid-flow-col items-center">
             <p>
-              Paws'N Claws 
+                © 2025 Paws'n Claws. All rights reserved.
             </p>
         </aside>
         <nav class="md:place-self-center md:justify-self-end">

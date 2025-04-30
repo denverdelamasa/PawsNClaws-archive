@@ -260,7 +260,7 @@ class VerifyApplicationController extends Controller
 
         // Optional: Validate rejection reason if provided
         $validator = Validator::make($request->all(), [
-            'reason' => 'nullable|string|max:500',
+            'rejection_reason' => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
@@ -273,8 +273,8 @@ class VerifyApplicationController extends Controller
         try {
             // Update application status to rejected
             $application->status = 'rejected';
-            if ($request->has('reason')) {
-                $application->rejection_reason = $request->input('reason');
+            if ($request->has('rejection_reason')) {
+                $application->rejection_reason = $request->input('rejection_reason');
             }
             $application->save();
 

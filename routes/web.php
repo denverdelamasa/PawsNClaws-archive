@@ -139,6 +139,7 @@ Route::middleware(['auth:sanctum', 'TrackUserOnlineStatus'])->group(function () 
     Route::get('/api/notifications/{notificationId}/content', [NotificationsController::class, 'getNotificationContent']);
     Route::get('/content/detail/{notificationId}',[PageController::class,'contentDetail']);
 });
+
 Route::get('/api/feed/list', [CombinedFeedController::class, 'combinedFeed']);
 Route::get('/api/feed/shelter/list', [CombinedFeedController::class, 'combinedFeedShelters']);
 Route::get('/api/posts/list', [PostController::class, 'postList']);

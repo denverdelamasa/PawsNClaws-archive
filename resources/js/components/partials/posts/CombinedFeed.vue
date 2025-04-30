@@ -705,6 +705,7 @@ export default {
           console.error("Error checking authentication status:", error);
       }
     },
+    
 
     async likeItem(itemId, itemType) {
         if (!this.isAuthenticated) {

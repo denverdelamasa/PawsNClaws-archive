@@ -195,63 +195,117 @@
     <!-- Place Account Registration Form -->
     <dialog id="GetVerifiedModal" class="modal">
         <div class="modal-box bg-base-100 text-base-content max-w-3xl w-full">
-            <!-- Modal Header -->
             <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
             <h3 class="text-3xl font-bold">Get Verified</h3>
             <p class="py-2">
-            Complete the registration form to begin the verification process and become an official shelter or pet clinic partner. Once verified, you'll gain access to all the features and benefits available to verified organizations.
+                Complete the registration form to begin the verification process and become an official shelter or pet clinic partner.
             </p>
-
-            <!-- Form Inputs -->
             <form @submit.prevent="submitVerificationForm" enctype="multipart/form-data">
-            <!-- Role Dropdown -->
-            <div class="form-control w-full mt-4">
-                <label class="label">
-                <span class="label-text">Select Type of Organization:</span>
-                </label>
-                <select
-                v-model="form.role"
-                class="select select-bordered w-full"
-                required
-                >
-                <option value="" disabled>Select an option</option>
-                <option value="shelter">Pet Shelter</option>
-                <option value="vet">Pet Clinic</option>
-                </select>
-            </div>
-
-            <!-- Media Input -->
-            <div class="form-control w-full mt-4">
-                <label class="label">
-                <span class="label-text">Upload Required Documents and Images for Verification</span>
-                </label>
-                <input
-                type="file"
-                @change="handleFileChange"
-                class="file-input file-input-bordered w-full"
-                accept="image/*,.pdf"
-                multiple
-                required
-                >
-            </div>
-
-            <!-- Error Message -->
-            <div v-if="form.errors.length" class="alert alert-error mt-4">
-                <ul>
-                <li v-for="error in form.errors" :key="error">{{ error }}</li>
-                </ul>
-            </div>
-
-            <!-- Buttons -->
-            <div class="modal-action">
-                <button type="button" class="btn btn-ghost" @click="closeVerificationModal">Cancel</button>
-                <button type="submit" class="btn btn-primary" :disabled="form.isSubmitting">
-                {{ form.isSubmitting ? 'Submitting...' : 'Register' }}
-                </button>
-            </div>
+                <!-- Role Dropdown -->
+                <div class="form-control w-full mt-4">
+                    <label class="label">
+                        <span class="label-text">Select Type of Organization:</span>
+                    </label>
+                    <select v-model="form.role" class="select select-bordered w-full" required>
+                        <option value="" disabled>Select an option</option>
+                        <option value="shelter">Pet Shelter</option>
+                        <option value="vet">Pet Clinic</option>
+                    </select>
+                </div>
+                <!-- Media Input -->
+                <div class="form-control w-full mt-4">
+                    <label class="label">
+                        <span class="label-text">
+                            <template v-if="form.role === 'shelter'">
+                                <strong>Required Documents:</strong>
+                                <ul class="list-disc ml-5">
+                                    <li>Animal Facility Application Form with 1×1 Picture of Applicant</li>
+                                    <li>Proof of Registration/Creationï¿½as an Establishment</li>
+                                    <li>Valid ID of the Officer-in-Charge, Owner, Manager, or Veterinarian</li>
+                                    <li>Notarized Employment Contract/Memorandum of Agreement/Appointment Order</li>
+                                    <li>Picture of the Shelter</li>
+                                </ul>
+                            </template>
+                            <template v-else-if="form.role === 'vet'">
+                                <strong>Required Documents:</strong>
+                                <ul class="list-disc ml-5">
+                                    <li>Animal Facility Application Form with 1×1 Picture of Applicant</li>
+                                    <li>Proof of Registration/Creation as an Establishment</li>
+                                    <li>Valid ID of the Officer-in-Charge, Owner, Manager, or Veterinarian</li>
+                                    <li>Valid PRC ID of the Facility Veterinarian</li>
+                                    <li>Certificate of Attendance from Animal Welfare Seminar</li>
+                                    <li>Picture of the Clinic</li>
+                                </ul>
+                            </template>
+                            <template v-else>
+                                Upload required documents and images for verification
+                            </template>
+                        </span>
+                    </label>
+                    <input
+                        type="file"
+                        @change="handleFileChange($event, 'verification')"
+                        class="file-input file-input-bordered w-full"
+                        accept="image/*,.pdf"
+                        multiple
+                        ref="fileInput"
+                    >
+                </div>
+                <!-- Document Preview -->
+                <div v-if="documentPreviews.length" class="mt-4">
+                    <label class="label">
+                        <span class="label-text">Document Previews:</span>
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div v-for="(preview, index) in documentPreviews" :key="index" class="relative">
+                            <div v-if="preview.type.startsWith('image/')" class="w-full h-32">
+                                <img :src="preview.url" class="w-full h-full object-cover rounded-lg" :alt="'Preview ' + index">
+                            </div>
+                            <div v-else-if="preview.type === 'application/pdf'" class="w-full h-32 flex items-center justify-center bg-gray-100 rounded-lg">
+                                <a :href="preview.url" target="_blank" class="text-blue-500 hover:underline">PDF Preview</a>
+                            </div>
+                            <button
+                                @click="removeDocument(index)"
+                                class="absolute top-1 right-1 btn btn-xs btn-circle btn-error"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Error Message -->
+                <div v-if="form.errors.length" class="alert alert-error mt-4">
+                    <ul>
+                        <li v-for="error in form.errors" :key="error">{{ error }}</li>
+                    </ul>
+                </div>
+                <!-- Buttons -->
+                <div class="modal-action">
+                    <button type="button" class="btn btn-ghost" @click="closeVerificationModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" :disabled="form.isSubmitting">
+                        {{ form.isSubmitting ? 'Submitting...' : 'Register' }}
+                    </button>
+                </div>
             </form>
+        </div>
+    </dialog>
+
+    <!-- Confirmation Modal for Get Verified -->
+    <dialog id="ConfirmVerificationModal" class="modal">
+        <div class="modal-box bg-base-100 text-base-content max-w-md w-full">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-2xl font-bold">Confirm Submission</h3>
+            <p class="py-4">
+                Are you sure you want to submit your verification application? Please ensure all documents are correct before proceeding.
+            </p>
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="closeConfirmVerificationModal">Cancel</button>
+                <button class="btn btn-primary" @click="confirmVerificationSubmission">Confirm</button>
+            </div>
         </div>
     </dialog>
 
@@ -536,67 +590,28 @@ export default {
       hasPendingApplication: false,
       verificationApplications: [],
       pendingApplicationsCount: 0,
+      isConfirmVerificationModalOpen: false,
+      documentPreviews: [],
     };
   },
   methods: {
-    async fetchPendingApplicationsCount() {
-      try {
-        const response = await axios.get('/api/user/adoption/pending-count', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        this.pendingApplicationsCount = response.data.pending_count;
-      } catch (error) {
-        console.error('Error fetching pending applications count:', error);
-      }
+    // Add method to remove a document
+    removeDocument(index) {
+        // Revoke the object URL to prevent memory leaks
+        URL.revokeObjectURL(this.documentPreviews[index].url);
+        // Remove the document and its preview
+        this.form.documents.splice(index, 1);
+        this.documentPreviews.splice(index, 1);
     },
-    openAdoptionModal() {
-      const modal = document.getElementById('adoptionModal');
-      if (modal) {
-        this.fetchPendingApplicationsCount();
-        modal.showModal();
-      }
+    openConfirmVerificationModal() {
+        this.isConfirmVerificationModalOpen = true;
+        document.getElementById('ConfirmVerificationModal').showModal();
     },
-    async fetchVerificationApplications() {
-        try {
-            const response = await axios.get('/api/verify/user-applications/', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            this.verificationApplications = response.data.applications;
-            this.hasPendingApplication = this.verificationApplications.some(app => app.status === 'pending');
-        } catch (error) {
-            console.error('Error fetching verification applications:', error);
-        }
+    closeConfirmVerificationModal() {
+        this.isConfirmVerificationModalOpen = false;
+        document.getElementById('ConfirmVerificationModal').close();
     },
-    openGetVerifiedModal() {
-        document.getElementById('GetVerifiedModal').showModal();
-    },
-    closeVerificationModal() {
-        document.getElementById('GetVerifiedModal').close();
-        this.form.role = '';
-        this.form.documents = [];
-        this.form.errors = [];
-        this.form.isSubmitting = false;
-    },
-    openVerificationStatusModal() {
-        this.fetchVerificationApplications();
-        document.getElementById('VerificationStatusModal').showModal();
-    },
-    closeVerificationStatusModal() {
-        document.getElementById('VerificationStatusModal').close();
-        this.verificationApplications = [];
-    },
-    closeVerificationModal() {
-      document.getElementById('GetVerifiedModal').close();
-      this.form.role = '';
-      this.form.documents = [];
-      this.form.errors = [];
-      this.form.isSubmitting = false;
-    },
-    async submitVerificationForm() {
+    async submitFormData() {
         this.form.isSubmitting = true;
         this.form.errors = [];
 
@@ -649,12 +664,88 @@ export default {
             this.form.isSubmitting = false;
         }
     },
+    submitVerificationForm() {
+        this.form.errors = [];
+        if (!this.form.role || this.form.documents.length === 0) {
+            this.form.errors.push('Please select an organization type and upload documents.');
+            return;
+        }
+        this.openConfirmVerificationModal();
+    },
+    confirmVerificationSubmission() {
+        this.closeConfirmVerificationModal();
+        this.submitFormData();
+    },
+    async fetchPendingApplicationsCount() {
+      try {
+        const response = await axios.get('/api/user/adoption/pending-count', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        this.pendingApplicationsCount = response.data.pending_count;
+      } catch (error) {
+        console.error('Error fetching pending applications count:', error);
+      }
+    },
+    openAdoptionModal() {
+      const modal = document.getElementById('adoptionModal');
+      if (modal) {
+        this.fetchPendingApplicationsCount();
+        modal.showModal();
+      }
+    },
+    async fetchVerificationApplications() {
+        try {
+            const response = await axios.get('/api/verify/user-applications/', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            this.verificationApplications = response.data.applications;
+            this.hasPendingApplication = this.verificationApplications.some(app => app.status === 'pending');
+        } catch (error) {
+            console.error('Error fetching verification applications:', error);
+        }
+    },
+    openGetVerifiedModal() {
+        document.getElementById('GetVerifiedModal').showModal();
+    },
+    closeVerificationModal() {
+        document.getElementById('GetVerifiedModal').close();
+        this.form.role = '';
+        this.form.documents = [];
+        this.form.errors = [];
+        this.form.isSubmitting = false;
+        // Clean up all preview URLs
+        this.documentPreviews.forEach(preview => URL.revokeObjectURL(preview.url));
+        this.documentPreviews = [];
+        // Reset the file input
+        if (this.$refs.fileInput) {
+            this.$refs.fileInput.value = '';
+        }
+    },
+    openVerificationStatusModal() {
+        this.fetchVerificationApplications();
+        document.getElementById('VerificationStatusModal').showModal();
+    },
+    closeVerificationStatusModal() {
+        document.getElementById('VerificationStatusModal').close();
+        this.verificationApplications = [];
+    },
+    closeVerificationModal() {
+      document.getElementById('GetVerifiedModal').close();
+      this.form.role = '';
+      this.form.documents = [];
+      this.form.errors = [];
+      this.form.isSubmitting = false;
+    },
     openModal() {
       this.isModalOpen = true;
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = 'image/*';
-      input.onchange = (event) => this.handleFileChange(event);
+      input.onchange = (event) => this.handleFileChange(event, 'profile');
       input.click();
     },
     closeModal() {
@@ -808,33 +899,46 @@ export default {
 
     },
     
-    handleFileChange(event) {
-      const file = event.target.files[0];
-      this.form.documents = Array.from(event.target.files);
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imagePreview = e.target.result;
-          this.selectedImage = file;
-          this.$nextTick(() => {
-            const image = this.$refs.imageCropper;
-            if (image) {
-              this.cropper = new Cropper(image, {
-                aspectRatio: 1,
-                viewMode: 1,
-                autoCropArea: 1,
-                cropBoxResizable: true,
-                cropBoxMovable: true,
-                background: false,
-                crop(event) {
-                  // Optional: Handle crop event if needed
-                },
-              });
+    handleFileChange(event, context = 'verification') {
+        if (context === 'profile') {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.imagePreview = e.target.result;
+                    this.selectedImage = file;
+                    this.$nextTick(() => {
+                        const image = this.$refs.imageCropper;
+                        if (image) {
+                            this.cropper = new Cropper(image, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                cropBoxResizable: true,
+                                cropBoxMovable: true,
+                                background: false,
+                            });
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
             }
-          });
-        };
-        reader.readAsDataURL(file);
-      }
+        } else {
+            // Handle verification form files
+            const newFiles = Array.from(event.target.files);
+            // Append new files to existing documents
+            this.form.documents = [...this.form.documents, ...newFiles];
+            // Append new previews to existing previews
+            newFiles.forEach(file => {
+                const preview = {
+                    url: URL.createObjectURL(file),
+                    type: file.type,
+                };
+                this.documentPreviews.push(preview);
+            });
+            // Reset the file input to allow re-selecting the same files
+            this.$refs.fileInput.value = '';
+        }
     },
     cancelCrop() {
       this.closeModal();

@@ -178,6 +178,7 @@
           </div>
         </div>
       </div>
+
       <div v-if="isVerificationModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300" :class="{ 'opacity-0': !isVerificationModalOpen }" aria-modal="true" role="dialog">
         <div class="bg-base-100 p-6 rounded-xl shadow-2xl w-full max-w-4xl mx-4 sm:mx-6 lg:mx-8 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100" :class="{ 'scale-95 opacity-0': !isVerificationModalOpen }">
             <!-- Header -->
@@ -399,7 +400,7 @@ export default {
           : `/api/verify/applications/${this.selectedApplication.verify_id}/reject`;
 
         const response = await axios.put(endpoint, {
-          reason: status === 'rejected' ? 'Reason for rejection' : undefined, // Optional: Add a reason for rejection
+          rejection_reason: status === 'rejected' ? this.rejectionReason : undefined, // Optional: Add a reason for rejection
         }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
