@@ -275,6 +275,22 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Checkbox for Animal Welfare Act Compliance (already added) -->
+                <div class="form-control w-full mt-4">
+                    <label class="label cursor-pointer">
+                    <input
+                        type="checkbox"
+                        v-model="form.compliance"
+                        class="checkbox checkbox-primary"
+                        required
+                    />
+                    <span class="label-text ml-2">
+                        By checking this box, you confirm that your establishment complies with the provisions of Republic Act No. 8485 (The Animal Welfare Act of 1998), including the proper treatment, care, and facilities required for the welfare of animals.
+                    </span>
+                    </label>
+                </div>
+
                 <!-- Error Message -->
                 <div v-if="form.errors.length" class="alert alert-error mt-4">
                     <ul>
@@ -284,8 +300,8 @@
                 <!-- Buttons -->
                 <div class="modal-action">
                     <button type="button" class="btn btn-ghost" @click="closeVerificationModal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" :disabled="form.isSubmitting">
-                        {{ form.isSubmitting ? 'Submitting...' : 'Register' }}
+                    <button type="submit" class="btn btn-primary" :disabled="form.isSubmitting || !form.compliance">
+                    {{ form.isSubmitting ? 'Submitting...' : 'Register' }}
                     </button>
                 </div>
             </form>
@@ -572,6 +588,7 @@ export default {
       bioInput: '', // Temporary storage for bio input
       isBioModalOpen: false, // Controls the visibility of the bio modal
       csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || '', // Fetch CSRF token from meta tag
+      compliance: false,
       form: {
         email: '',
         type: '',
@@ -617,6 +634,7 @@ export default {
 
         const formData = new FormData();
         formData.append('role', this.form.role);
+        formData.append('compliance', this.form.compliance ? '1' : '0');
         this.form.documents.forEach((file, index) => {
             formData.append(`documents[${index}]`, file);
         });
@@ -668,6 +686,11 @@ export default {
         this.form.errors = [];
         if (!this.form.role || this.form.documents.length === 0) {
             this.form.errors.push('Please select an organization type and upload documents.');
+        }
+        if (!this.form.compliance) {
+            this.form.errors.push('You must confirm compliance with Republic Act No. 8485.');
+        }
+        if (this.form.errors.length > 0) {
             return;
         }
         this.openConfirmVerificationModal();
@@ -717,6 +740,7 @@ export default {
         this.form.documents = [];
         this.form.errors = [];
         this.form.isSubmitting = false;
+        this.form.compliance = false;
         // Clean up all preview URLs
         this.documentPreviews.forEach(preview => URL.revokeObjectURL(preview.url));
         this.documentPreviews = [];
