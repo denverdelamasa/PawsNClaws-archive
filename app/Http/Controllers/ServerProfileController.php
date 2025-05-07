@@ -31,7 +31,16 @@ class ServerProfileController extends Controller
     
         // Validation rules for fields
         $rules = [];
-    
+
+        // Validate if base64 image is sent
+        if ($request->filled('cropped_image')) {
+            $rules['cropped_image'] = 'string';
+        }
+
+        if ($request->has('name') && $request->name !== $user->name) {
+            $rules['name'] = 'required|string|max:255';
+        }
+
         // Validate username if it's being changed
         if ($request->has('username') && $request->username !== $user->username) {
             $rules['username'] = 'required|string|max:255|unique:users,username,' . $user->user_id . ',user_id';
@@ -49,6 +58,39 @@ class ServerProfileController extends Controller
     
         // Validate the submitted data
         $validatedData = $request->validate($rules);
+
+        // Handle cropped image (base64)
+        if ($request->filled('cropped_image')) {
+            $data = $request->input('cropped_image');
+
+            // Remove the base64 header
+            $image = preg_replace('#^data:image/\w+;base64,#i', '', $data);
+            $image = str_replace(' ', '+', $image);
+
+            // Generate unique file name
+            $fileName = 'profile_' . time() . '.png';
+            $filePath = 'images/profile_pictures/' . $fileName;
+
+            // Delete old image if exists
+            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            // Save the image
+            Storage::disk('public')->put($filePath, base64_decode($image));
+            $user->profile_picture = $filePath;
+        }
+        // Handle regular file upload
+        elseif ($request->hasFile('profile_picture') && $request->file('profile_picture')->isValid()) {
+            // Delete old profile picture if it exists
+            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            // Store the new one
+            $path = $request->file('profile_picture')->store('images/profile_pictures', 'public');
+            $user->profile_picture = $path;
+        }
     
         // Fill the user's information
         $user->fill($validatedData);

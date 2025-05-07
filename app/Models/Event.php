@@ -17,12 +17,24 @@ class Event extends Model
     // Specify the primary key (optional, as Laravel defaults to 'id')
     protected $primaryKey = 'event_id';
 
+    protected $casts = [
+        'event_thumbnail' => 'array', // Cast JSON column to an array
+    ];
+
     // Specify which columns are mass assignable (optional)
-    protected $fillable = ['shelter_id', 'event_title', 'event_description', 'event_date', 'event_location'];
+    protected $fillable = ['shelter_id', 'event_title', 'event_description', 'event_start_date', 'event_end_date', 'event_location', 'event_thumbnail'];
 
     // Define the relationship with the User model (shelter_id refers to user_id)
     public function shelter()
     {
         return $this->belongsTo(User::class, 'shelter_id', 'user_id');
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'event_comment_id', 'event_id');
+    }
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class, 'event_id', 'event_id');
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @include('partials.main.data-theme')>
 @include('partials.main.scripts-styles')
-    <body class="font-sans antialiased">
+    <body class="font-sans">
         <div id="app2">
           <div class="hero bg-base-200 min-h-screen">
             <div class="hero-content flex-col lg:flex-row-reverse justify-center items-center w-full">
@@ -61,10 +61,46 @@
 
                   <!-- Register Link -->
                   <p class="mt-4 text-center">Don't have an account? <a href="{{ url('/signup') }}" class="link link-primary">Sign Up here</a></p>
+                  <p class="mt-2 text-center">
+                    <button type="button" class="link link-secondary" onclick="forgotModal.showModal()">Forgot your password?</button>
+                  </p>
                 </form>
+                <!--Forgot password modal-->
+                <dialog id="forgotModal" class="modal">
+                  <div class="modal-box">
+                    <h3 class="font-bold text-lg">Forgot Password</h3>
+                    <p class="py-2">Enter your email and we’ll send you a password reset link.</p>
+
+                    <form method="POST" action="{{ route('password.email') }}">
+                      @csrf
+                      <input type="email" name="email" placeholder="Email" class="input input-bordered w-full mt-2" required>
+                      <div class="modal-action">
+                        <button type="submit" class="btn btn-primary">Send Link</button>
+                        <button type="button" class="btn" onclick="forgotModal.close()">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                </dialog>
               </div>
             </div>
           </div>
+          <!--Successfully sent to your email modal-->
+          <dialog id="successModal" class="modal">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">Email Sent</h3>
+              <p class="py-2">We've sent a password reset link to your email address.</p>
+              <div class="modal-action">
+                <button class="btn btn-primary" onclick="successModal.close()">OK</button>
+              </div>
+            </div>
+          </dialog>
+          @if (session('reset_link_sent'))
+            <script>
+              window.onload = function () {
+                successModal.showModal();
+              };
+            </script>
+          @endif
           @if(auth()->user() && auth()->user()->status === 'Suspended')
             <div id="suspendModal" class="modal modal-open">
                 <div class="modal-box">

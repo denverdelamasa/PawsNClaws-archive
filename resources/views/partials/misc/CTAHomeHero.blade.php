@@ -2,7 +2,7 @@
   <!-- From Uiverse.io by MuhammadHasann TY SA BUTTONS OMG! -->
   <a href="{{ url('/login') }}" class="flex justify-center items-center">
     <button class="GetStartedButton">
-      Get Started
+      Sign Up!
       <div class="star-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"

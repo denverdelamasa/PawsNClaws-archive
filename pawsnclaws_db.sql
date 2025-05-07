@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 13, 2024 at 04:01 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Mar 07, 2025 at 01:16 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,7 +43,7 @@ CREATE TABLE `adoption_applications` (
   `reason` text NOT NULL,
   `current_pets` int(10) UNSIGNED NOT NULL,
   `gov_id` varchar(255) NOT NULL,
-  `status` enum('Pending','Ongoing','Complete','Failed') NOT NULL,
+  `status` enum('Reject','Pending','Ongoing','Complete','Failed') NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -53,16 +53,12 @@ CREATE TABLE `adoption_applications` (
 --
 
 INSERT INTO `adoption_applications` (`application_id`, `adoption_id`, `receiver_id`, `sender_id`, `post_id`, `adopter_name`, `contact_info`, `adopt_type`, `employment_status`, `socmed`, `location`, `experience`, `reason`, `current_pets`, `gov_id`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'A-2-1538-1212', 5, 2, 15, 'Alexandre Justin Repia', '09123563651', 'individual', 'student', NULL, 'asjdajkdsjka', 'askdkasjdlkasjd', 'aaskdaskdj', 3, 'gov_ids/orFfdk5TZD3FegmEzFQqrYj35oQUNRt0YwUBhszc.jpg', 'Pending', '2024-12-11 23:38:06', '2024-12-11 23:38:06'),
-(3, 'A-3-1907-1212', 2, 5, 5, 'asd', 'asd', 'individual', 'student', 'asd', 'asd', 'asd', 'asd', 2, 'asd', 'Pending', NULL, NULL),
-(6, 'A-6-2347-1212', 2, 3, 19, 'Alexandre Justiin Repia', '09123563651', 'individual', 'student', NULL, 'Pwetey boy ka ba', 'Wala', 'WAla', 2, 'gov_ids/ADdgbkOOOPPK2F7LLA1L4buAA5Fu9cgTTTNG19Th.jpg', 'Ongoing', '2024-12-12 07:47:08', '2024-12-12 08:30:08'),
-(7, 'A-7-1151-1213', 4, 2, 20, 'PWetey', 'askdaasjdajsdj', 'individual', 'student', NULL, 'askdkjlasdklj', 'aslkaskldklasd', 'asdasdasdasd', 3, 'gov_ids/1j5ZusrxhCHKunvfc9htsaJH8ELM22an2eeVd4YC.jpg', 'Ongoing', '2024-12-12 19:51:20', '2024-12-12 19:53:59'),
-(9, 'A-9-1344-1213', 4, 2, 25, 'asdasd', 'asdasdas', 'individual', 'student', NULL, 'asdasd', 'asdasd', 'asdasdas', 0, 'gov_ids/AmBrkBEyzIeonrGVWsUPADRHgVbrh0hQiej9kjKI.png', 'Pending', '2024-12-12 21:44:08', '2024-12-12 21:44:08'),
-(10, 'A-10-1344-1213', 4, 2, 25, 'asdasd', 'asdasdas', 'individual', 'student', NULL, 'asdasd', 'asdasd', 'asdasdas', 0, 'gov_ids/gTKX6bUBI3FaAYk5QXlnyxqnpYIDGYgAB2HTbZOe.png', 'Pending', '2024-12-12 21:44:36', '2024-12-12 21:44:36'),
-(11, 'A-11-1345-1213', 4, 2, 25, 'asdasd', 'asdasdas', 'individual', 'student', NULL, 'asdasd', 'asdasd', 'asdasdas', 0, 'gov_ids/W66F3PYHWHpSaEPhjEnojXZJfpgyPlnwMk1WZB5W.png', 'Pending', '2024-12-12 21:45:41', '2024-12-12 21:45:41'),
-(12, 'A-12-1347-1213', 2, 4, 26, 'zxzxczx', 'asdasd', 'individual', 'student', NULL, 'asdasd', 'asdasdasd', 'asdasdasd', 2, 'gov_ids/b5SwVjrZgX6LAWgmV28oNT5fGnMSBalJXUZdBBgB.png', 'Pending', '2024-12-12 21:47:12', '2024-12-12 21:47:12'),
-(13, 'A-13-1348-1213', 2, 4, 26, 'zxzxczx', 'asdasd', 'individual', 'student', NULL, 'asdasd', 'asdasdasd', 'asdasdasd', 2, 'gov_ids/6MY6IXpKsJngEaOGEFf08TmJFoFOqSvRZfHzICd2.png', 'Ongoing', '2024-12-12 21:48:01', '2024-12-13 00:58:13'),
-(14, 'A-14-1701-1213', 2, 9, 29, 'asdas', 'asdasd', 'individual', 'student', NULL, 'asdasd', 'asdas', 'sad', 1, 'gov_ids/i5fc5VC4nyeHUh20tvzfTDd1waZeF1rkR6BHacBT.png', 'Pending', '2024-12-13 01:01:42', '2024-12-13 01:01:42');
+(2, 'A-2-0858-0211', 1, 4, 50, 'Aj', '09552188735', 'individual', 'student', NULL, '123456789', 'Wala', 'Tae', 0, 'gov_ids/h3vf0ErlleAqZ7FEKhGPwzWVE6gZiC0nmA6gPXRq.jpg', 'Complete', '2025-02-10 16:58:51', '2025-02-10 17:42:52'),
+(3, 'A-3-1025-0211', 1, 4, 51, 'Aj to', '231123123', 'individual', 'student', NULL, 'asjdkhaskdha', 'wala', 'tae', 0, 'gov_ids/qR9avc9cZZVxLol09iqwJr0n1leClACkYxbA0268.jpg', 'Complete', '2025-02-10 18:25:36', '2025-02-10 18:26:23'),
+(4, 'A-4-1144-0211', 1, 5, 52, 'asdasd', 'asdasd', 'individual', 'student', NULL, 'asdasd', 'sadasdas', 'asdasdasd', 0, 'gov_ids/EnLzNkBUrmaCgYHql0Yzvdj593GoO8x7lkJkpafP.pdf', 'Reject', '2025-02-10 19:44:25', '2025-02-10 20:00:05'),
+(6, 'A-6-1443-0211', 5, 1, 54, 'hjkdasjdjasdj', 'ajsdkkjashdjas', 'individual', 'student', NULL, 'asdasdasd', 'asdasda', 'sasdasdasd', 0, 'gov_ids/Dq3BUM2liDHGsw09bP4l30aAAC3GcFRkdd7BTM0I.pdf', 'Reject', '2025-02-10 22:43:43', '2025-02-11 00:13:25'),
+(7, 'A-7-1445-0211', 1, 5, 57, 'asdasd', 'asdasdasd', 'individual', 'student', NULL, 'asdasdasdasd', 'asdasdasdasdas', 'asdasdasdas', 0, 'gov_ids/zzr61Kxsrv1Zp8hLJkuOfZpetedspCzzerprYdhQ.pdf', 'Complete', '2025-02-10 22:45:29', '2025-02-26 05:58:12'),
+(8, 'A-8-1209-0227', 1, 7, 61, 'aj', 'aj', 'individual', 'student', NULL, 'aj', 'aj', 'aj', 0, 'gov_ids/bvBzWZtjQwTbUDRuxQK4OPxCjXNwgeWCBQoh1KQb.png', 'Failed', '2025-02-26 20:09:22', '2025-02-26 20:12:36');
 
 --
 -- Triggers `adoption_applications`
@@ -111,13 +107,12 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`announcement_id`, `shelter_id`, `thumbnail`, `title`, `description`, `created_at`, `updated_at`) VALUES
-(3, 4, NULL, 'asdasd', 'asdasd', '2024-12-12 23:32:15', '2024-12-12 23:32:15'),
-(4, 4, NULL, 'test', 'test', '2024-12-12 23:32:47', '2024-12-12 23:32:47'),
-(5, 4, 'images/posts/cHkgK2n1vY7maLqVNyKvGFwPF33k2R4WSMnypMvw.png', 'test', 'test', '2024-12-12 23:33:50', '2024-12-12 23:33:50'),
-(6, 4, 'images/posts/xOgg0r6HVX7B9iNB3GapoqfibuhXMe9tnn4m83pL.png', 'test', 'test', '2024-12-12 23:45:59', '2024-12-12 23:45:59'),
-(7, 4, 'images/posts/QeuGRpafFBETZSKNuDl5Q5Mf66XpMsnI4FOKw3cj.png', 'CAt CAt CAt', 'Cat CAt skibidi cyattt', '2024-12-12 23:48:51', '2024-12-12 23:48:51'),
-(8, 4, NULL, 'BARANGAY FREE KAPON 2024', 'FREE KAPON HERE IN BARANGAY PAG-ASA! WE NEED AT LEAST 10 VOLUNTEERS', '2024-12-13 00:24:01', '2024-12-13 00:24:01'),
-(9, 4, NULL, 'HOLIDAY CLOSURE NOTICE', 'We would like to apologize for our annual holiday closure! enjoy and happy holidays to all fur-parents out there!!', '2024-12-13 00:30:35', '2024-12-13 00:30:35');
+(5, 1, NULL, 'LOLO', 'LOLO', '2024-01-01 08:09:17', '2024-01-01 08:09:17'),
+(6, 1, 'images/posts/CHuZ3cAtJnqjA0heee9n4WQ9iR9BFCTB8VzzN4c2.jpg', 'Hello', 'taE taE TAE TAET AETTADs', '2025-01-26 22:59:24', '2025-01-26 22:59:24'),
+(7, 1, NULL, 'Tae', 'TEa', '2025-01-30 16:33:11', '2025-01-30 16:33:11'),
+(8, 1, NULL, 'TEA', 'TAE', '2025-02-06 17:59:56', '2025-02-06 17:59:56'),
+(9, 1, NULL, 'tae', 'BUBU kayo', '2025-02-06 21:10:02', '2025-02-06 21:10:02'),
+(10, 1, NULL, 'PINK STAR AGLAONEMA', 'OMG SO PRETTY!!!', '2025-02-06 21:28:30', '2025-02-06 21:28:30');
 
 -- --------------------------------------------------------
 
@@ -136,10 +131,15 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
+('alexwaquiz11@gmail.com|127.0.0.1', 'i:1;', 1736140415),
+('alexwaquiz11@gmail.com|127.0.0.1:timer', 'i:1736140415;', 1736140415),
+('asjdjasd@gmail.com|127.0.0.1', 'i:1;', 1734938081),
+('asjdjasd@gmail.com|127.0.0.1:timer', 'i:1734938081;', 1734938081),
 ('catperson@gmail.com|127.0.0.1', 'i:1;', 1734078867),
 ('catperson@gmail.com|127.0.0.1:timer', 'i:1734078867;', 1734078867),
 ('rainsigma@gmail.com|127.0.0.1', 'i:1;', 1733825619),
-('rainsigma@gmail.com|127.0.0.1:timer', 'i:1733825619;', 1733825619);
+('rainsigma@gmail.com|127.0.0.1:timer', 'i:1733825619;', 1733825619),
+('user@gmail.com|127.0.0.1:timer', 'i:1739234932;', 1739234932);
 
 -- --------------------------------------------------------
 
@@ -175,17 +175,46 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`comment_id`, `user_id`, `post_comment_id`, `event_comment_id`, `announcement_comment_id`, `comment`, `created_at`, `updated_at`) VALUES
-(16, 2, 6, NULL, NULL, 'Hello', '2024-12-09 20:08:37', '2024-12-09 20:08:37'),
-(20, 9, 5, NULL, NULL, 'don\'t say bitch to that beautiful creature! you imbecile!!!', '2024-12-09 23:08:59', '2024-12-09 23:08:59'),
-(27, 2, 5, NULL, NULL, 'Don\'t say bitch omg! you are a horrible person huhu', '2024-12-10 03:11:10', '2024-12-10 03:11:10'),
-(28, 2, 13, NULL, NULL, 'asdadsssa', '2024-12-10 03:13:24', '2024-12-10 03:13:24'),
-(29, 2, 13, NULL, NULL, 'asddasd', '2024-12-10 03:14:37', '2024-12-10 03:14:37'),
-(30, 2, 13, NULL, NULL, 'asdasdads', '2024-12-10 03:15:17', '2024-12-10 03:15:17'),
-(39, 3, 16, NULL, NULL, 'asd', '2024-12-10 07:12:12', '2024-12-10 07:12:12'),
-(40, 3, 16, NULL, NULL, 'asd', '2024-12-10 07:14:24', '2024-12-10 07:14:24'),
-(41, 4, 15, NULL, NULL, 'asdasd', '2024-12-11 05:01:45', '2024-12-11 05:01:45'),
-(42, 2, 15, NULL, NULL, 'Wow!', '2024-12-12 03:50:01', '2024-12-12 03:50:01'),
-(47, 2, 5, NULL, NULL, 'fghfh', '2024-12-12 06:49:40', '2024-12-12 06:49:40');
+(6, 1, 32, NULL, NULL, 'tae', '2025-02-02 23:07:01', '2025-02-02 23:07:01'),
+(8, 1, 32, NULL, NULL, 'asd', '2025-02-02 23:07:43', '2025-02-02 23:07:43'),
+(9, 1, 32, NULL, NULL, 'asd', '2025-02-02 23:08:28', '2025-02-02 23:08:28'),
+(10, 1, 32, NULL, NULL, 'asdsad', '2025-02-03 00:36:20', '2025-02-03 00:36:20'),
+(11, 1, 32, NULL, NULL, 'asd', '2025-02-03 00:36:34', '2025-02-03 00:36:34'),
+(14, 1, 48, NULL, NULL, 'awsdasd1', '2025-02-05 23:23:28', '2025-02-05 23:24:24'),
+(15, 1, 48, NULL, NULL, 'tae', '2025-02-05 23:23:34', '2025-02-05 23:23:34'),
+(16, 1, 48, NULL, NULL, 'asd', '2025-02-05 23:25:00', '2025-02-05 23:25:00'),
+(17, 1, 49, NULL, NULL, 'ASD', '2025-02-06 22:57:56', '2025-02-06 22:57:56'),
+(18, 1, 49, NULL, NULL, 'asd', '2025-02-06 22:58:58', '2025-02-06 22:58:58'),
+(19, 1, 48, NULL, NULL, '1212', '2025-02-06 22:59:35', '2025-02-06 22:59:35'),
+(20, 1, 59, NULL, NULL, 'asdasdasd', '2025-02-17 20:05:07', '2025-02-17 20:05:07'),
+(21, 1, 59, NULL, NULL, 'tae', '2025-02-17 20:17:40', '2025-02-17 20:17:40'),
+(22, 1, 59, NULL, NULL, 'asdasd', '2025-02-17 21:21:15', '2025-02-17 21:21:15'),
+(23, 1, 59, NULL, NULL, '123123', '2025-02-17 21:31:46', '2025-02-17 21:31:46'),
+(25, 1, 59, NULL, NULL, 'asda', '2025-02-20 00:07:48', '2025-02-20 00:07:48'),
+(26, 1, 59, NULL, NULL, 'asdasd', '2025-02-20 00:07:53', '2025-02-20 00:07:53'),
+(34, 1, NULL, NULL, 10, 'asdasd', '2025-02-22 06:32:18', '2025-02-22 06:32:18'),
+(35, 1, NULL, NULL, 10, '12312', '2025-02-22 06:32:22', '2025-02-22 06:32:22'),
+(36, 1, NULL, NULL, 10, 'tae', '2025-02-22 06:32:29', '2025-02-22 06:32:29'),
+(37, 1, 59, NULL, NULL, 'tae1', '2025-02-22 06:32:54', '2025-02-22 06:32:54'),
+(38, 1, NULL, NULL, 10, '11', '2025-02-22 06:33:50', '2025-02-22 06:33:50'),
+(39, 1, 58, NULL, NULL, 'asdas', '2025-02-22 06:40:29', '2025-02-22 06:40:29'),
+(40, 1, 58, NULL, NULL, '12', '2025-02-22 06:40:33', '2025-02-22 06:40:33'),
+(41, 1, NULL, NULL, 10, 'asd12', '2025-02-22 06:40:56', '2025-03-01 23:47:14'),
+(42, 1, 57, NULL, NULL, 'asdasd', '2025-02-26 05:31:53', '2025-02-26 05:31:53'),
+(43, 1, 61, NULL, NULL, 'asdasdd', '2025-02-26 20:48:14', '2025-02-26 20:48:14'),
+(44, 1, 62, NULL, NULL, 'asdasdasdasddsaads', '2025-02-28 05:15:11', '2025-02-28 05:15:11'),
+(45, 1, 62, NULL, NULL, 'asdasdasd', '2025-02-28 05:15:14', '2025-02-28 05:15:14'),
+(46, 1, 62, NULL, NULL, 'asdasdas', '2025-02-28 05:15:17', '2025-02-28 05:15:17'),
+(47, 1, 62, NULL, NULL, 'asdasdas', '2025-02-28 05:15:20', '2025-02-28 05:15:20'),
+(56, 1, 62, NULL, NULL, 'sad', '2025-03-02 01:47:11', '2025-03-02 01:47:11'),
+(57, 1, 62, NULL, NULL, 'asdasd', '2025-03-02 01:47:14', '2025-03-02 01:47:14'),
+(58, 1, 62, NULL, NULL, 'asd', '2025-03-02 01:47:16', '2025-03-02 01:47:16'),
+(59, 1, 62, NULL, NULL, 'asdasd', '2025-03-02 01:47:26', '2025-03-02 01:47:26'),
+(60, 1, 62, NULL, NULL, 'asd', '2025-03-02 01:47:29', '2025-03-02 01:47:29'),
+(61, 1, 62, NULL, NULL, 'asda', '2025-03-02 01:47:31', '2025-03-02 01:47:31'),
+(62, 1, 62, NULL, NULL, '11', '2025-03-02 01:47:33', '2025-03-02 01:47:33'),
+(63, 1, 62, NULL, NULL, '12', '2025-03-02 01:47:35', '2025-03-02 01:47:35'),
+(64, 1, 62, NULL, NULL, '131111', '2025-03-02 01:47:37', '2025-03-02 02:00:20');
 
 -- --------------------------------------------------------
 
@@ -222,15 +251,12 @@ CREATE TABLE `done_adoption_forms` (
 --
 
 INSERT INTO `done_adoption_forms` (`done_id`, `done_user_id`, `done_post_id`, `created_at`, `updated_at`) VALUES
-(12, 2, 15, '2024-12-11 23:38:06', '2024-12-11 23:38:06'),
-(15, 3, 19, '2024-12-12 07:47:08', '2024-12-12 07:47:08'),
-(16, 2, 20, '2024-12-12 19:51:20', '2024-12-12 19:51:20'),
-(18, 2, 25, '2024-12-12 21:44:08', '2024-12-12 21:44:08'),
-(19, 2, 25, '2024-12-12 21:44:36', '2024-12-12 21:44:36'),
-(20, 2, 25, '2024-12-12 21:45:41', '2024-12-12 21:45:41'),
-(21, 4, 26, '2024-12-12 21:47:12', '2024-12-12 21:47:12'),
-(22, 4, 26, '2024-12-12 21:48:01', '2024-12-12 21:48:01'),
-(23, 9, 29, '2024-12-13 01:01:42', '2024-12-13 01:01:42');
+(2, 4, 50, '2025-02-10 16:58:51', '2025-02-10 16:58:51'),
+(3, 4, 51, '2025-02-10 18:25:36', '2025-02-10 18:25:36'),
+(4, 5, 52, '2025-02-10 19:44:25', '2025-02-10 19:44:25'),
+(6, 1, 54, '2025-02-10 22:43:43', '2025-02-10 22:43:43'),
+(7, 5, 57, '2025-02-10 22:45:29', '2025-02-10 22:45:29'),
+(8, 7, 61, '2025-02-26 20:09:22', '2025-02-26 20:09:22');
 
 -- --------------------------------------------------------
 
@@ -323,7 +349,7 @@ CREATE TABLE `job_batches` (
 
 CREATE TABLE `likes` (
   `like_id` bigint(20) UNSIGNED NOT NULL,
-  `posts_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `post_id` bigint(20) UNSIGNED DEFAULT NULL,
   `announcement_id` bigint(20) UNSIGNED DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -334,12 +360,11 @@ CREATE TABLE `likes` (
 -- Dumping data for table `likes`
 --
 
-INSERT INTO `likes` (`like_id`, `posts_id`, `announcement_id`, `user_id`, `created_at`, `updated_at`) VALUES
-(5, 4, NULL, 5, '2024-12-10 03:18:42', '2024-12-10 03:18:42'),
-(6, 3, NULL, 5, '2024-12-10 03:18:43', '2024-12-10 03:18:43'),
-(8, 16, NULL, 2, '2024-12-10 07:40:34', '2024-12-10 07:40:34'),
-(11, 15, NULL, 2, '2024-12-11 02:31:04', '2024-12-11 02:31:04'),
-(12, 5, NULL, 2, '2024-12-12 06:49:33', '2024-12-12 06:49:33');
+INSERT INTO `likes` (`like_id`, `post_id`, `announcement_id`, `user_id`, `created_at`, `updated_at`) VALUES
+(46, 54, NULL, 5, '2025-02-11 00:04:13', '2025-02-11 00:04:13'),
+(89, 57, NULL, 1, '2025-02-26 05:34:37', '2025-02-26 05:34:37'),
+(90, 62, NULL, 1, '2025-03-01 23:45:55', '2025-03-01 23:45:55'),
+(91, 61, NULL, 1, '2025-03-02 05:11:18', '2025-03-02 05:11:18');
 
 -- --------------------------------------------------------
 
@@ -387,6 +412,7 @@ CREATE TABLE `notifications` (
   `comment_by_user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `notif_from_receiver` bigint(20) UNSIGNED DEFAULT NULL,
   `post_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `announcement_id` bigint(20) UNSIGNED DEFAULT NULL,
   `type` varchar(255) NOT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -397,12 +423,51 @@ CREATE TABLE `notifications` (
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`notification_id`, `user_id`, `liked_by_user_id`, `comment_by_user_id`, `notif_from_receiver`, `post_id`, `type`, `read_at`, `created_at`, `updated_at`) VALUES
-(8, 3, NULL, NULL, 2, NULL, 'confirmed your adoption request form.', NULL, '2024-12-12 08:30:08', '2024-12-12 08:30:08'),
-(9, 2, NULL, NULL, 4, NULL, 'confirmed your adoption request form', '2024-12-12 19:55:27', '2024-12-12 19:53:59', '2024-12-12 19:55:27'),
-(14, 2, NULL, NULL, 4, 26, 'submitted an adoption application', NULL, '2024-12-12 21:48:01', '2024-12-12 21:48:01'),
-(15, 4, NULL, NULL, 2, NULL, 'confirmed your adoption request form', NULL, '2024-12-13 00:58:13', '2024-12-13 00:58:13'),
-(16, 2, NULL, NULL, 9, 29, 'submitted an adoption application', NULL, '2024-12-13 01:01:42', '2024-12-13 01:01:42');
+INSERT INTO `notifications` (`notification_id`, `user_id`, `liked_by_user_id`, `comment_by_user_id`, `notif_from_receiver`, `post_id`, `announcement_id`, `type`, `read_at`, `created_at`, `updated_at`) VALUES
+(7, 1, NULL, NULL, 4, 50, NULL, 'submitted an adoption application', '2025-02-26 19:59:56', '2025-02-10 16:58:51', '2025-02-26 19:59:56'),
+(8, 4, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', '2025-02-10 18:11:38', '2025-02-10 16:59:27', '2025-02-10 18:11:38'),
+(9, 4, NULL, NULL, 1, NULL, NULL, 'your adoption request is completed', '2025-02-10 18:11:35', '2025-02-10 17:42:52', '2025-02-10 18:11:35'),
+(10, 1, NULL, NULL, 4, 51, NULL, 'submitted an adoption application', '2025-02-26 19:59:57', '2025-02-10 18:25:36', '2025-02-26 19:59:57'),
+(11, 4, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', NULL, '2025-02-10 18:26:20', '2025-02-10 18:26:20'),
+(12, 4, NULL, NULL, 1, NULL, NULL, 'your adoption request is completed', NULL, '2025-02-10 18:26:23', '2025-02-10 18:26:23'),
+(13, 1, NULL, NULL, 5, 52, NULL, 'submitted an adoption application', '2025-02-26 19:59:57', '2025-02-10 19:44:25', '2025-02-26 19:59:57'),
+(14, 5, NULL, NULL, 1, NULL, NULL, 'rejected your adoption request form', '2025-02-10 21:34:17', '2025-02-10 20:00:05', '2025-02-10 21:34:17'),
+(15, 1, 5, NULL, NULL, 52, NULL, 'liked your post', '2025-02-26 19:59:59', '2025-02-10 21:40:39', '2025-02-26 19:59:59'),
+(17, 5, NULL, NULL, 1, 54, NULL, 'submitted an adoption application', '2025-02-10 22:47:48', '2025-02-10 22:43:43', '2025-02-10 22:47:48'),
+(18, 1, NULL, NULL, 5, 57, NULL, 'submitted an adoption application', '2025-02-26 20:00:01', '2025-02-10 22:45:29', '2025-02-26 20:00:01'),
+(19, 1, 5, NULL, NULL, 57, NULL, 'liked your post', '2025-02-26 20:00:01', '2025-02-10 22:47:55', '2025-02-26 20:00:01'),
+(20, 1, NULL, NULL, 5, NULL, NULL, 'rejected your adoption request form', '2025-03-02 00:25:05', '2025-02-11 00:13:25', '2025-03-02 00:25:05'),
+(21, 5, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', NULL, '2025-02-14 18:49:10', '2025-02-14 18:49:10'),
+(22, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 07:00:17', '2025-02-17 07:00:17'),
+(23, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:13:03', '2025-02-17 18:13:03'),
+(24, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:13:26', '2025-02-17 18:13:26'),
+(25, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:23:37', '2025-02-17 18:23:37'),
+(26, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:23:49', '2025-02-17 18:23:49'),
+(27, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:28:14', '2025-02-17 18:28:14'),
+(28, 5, 1, NULL, NULL, 54, NULL, 'liked your post', NULL, '2025-02-17 18:28:46', '2025-02-17 18:28:46'),
+(29, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:31:54', '2025-02-17 18:31:54'),
+(30, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:33:50', '2025-02-17 18:33:50'),
+(31, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:37:59', '2025-02-17 18:37:59'),
+(32, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:38:21', '2025-02-17 18:38:21'),
+(33, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 18:38:27', '2025-02-17 18:38:27'),
+(34, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 19:26:26', '2025-02-17 19:26:26'),
+(35, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 19:26:31', '2025-02-17 19:26:31'),
+(36, 6, 1, NULL, NULL, 58, NULL, 'liked your post', NULL, '2025-02-17 19:26:35', '2025-02-17 19:26:35'),
+(37, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-17 19:54:27', '2025-02-17 19:54:27'),
+(38, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-17 20:05:07', '2025-02-17 20:05:07'),
+(39, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-17 20:17:40', '2025-02-17 20:17:40'),
+(40, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-17 21:21:15', '2025-02-17 21:21:15'),
+(41, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-17 21:31:46', '2025-02-17 21:31:46'),
+(42, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-20 00:07:48', '2025-02-20 00:07:48'),
+(43, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-20 00:07:53', '2025-02-20 00:07:53'),
+(44, 6, 1, NULL, NULL, 59, NULL, 'liked your post', NULL, '2025-02-22 05:48:20', '2025-02-22 05:48:20'),
+(45, 6, NULL, 1, NULL, 59, NULL, 'commented on your post', NULL, '2025-02-22 06:32:54', '2025-02-22 06:32:54'),
+(46, 6, NULL, 1, NULL, 58, NULL, 'commented on your post', NULL, '2025-02-22 06:40:29', '2025-02-22 06:40:29'),
+(47, 6, NULL, 1, NULL, 58, NULL, 'commented on your post', NULL, '2025-02-22 06:40:33', '2025-02-22 06:40:33'),
+(48, 5, NULL, NULL, 1, NULL, NULL, 'your adoption request is completed', NULL, '2025-02-26 05:58:12', '2025-02-26 05:58:12'),
+(49, 1, NULL, NULL, 7, 61, NULL, 'submitted an adoption application', '2025-03-02 04:15:02', '2025-02-26 20:09:22', '2025-03-02 04:15:02'),
+(50, 7, NULL, NULL, 1, NULL, NULL, 'confirmed your adoption request form', NULL, '2025-02-26 20:10:43', '2025-02-26 20:10:43'),
+(51, 7, NULL, NULL, 1, NULL, NULL, 'your adoption process is failed', NULL, '2025-02-26 20:12:36', '2025-02-26 20:12:36');
 
 -- --------------------------------------------------------
 
@@ -415,6 +480,14 @@ CREATE TABLE `password_reset_tokens` (
   `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `password_reset_tokens`
+--
+
+INSERT INTO `password_reset_tokens` (`email`, `token`, `created_at`) VALUES
+('admin@gmail.com', '$2y$12$2HkOP2CWRhWkLDA2S.05F.P6oxE5SVcAJHp6y73.nnMPgn9aDE8xy', '2024-12-16 22:51:08'),
+('alexwaquiz11@gmail.com', '$2y$12$MgUpK/BP4wilYe14r7uq5.YX6xxx5bU01FAzfsrAc5gGtxwdhrMB6', '2024-12-16 22:51:36');
 
 -- --------------------------------------------------------
 
@@ -439,21 +512,37 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`post_id`, `caption`, `user_id`, `image_path`, `status`, `created_at`, `updated_at`, `is_adoptable`, `post_path`) VALUES
-(3, 'Post Path', 2, NULL, 'uploaded', '2024-12-09 06:37:59', '2024-12-09 06:37:59', 0, 'zlDagpdAuTtUsSN'),
-(4, 'Dog', 2, 'images/posts/vLR63qzFPeD3NhLNTXKjoZYPiBkB0bPnUCoq5nLV.jpg', 'uploaded', '2024-12-09 06:42:24', '2024-12-09 06:42:24', 0, '9FkZCFUTmNIgiTX'),
-(5, 'Adopt this bithc', 2, 'images/posts/jn3G5wQYeDrhw3OJcps0LaANAdvCj2WrooCBplLw.jpg', 'uploaded', '2024-12-09 06:58:42', '2024-12-09 06:58:42', 1, '3DnbBuAn8Kdlzwi'),
-(6, 'Test', 7, NULL, 'uploaded', '2024-12-09 07:38:03', '2024-12-09 07:38:03', 0, 'gGu99V7TNlHE0Ec'),
-(13, 'Tets', 3, NULL, 'uploaded', '2024-12-10 02:26:11', '2024-12-10 02:26:11', 1, 'HCfWoTy7Kxfwbj8'),
-(15, 'Please adopt this Bengal Cat! It needs to be re-home asap, send me your adoption form so I can see who\'s worthy of owning such beauty.', 5, 'images/posts/BuLd876X56MVHfKyEmHh4EXqwoH6mLNX2pBqnXjJ.jpg', 'uploaded', '2024-12-10 03:20:00', '2024-12-10 03:20:00', 1, 'LtfFyuIJ9VNTu1r'),
-(16, 'Hello iniscam ako neto roblox ang pangalan nya sa bloxfruit ay rain calayag sigma', 2, 'images/posts/mT4XCTY4LD8DpiF5SIoWdvrYQdWEZwrhP4FpAa3Y.png', 'uploaded', '2024-12-10 05:10:56', '2024-12-11 02:52:16', 0, '6ceXAZJh3N0w1GJ'),
-(19, 'asd', 2, NULL, 'uploaded', '2024-12-12 07:45:59', '2024-12-12 07:45:59', 1, 'KpUTKAzLFG9eu85'),
-(20, 'asdas', 4, NULL, 'uploaded', '2024-12-12 19:48:17', '2024-12-12 19:48:17', 1, 'AKFetV3cLq0oX4L'),
-(21, 'AMAMA', 4, NULL, 'uploaded', '2024-12-12 19:48:28', '2024-12-12 19:48:28', 0, '5I4C9Q1asWdJsyl'),
-(25, 'Test', 4, NULL, 'uploaded', '2024-12-12 21:43:14', '2024-12-12 21:43:14', 1, '7ukVfKtPmKDdNYp'),
-(26, 'asdasd', 2, NULL, 'uploaded', '2024-12-12 21:46:25', '2024-12-12 21:46:25', 1, 'K7QUnPT7kHNTaHG'),
-(27, 'asdasd', 4, NULL, 'uploaded', '2024-12-12 23:47:42', '2024-12-12 23:47:42', 0, 'Ekjh3PizTk6nILx'),
-(28, 'asdasd', 4, 'images/posts/2GbOcehOz99rWzEVgKgyMzQCO9K3K4x2HKNlDcs6.gif', 'uploaded', '2024-12-12 23:47:55', '2024-12-12 23:47:55', 0, 'BQ04czlCBQmSSjq'),
-(29, 'asdasd', 2, NULL, 'uploaded', '2024-12-13 00:57:04', '2024-12-13 00:57:04', 1, 'mJzpAjTGX09Ka5M');
+(26, 'asd', 1, '\"[\\\"images\\\\\\/posts\\\\\\/ZDjs9yvmhT59tqyNKEGo67W0sFMQJ4wMXxT8w69d.jpg\\\",\\\"images\\\\\\/posts\\\\\\/6JPNhKBNbeYsc5zBxnCxsXzS25gGbSRYVghiBqsF.jpg\\\",\\\"images\\\\\\/posts\\\\\\/iWuc9zmMjTtvpQ5V5rJfmWUpOE1JZNfWdlXpRkCF.jpg\\\"]\"', 'uploaded', '2025-01-30 18:03:42', '2025-01-30 18:03:42', 0, 'nSbcTgJS5r1smHs'),
+(27, 'asdasd', 1, '\"[]\"', 'uploaded', '2025-01-30 20:20:34', '2025-01-30 20:20:34', 1, 'VodQ5BAsXFWXkem'),
+(28, 'asdas', 1, '\"[]\"', 'uploaded', '2025-01-30 23:40:44', '2025-01-30 23:40:44', 0, 'UgVsQgN0LE1Ntxq'),
+(29, '1212312', 1, '\"[]\"', 'uploaded', '2025-01-30 23:40:50', '2025-01-30 23:40:50', 0, 'GxQpOGYR5CGBEER'),
+(30, 'tae to', 1, '\"[\\\"images\\\\\\/posts\\\\\\/4kwFkTpRevhb9lJpyUdDlMSE0yMvbEcIjvjerAkc.jpg\\\",\\\"images\\\\\\/posts\\\\\\/6o5gswaNGDgopCyQkocq9DLXSGDwZnoo9KKbbFaN.jpg\\\"]\"', 'uploaded', '2025-01-30 23:42:19', '2025-01-30 23:42:19', 1, 'AJ5YO1eOYQeEZsX'),
+(31, 'asd', 1, '\"[\\\"images\\\\\\/posts\\\\\\/nkUZuh8mCY4VYYBd2Q8L3cLQGo1zUTPwxhnTb3OZ.jpg\\\"]\"', 'uploaded', '2025-01-30 23:43:52', '2025-01-31 00:12:59', 0, 'Dm4cyIzPf1sh7h6'),
+(32, 'JHADSGJSADASDHGDSAHGASDASDGHAHSDASHASDJHADSGJSADASDHGDSAHGASDASDGHAHSDASHASDJHADSGJSADASDHGDSAHGASDASDGHAHSDASHASDJHADSGJSADASDHGDSAHGASDASDGHAHSDASHASDJHADSGJSADASDHGDSAHGASDASDGHAHSDASHASDJHADSGJSADASDHGDS3232323AHGASDASDGHAHSDASHASDJHADSGJSADASDHGDSAHGASDASDGHAHSDASHASDJHADSGJSADASDHGDSAHGASDASDGHAHSDASHASD', 1, '\"[]\"', 'uploaded', '2025-01-31 00:19:34', '2025-01-31 00:26:25', 0, 'LdGIgpMW5mi670R'),
+(37, 'asdasd', 1, '\"[]\"', 'uploaded', '2025-02-03 18:05:47', '2025-02-03 18:05:47', 0, 'rHzMqjcVVDaFb2c'),
+(38, '12', 1, '\"[]\"', 'uploaded', '2025-02-03 18:06:14', '2025-02-03 18:06:14', 0, 'S3YKyqJW0BcBQzD'),
+(39, 'asd', 1, '\"[]\"', 'uploaded', '2025-02-03 18:07:15', '2025-02-03 18:07:15', 0, 'AubzOBD41qm1njI'),
+(40, '2', 1, '\"[]\"', 'uploaded', '2025-02-03 18:12:40', '2025-02-03 18:12:40', 0, 'GO7axcVoEoUitLi'),
+(41, '12123', 1, '\"[]\"', 'uploaded', '2025-02-03 18:14:37', '2025-02-03 18:14:37', 0, 'ffYQXPZhMZgbFbQ'),
+(42, 'asdasd', 1, '\"[]\"', 'uploaded', '2025-02-03 18:14:42', '2025-02-03 18:14:42', 0, 'Zl5qUJ9fQSoct9B'),
+(43, 'tae', 1, '\"[]\"', 'uploaded', '2025-02-03 18:14:47', '2025-02-03 18:14:47', 0, 'khDq7gkkpe8d3aa'),
+(44, 'pwety', 1, '\"[]\"', 'uploaded', '2025-02-03 18:14:56', '2025-02-03 18:14:56', 0, 'sCQ2wFvodJv5cmg'),
+(45, 'TAE', 1, '\"[]\"', 'uploaded', '2025-02-03 22:27:07', '2025-02-03 22:27:07', 0, 'NpQhefTnhVhBg9G'),
+(46, 'asd', 1, '\"[]\"', 'uploaded', '2025-02-03 22:27:40', '2025-02-03 22:27:40', 0, '8DtC8exOAaXTFpv'),
+(47, '12', 1, '\"[]\"', 'uploaded', '2025-02-03 22:27:45', '2025-02-03 22:27:45', 0, 'JpM4TIYWiG2Yxyy'),
+(48, 'hello po12', 1, '\"[]\"', 'uploaded', '2025-02-03 22:35:22', '2025-02-06 21:37:49', 0, 'wCqjwRuLi2aQ8Bv'),
+(49, '12', 1, '\"[]\"', 'uploaded', '2025-02-06 21:06:56', '2025-02-06 21:35:56', 0, 'nHyx7ocsk7rWOxo'),
+(50, 'Adopt nyo na to o tatapon ko to 11', 1, '\"[\\\"images\\\\\\/posts\\\\\\/J2WwykIlFtCbjal0fb49LwhU9iYh1VU7E7XZHXYv.jpg\\\"]\"', 'uploaded', '2025-02-10 16:39:14', '2025-02-10 17:01:17', 2, 'KTwqvqcjleeOPeZ'),
+(51, 'Eto naman cutiee patotie', 1, '\"[\\\"images\\\\\\/posts\\\\\\/HpBKlZFQ5ZvNJQPDST105ztG0c7Cfql07HJGVTj3.jpg\\\",\\\"images\\\\\\/posts\\\\\\/T72EKZRC65KUuJuL3NWxI2H9mWMG0mv88LxENoUe.jpg\\\"]\"', 'uploaded', '2025-02-10 18:24:02', '2025-02-10 18:26:23', 2, 'u5vtSHcLm3fuU0k'),
+(52, 'reject', 1, '\"[\\\"images\\\\\\/posts\\\\\\/4kyqqr4YK2uM0PO5ObcTRXOxkkbjmivGtkr9KEda.jpg\\\"]\"', 'uploaded', '2025-02-10 19:43:04', '2025-02-10 19:43:04', 1, 'h0VriLj6s93magr'),
+(54, 'adoption asjdasdasd', 5, '\"[\\\"images\\\\\\/posts\\\\\\/Ljh23EPtDe55vUcMvqmRxdGVdMBdl6qzbWf3V4XI.jpg\\\",\\\"images\\\\\\/posts\\\\\\/vapYpMOOpEDzy233ACCfDi0ylmlyVcR296vJY8dC.jpg\\\"]\"', 'uploaded', '2025-02-10 22:42:48', '2025-02-10 22:42:48', 1, 'iRTF7BzzvHEQNrH'),
+(55, 'asdasdasd', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:45', '2025-02-10 22:44:45', 1, 'e96sTkHNvKTrmEL'),
+(56, 'asdasdasdasd', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:50', '2025-02-10 22:44:50', 1, 'RpAtGwhUdzZuCIq'),
+(57, 'aaa11', 1, '\"[]\"', 'uploaded', '2025-02-10 22:44:54', '2025-02-26 05:58:12', 2, 'UM6TIhJamS6FuKU'),
+(58, 'Sample', 6, '\"[\\\"images\\\\\\/posts\\\\\\/3zOKwCM2ep00rr40vttrR5lXtOeWNgyMRgpzQHCv.jpg\\\"]\"', 'uploaded', '2025-02-14 18:17:51', '2025-02-14 18:17:51', 0, 'L2YKRatCwEtZ9SU'),
+(59, 'Sample Adopted Post', 6, '\"[\\\"images\\\\\\/posts\\\\\\/ZHypQwpFaKCSytbG0Tsz9MIQb5D3JnqZ06expR4z.jpg\\\"]\"', 'uploaded', '2025-02-14 18:26:58', '2025-02-14 18:34:46', 2, '1gTljrUhrkCPb42'),
+(61, 'tae', 1, '\"[]\"', 'uploaded', '2025-02-26 20:07:44', '2025-02-26 20:07:44', 1, 'wTMxQG765XC3NIR'),
+(62, 'asdasd', 1, '\"[]\"', 'uploaded', '2025-02-26 20:48:49', '2025-02-26 20:48:49', 0, '3fus2AQY6PzUnug');
 
 -- --------------------------------------------------------
 
@@ -472,18 +561,6 @@ CREATE TABLE `reports` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `reports`
---
-
-INSERT INTO `reports` (`report_id`, `reporter_id`, `report_post_id`, `report_comment_id`, `reason`, `details`, `type`, `created_at`, `updated_at`) VALUES
-(28, 4, 15, NULL, 'Troll', NULL, 'Post', '2024-12-11 05:05:15', '2024-12-11 05:05:15'),
-(29, 4, NULL, 28, 'Spam', NULL, 'Comment', '2024-12-11 05:05:38', '2024-12-11 05:05:38'),
-(30, 4, NULL, 20, 'Troll', NULL, 'Comment', '2024-12-11 07:30:31', '2024-12-11 07:30:31'),
-(31, 4, 16, NULL, 'Troll', NULL, 'Post', '2024-12-11 08:04:51', '2024-12-11 08:04:51'),
-(32, 4, NULL, 20, 'Spam', NULL, 'Comment', '2024-12-11 08:20:25', '2024-12-11 08:20:25'),
-(34, 9, 13, NULL, 'Harassment', NULL, 'Post', '2024-12-13 00:36:05', '2024-12-13 00:36:05');
 
 -- --------------------------------------------------------
 
@@ -505,9 +582,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('442NS51cRhAAR1fZfzZJYDjLGL7BpQn31ofP5eV8', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRU9wMWhSWHhRT2x6a1hKNG95ME5WRkxLMkxqZDhuR05LRG41ZkZtUCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXNoYm9hcmQvcmVwb3J0cyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjQ7fQ==', 1734081213),
-('d6X6hrG4l00JieQoCRLDZUtAJSL6vchBPXeSevBl', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicDBOOFJWTERvN2lhR3owdHRCTjBaYWh6Sm50eVA2Q3JEWG1mUnptTyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6NDt9', 1734073490),
-('GXK2pv9caGuthA8eSNgraR8PLYfE3ojRQWI6rG5o', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YToyOntzOjY6Il90b2tlbiI7czo0MDoiaURQNjFMd0hiOHJ5WE5uelJObm9KTkRmSndueUM4ajZ4V1pHMjJsSyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1734079083);
+('cvbLRBNlsRZDLfjLLtkByUAZdD3azOTuVq7jaOZ0', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTVExamM4aWZhSzREOExRM0JoUjNxVnV2RVE0Wnl0ZWJkYmc2SHhrcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wYWdlcy9wcm9maWxlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1741339590);
 
 -- --------------------------------------------------------
 
@@ -518,8 +593,8 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 CREATE TABLE `users` (
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `profile_picture` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `profile_picture` varchar(255) NOT NULL DEFAULT '/images/defaultpics/default-profile.png',
   `bio` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
@@ -539,13 +614,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `username`, `profile_picture`, `bio`, `email`, `email_verified_at`, `password`, `role`, `status`, `is_online`, `last_online`, `suspended_until`, `remember_token`, `created_at`, `updated_at`) VALUES
-(2, 'Dog Cat', 'DogLover02', 'images/profile_pictures/RrPhwn4c38iKMUaW5FSjDsxWwsWbT0aKAORb0pH2.jpg', NULL, 'jobert@gmail.com', NULL, '$2y$12$P7xngYzmJFQHDepe/hmzpu4hQMh4vSUKMvLX9bohm30c5agtPvf32', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 06:27:32', '2024-12-13 01:03:17'),
-(3, 'Jopay De Guzman', 'Yapoj', 'images/profile_pictures/DtpkrFOogxnFaFas8pZG2BxBnxm3wmJhB11g4fRs.jpg', NULL, 'jopay@gmail.com', NULL, '$2y$12$zRIpIEqBUketefA.ST53EO0tHYm3Dcer9vd7LssT/lLicJhb6oKlu', 'User', 'Suspended', 0, '2024-12-11 06:37:16', '2024-12-20 04:32:26', NULL, '2024-12-05 20:16:11', '2024-12-12 20:32:26'),
-(4, 'Admin Dela Cruz', 'Admin', 'images/profile_pictures/HKULuuGWGYWro6D9Sai7J95cC8iWxARz9wyMZR9X.jpg', NULL, 'admin@gmail.com', NULL, '$2y$12$I153K9htAygAshpDEIDUGe93RF06rTAg2N410TJA6AxiV58/9R3uG', 'Admin', 'Active', 1, '2024-12-11 06:37:16', NULL, NULL, '2024-12-05 20:20:44', '2024-12-13 01:03:28'),
-(5, 'Kitty Cat', 'catperson', 'images/profile_pictures/Cd9CJmpS2BZiCHE9uGnsONUSwOSEKrvfBfQO4nDo.jpg', NULL, 'catperson@gmail.com', NULL, '$2y$12$J7FecznPE1UZ9lWv4cVQqOpRBsjwoVxlJdSLVNNLX9ASmkbbE.JdO', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-07 07:46:45', '2024-12-12 03:48:05'),
-(7, 'Aj Waquiz', 'ajwaquiz', 'images/defaultpics/default-profile.png', NULL, 'alexwaquiz11@gmail.com', NULL, '$2y$12$GH0xPhKBRqLIzOCGUiYNROelb4zzy5gdskdsKijut3uwCMu3QxhLK', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-09 07:33:21', '2024-12-11 03:23:09'),
-(9, 'personcat', 'personofcat', 'images/defaultpics/default-profile.png', NULL, 'personcat@gmail.com', NULL, '$2y$12$GBH.5CFM98CPqHy4d6V4V.vWAIk9pRI49FlPuFb6Qt584RHz2Ya.6', 'User', 'Active', 0, '2024-12-11 06:37:16', NULL, NULL, '2024-12-09 23:08:30', '2024-12-13 01:02:16'),
-(13, 'vlad', 'vlad@gmail.com', 'images/defaultpics/default-profile.png', NULL, 'vlad@gmail.com', NULL, '$2y$12$rkm4WaQX5KNCZ1MvU0tS4uT.A3Oju2bVY8f3rrdQNmvcGHHAvH5e2', 'Admin', 'Active', 0, '2024-12-13 04:25:47', NULL, NULL, '2024-12-12 20:25:47', '2024-12-12 20:33:39');
+(1, 'Aj122', 'admin12', 'images/defaultpics/default-profile.png', 'Cat lover ako tae huhuhuhu', 'admin@gmail.com', NULL, '$2y$12$fy3sVE1nde4QtB/3JoOnf.RmuasRfkgSV9cqwqjTlTeYf2lMt0pce', 'Admin', 'Active', 0, '2025-03-07 01:26:28', NULL, NULL, '2024-12-19 16:37:21', '2025-03-07 01:26:30'),
+(2, 'tae', 'tae', 'images/defaultpics/default-profile.png', NULL, 'tae@gmail.com', NULL, '$2y$12$HuHMBVaC6FJ9kCokadE6/.aie1g1kMmlc3jVdrY7HCsSNyo6vEZFO', 'User', 'Active', 0, '2025-01-28 00:18:12', NULL, NULL, '2025-01-27 21:54:47', '2025-01-28 00:18:15'),
+(4, 'Aj', 'aj', 'images/defaultpics/default-profile.png', NULL, 'aj@gmail.com', NULL, '$2y$12$XYl0dF/V4DgW1//hShR.HeDxyHBnq0BJMUSHpIvYsDAHyH2gS3cO2', 'User', 'Active', 0, '2025-02-10 18:30:07', NULL, NULL, '2025-02-10 16:56:53', '2025-02-10 18:30:10'),
+(5, 'Jm', 'jm18', 'images/defaultpics/default-profile.png', NULL, 'jm@gmail.com', NULL, '$2y$12$j/1J.G7GPT6uqb8hPHCCxuJWmQuz3l//L.PrtkAZrTHmxrbIY0Fgq', 'User', 'Active', 1, '2025-02-11 00:27:35', NULL, NULL, '2025-02-10 18:30:53', '2025-02-11 00:27:35'),
+(6, 'sample', 'sample', 'images/defaultpics/default-profile.png', NULL, 'sample@gmail.com', NULL, '$2y$12$uqyCCNvcFVCLDQN39guNF.j2nC8HHFgI2RlHRSHHiyLdI2IkLACM2', 'User', 'Active', 0, '2025-02-14 18:37:31', NULL, NULL, '2025-02-14 18:12:18', '2025-02-14 18:37:33'),
+(7, 'aj11', 'aj11', 'images/defaultpics/default-profile.png', NULL, 'aj11@gmail.com', NULL, '$2y$12$/lDpKYczyCQ5eFMT6OKOb.OT10waAfvnuTh0yvY6kk.g9yKIucI2q', 'User', 'Active', 0, '2025-03-02 01:56:28', NULL, NULL, '2025-02-26 20:08:45', '2025-03-02 01:56:31');
 
 --
 -- Indexes for dumped tables
@@ -646,7 +720,7 @@ ALTER TABLE `job_batches`
 --
 ALTER TABLE `likes`
   ADD PRIMARY KEY (`like_id`),
-  ADD KEY `likes_ibfk_1` (`posts_id`),
+  ADD KEY `likes_ibfk_1` (`post_id`),
   ADD KEY `likes_ibfk_2` (`user_id`),
   ADD KEY `announcement_id` (`announcement_id`);
 
@@ -665,7 +739,8 @@ ALTER TABLE `notifications`
   ADD KEY `notifications_fk_liked_by_user_id` (`liked_by_user_id`) USING BTREE,
   ADD KEY `post_id` (`post_id`),
   ADD KEY `comment_by_user_id` (`comment_by_user_id`),
-  ADD KEY `notif_from_receiver` (`notif_from_receiver`);
+  ADD KEY `notif_from_receiver` (`notif_from_receiver`),
+  ADD KEY `announcement_id` (`announcement_id`);
 
 --
 -- Indexes for table `password_reset_tokens`
@@ -712,19 +787,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `adoption_applications`
 --
 ALTER TABLE `adoption_applications`
-  MODIFY `application_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `application_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcement_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `announcement_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `comment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `comment_replies`
@@ -736,7 +811,7 @@ ALTER TABLE `comment_replies`
 -- AUTO_INCREMENT for table `done_adoption_forms`
 --
 ALTER TABLE `done_adoption_forms`
-  MODIFY `done_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `done_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -766,7 +841,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `like_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -778,25 +853,25 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `notification_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `post_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `reports`
 --
 ALTER TABLE `reports`
-  MODIFY `report_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `report_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -856,7 +931,7 @@ ALTER TABLE `fosters`
 -- Constraints for table `likes`
 --
 ALTER TABLE `likes`
-  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`posts_id`) REFERENCES `posts` (`post_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `likes_ibfk_3` FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`announcement_id`);
 
@@ -865,9 +940,10 @@ ALTER TABLE `likes`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`liked_by_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`),
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `notifications_ibfk_3` FOREIGN KEY (`comment_by_user_id`) REFERENCES `users` (`user_id`),
   ADD CONSTRAINT `notifications_ibfk_4` FOREIGN KEY (`notif_from_receiver`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_5` FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`announcement_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `notifications_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --

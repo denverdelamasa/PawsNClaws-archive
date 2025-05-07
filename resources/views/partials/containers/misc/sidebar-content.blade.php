@@ -16,14 +16,13 @@
       </div>
     </a>
   @endauth
-
   <footer class="absolute bottom-4 bg-base-300 text-base-content p-4 text-xs flex flex-row gap-x-4 justify-between rounded-xl border border-base-300">
     <nav class="flex flex-col gap-y-2">
       <h6 class="footer-title text-xs">Contents</h6>
       <a class="link link-hover">Posts</a>
       <a class="link link-hover">Announcements</a>
       <a class="link link-hover">Events</a>
-      <a class="link link-hover">Shelters</a>
+      <a class="link link-hover">Services</a>
     </nav>
     <nav class="flex flex-col gap-y-2">
       <h6 class="footer-title text-xs">Site</h6>

@@ -18,7 +18,11 @@ class Post extends Model
     protected $primaryKey = 'post_id';
 
     // Specify which columns are mass assignable (optional, for mass assignment protection)
-    protected $fillable = ['user_id', 'image_path', 'caption', 'post_path'];
+    protected $fillable = ['user_id', 'image_path', 'caption', 'post_path', 'pet', 'status'];
+
+    protected $casts = [
+        'image_path' => 'array', // Cast JSON column to an array
+    ];
 
     // Define the relationship with the User model
     public function user()
@@ -36,5 +40,25 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_comment_id', 'post_id');
+    }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class, 'post_id', 'post_id');
+    }
+
+    public function getIsLikedAttribute()
+    {
+        return auth()->check() && $this->likes()->where('user_id', auth()->id())->exists();
+    }
+    
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
+    }
+    
+    public function getCommentsCountAttribute()
+    {
+        return $this->comments()->count();
     }
 }

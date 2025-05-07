@@ -1,5 +1,3 @@
 @include('partials.main.head')
-    
-    <post-card></post-card>
-
+    <combined-feed></combined-feed>
 @include('partials.main.footer')

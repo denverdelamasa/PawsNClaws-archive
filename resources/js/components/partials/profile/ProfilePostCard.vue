@@ -54,8 +54,22 @@
     </div>
 
     <!-- Thumbnail -->
-    <div v-if="post.image_path" class="px-4 hover:cursor-pointer" @click="showModal(post.post_id)">
-      <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />
+    <div v-if="post.image_path && post.image_path.length > 0" 
+        class="relative px-4 hover:cursor-pointer" 
+        @click="showModal(post.post_id)">
+      
+      <!-- Image Display -->
+      <div class="w-full h-[300px] sm:h-[250px] md:h-[280px] lg:h-[300px] overflow-hidden rounded">
+        <img :src="`/storage/${Array.isArray(post.image_path) ? post.image_path[0] : post.image_path}`" 
+            alt="Thumbnail" 
+            class="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-110" />
+      </div>
+
+      <!-- Overlay for Multiple Images -->
+      <div v-if="Array.isArray(post.image_path) && post.image_path.length > 1" 
+          class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center rounded">
+        <span class="text-white text-lg font-semibold">+{{ post.image_path.length - 1 }}</span>
+      </div>
     </div>
 
     <!-- Edit Post Modal -->
@@ -87,13 +101,64 @@
     </dialog>
 
     <!-- Modal Thumbnail -->
-    <dialog :id="`thumbnailModal-${post.post_id}`" class="modal">
-        <div class="modal-box w-[40vw] h-[40vh] max-w-7xl max-h-screen">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="closeThumbnailModal(post.post_id)">✕</button>
-            <div class="flex justify-center items-center h-full">
-            <img :src="`/storage/${post.image_path}`" alt="Thumbnail" class="max-w-full max-h-full rounded object-cover" />
-            </div>
-        </div>
+    <dialog v-if="post.image_path" :id="`thumbnailModal-`+ post.post_id" class="modal backdrop-blur-sm">
+      <div class="modal-box w-full max-w-4xl max-h-[90vh] p-0 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden relative transform transition-all duration-300">
+          <!-- Close Button -->
+          <button 
+          class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 z-10 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          @click="closeThumbnailModal(post.post_id)"
+          aria-label="Close modal"
+          >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          </button>
+
+          <!-- Image Carousel -->
+          <div class="relative h-[60vh] md:h-[70vh] flex items-center justify-center">
+          <!-- Previous Button -->
+          <button 
+              v-if="post.image_path.length > 1 && currentIndex[post.post_id] > 0" 
+              class="absolute left-4 p-3 bg-gray-900/60 hover:bg-gray-900/80 text-white rounded-full transition-all duration-200 hover:scale-110"
+              @click="prevImage(post.post_id)"
+              aria-label="Previous image"
+          >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+          </button>
+
+          <!-- Image -->
+          <img 
+              :src="`/storage/${post.image_path[currentIndex[post.post_id]]}`" 
+              alt="Thumbnail" 
+              class="max-w-full max-h-full object-contain rounded-lg transition-opacity duration-300"
+              :class="{ 'opacity-100': true, 'opacity-0': false }"
+          />
+
+          <!-- Next Button -->
+          <button 
+              v-if="post.image_path.length > 1 && currentIndex[post.post_id] < post.image_path.length - 1" 
+              class="absolute right-4 p-3 bg-gray-900/60 hover:bg-gray-900/80 text-white rounded-full transition-all duration-200 hover:scale-110"
+              @click="nextImage(post.post_id)"
+              aria-label="Next image"
+          >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+          </button>
+          </div>
+
+          <!-- Image Counter -->
+          <div v-if="post.image_path.length > 1" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-900/70 text-white px-3 py-1 rounded-full text-sm">
+          {{ currentIndex[post.post_id] + 1 }} / {{ post.image_path.length }}
+          </div>
+
+          <!-- Caption (optional, can be customized) -->
+          <div class="p-4 text-center text-gray-600 dark:text-gray-300 text-sm">
+          <p>{{ post.caption || 'Image preview' }}</p>
+          </div>
+      </div>
     </dialog>
 
     <!-- Card Body -->
@@ -115,14 +180,13 @@
           </div>
         </div>
       </div>
-      <div class="text-base mt-2">
-        <p>
-          <!-- Truncate the caption to 20 characters initially -->
-          {{ post.expanded ? post.caption : post.caption.substring(0, 135) }}
+      <div class="text-base mt-2 w-full">
+        <p class="break-words whitespace-normal text-sm sm:text-base">
+          {{ post.expanded ? post.caption : (post.caption && post.caption.length > 135 ? post.caption.substring(0, 135) + '...' : post.caption) }}
         </p>
-        <button
-          v-if="post.caption.length > 125"
-          class="btn btn-link btn-xs text-sm mt-2 px-0"
+        <button 
+          v-if="post.caption && post.caption.length > 125" 
+          class="btn btn-link btn-xs text-sm mt-2"
           @click="toggleDescription(post)"
         >
           {{ post.expanded ? 'See Less' : 'See More' }}
@@ -163,28 +227,36 @@
         </button>
 
       <!-- Comments Button -->
-      <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openModal(post.post_id)">
+      <button class="btn btn-outline btn-sm flex gap-1 items-center" @click="openCommentsModal(post.post_id)">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 stroke-current">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8H7M17 12H7M9 16H15M5 5V19L10 14H19C19.5523 14 20 13.5523 20 13V6C20 5.44772 19.5523 5 19 5H5Z" />
       </svg>
       <span>{{ post.comments_count}} Comments</span>
     </button>
 
-    <Comments :isModalOpen="isModalOpen" :comments="comments" @close="closeCommentsModal" :postId="selectedPostId"/>
+    <Comments :isCommentsModalOpen="isCommentsModalOpen" :commentList="comments" @close="closeCommentsModal" :postId="selectedCommentPostId"/>
 
       <!-- Bookmark Button -->
-      <button id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
-        <svg id="bookmarkIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
-          <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-          <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"/>
+      <button @click="isBookmarked(post.post_id)" id="bookmarkBtn" class="btn btn-outline btn-sm flex items-center gap-2">
+        <svg v-if="post.is_bookmarked" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmarks-fill" viewBox="0 0 16 16">
+          <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5z"/>
+          <path d="M4.268 1A2 2 0 0 1 6 0h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L13 13.768V2a1 1 0 0 0-1-1z"/>
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmarks" viewBox="0 0 16 16">
+          <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
+          <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
         </svg>
         <span id="bookmarkText">Add to bookmarks</span>
       </button>
     </div>
     </div>
   </div>
-  <div v-if="posts.length === 0">
-    No posts available.
+  <!-- Add loading indicator -->
+  <div v-if="loading" class="text-center my-4">
+    <span class="loading loading-dots loading-lg"></span>
+  </div>
+  <div v-else-if="!hasMorePosts" class="text-center my-4">
+    No more posts to load
   </div>
 </template>
 <script>
@@ -199,34 +271,89 @@ export default {
   data() {
     return {
       posts: [],
+      currentIndex: {},
       expanded: false,
       isAuthenticated: false,
       currentUserId: null,
       selectedPost: { caption: '' },
       isModalOpen: false,
-      comments: [],  // Store comments here,
-      selectedPostId: null,
+      isCommentsModalOpen: false,
+      comments: [],
+      selectedCommentPostId: null,
+      currentPage: 1,
+      hasMorePosts: true,
+      loading: false,
+      scrollListener: null,
     };
   },
   methods: {
-    openModal(postId) {
-      this.isModalOpen = true;
-      this.fetchComments(postId);  // Fetch comments for the selected post  
-      this.selectedPostId = postId;
+    async isBookmarked(postId) {
+      if (!this.isAuthenticated) {
+        this.triggerLoginModal();
+        return;
+      }
+      
+      try {
+        await axios.post(`/api/bookmark/${postId}/post`);
+        
+        // Find the post and update its like state
+        const post = this.posts.find(post => post.post_id === postId);
+        if (post) {
+          post.is_bookmarked = !post.is_bookmarked; // Toggle like state
+        }
+
+        // Fetch the updated likes count
+        await this.UpdatePosts();
+      } catch (error) {
+        console.error("Error liking/unliking post:", error);
+      }
     },
-    closeCommentsModal() {
-      this.isModalOpen = false;
-      this.comments = [];  // Clear comments when modal is closed
-      this.fetchPost();
-    },
-    fetchComments(postId) {
-      axios.get(`/api/comments/post/${postId}`)
+    UpdatePosts() {
+      this.loading = true; // Show loader when starting request
+
+      axios.get('/api/user/posts/list')
         .then(response => {
-          this.comments = response.data;  // Store fetched comments
+          const newPosts = response.data.posts || [];
+
+          // Replace the posts list with the new posts
+          this.posts = newPosts;
+
+          // Optionally reset pagination info if you're still tracking it
+          this.totalPages = 1;
+          this.currentPage = 1;
+          this.hasMore = false;
         })
         .catch(error => {
-          console.error("Error fetching comments:", error);
+          console.error('Error fetching browse posts:', error);
+        })
+        .finally(() => {
+          this.loading = false; // Hide loader when done
         });
+    },
+    openCommentsModal(postId) {
+      this.isCommentsModalOpen = true;
+      this.selectedCommentPostId = postId;
+    },
+    closeCommentsModal() {
+      this.isCommentsModalOpen = false;
+      this.comments = [];  // Clear comments when modal is closed
+      this.UpdatePosts();
+    },
+    nextImage(postId) {
+      const post = this.posts.find(post => post.post_id === postId);
+      if (post && post.image_path.length > 0) {
+        this.currentIndex[postId] = (this.currentIndex[postId] + 1) % post.image_path.length;
+      } else {
+        console.error("Post or image path not found for postId:", postId);
+      }
+    },
+    prevImage(postId) {
+      const post = this.posts.find(post => post.post_id === postId);
+      if (post && post.image_path.length > 0) {
+        this.currentIndex[postId] = (this.currentIndex[postId] - 1 + post.image_path.length) % post.image_path.length;
+      } else {
+        console.error("Post or image path not found for postId:", postId);
+      }
     },
     openDeleteModal(postId) {
       const modal = document.getElementById(`deletePostModal-${postId}`);
@@ -243,7 +370,7 @@ export default {
     confirmDelete(postId) {
       axios.delete(`/api/posts/delete/${postId}`)
         .then(response => {
-          this.posts = this.posts.filter(post => post.post_id !== postId);
+          this.UpdatePosts();
           console.log("Post deleted successfully");
           this.closeDeleteModal(postId);
 
@@ -297,13 +424,10 @@ export default {
 
     // Submit the edit form
     submitEditPost() {
-      console.log(this.selectedPost); // Log selectedPost to check category_id
-
       axios.put(`/api/post/edit/${this.selectedPost.post_id}`, this.selectedPost, {
         })
         .then(response => {
-            this.$emit('post-updated', response.data);  // Emit event to parent if needed
-            this.fetchPosts();  // Refresh the posts list
+            this.UpdatePosts();
             this.closeEditModal(this.selectedPost.post_id);  // Close the modal after success
             
             Swal.fire({
@@ -360,10 +484,15 @@ export default {
       post.expanded = !post.expanded;
     },
     showModal(postId) {
-        const modal = document.getElementById(`thumbnailModal-${postId}`);
-        if (modal) {
-        modal.showModal();
-        }
+      // Ensure the index is set to 0 if undefined
+      if (!(postId in this.currentIndex)) {
+        this.currentIndex[postId] = 0;
+      }
+
+      const modal = document.getElementById(`thumbnailModal-${postId}`);
+      if (modal) {
+      modal.showModal();
+      }
     },
     closeThumbnailModal(postId) {
         const modal = document.getElementById(`thumbnailModal-${postId}`);
@@ -371,34 +500,61 @@ export default {
         modal.close();
         }
     },
-    async fetchPosts() {
+    async fetchPosts(initialLoad = false) {
+      if (this.loading || !this.hasMorePosts) return;
+      
+      this.loading = true;
       try {
-        const response = await axios.get("/api/user/posts/list");
-        this.posts = response.data;
+        const response = await axios.get(`/api/user/posts/list?page=${this.currentPage}`);
+        
+        if (initialLoad) {
+          this.posts = response.data.posts;
+        } else {
+          this.posts = [...this.posts, ...response.data.posts];
+        }
+
+        this.hasMorePosts = !!response.data.pagination.next_page_url;
+        this.currentPage++;
       } catch (error) {
         console.error("Error fetching posts:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    handleScroll() {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const visibleHeight = window.innerHeight;
+      const pageHeight = document.documentElement.scrollHeight;
+      const bottomOffset = 100; // Load more when 100px from bottom
+
+      if (pageHeight - (scrollY + visibleHeight) < bottomOffset) {
+        if (!this.loading && this.hasMorePosts) {
+          this.fetchPosts();
+        }
       }
     },
     async likePost(postId) {
       try {
-        const response = await axios.post(`/api/like/${postId}`);
+        await axios.post(`/api/like/${postId}/post`);
         
-        // After liking/unliking the post, update the likes count and state
+        // Find the post and update its like state
         const post = this.posts.find(post => post.post_id === postId);
         if (post) {
           post.is_liked = !post.is_liked; // Toggle like state
-          await this.fetchLikesCount(postId); // Fetch updated likes count after liking/unliking
         }
+
+        // Fetch the updated likes count
+        await this.fetchLikesCount(postId);
       } catch (error) {
         console.error("Error liking/unliking post:", error);
       }
     },
     async fetchLikesCount(postId) {
       try {
-        const response = await axios.get(`/api/like-count/${postId}`);
+        const response = await axios.get(`/api/like-count/${postId}/post`);
         const post = this.posts.find(post => post.post_id === postId);
         if (post) {
-          post.likes_count = response.data.likesCount; // Update likes count
+          post.likes_count = response.data.likesCount; // Update only post likes count
         }
       } catch (error) {
         console.error("Error fetching likes count:", error);
@@ -416,7 +572,14 @@ export default {
   },
   mounted() {
     this.checkAuthentication();
-    this.fetchPosts();
+    this.fetchPosts(true);
+    this.scrollListener = this.handleScroll.bind(this);
+    window.addEventListener('scroll', this.scrollListener);
+  },
+  beforeUnmount() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
   },
 };
 </script>

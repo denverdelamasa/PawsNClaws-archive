@@ -9,30 +9,6 @@
                             <!-- Profile Picture -->
                             <img :src="`/storage/${user.profile_picture}`" class="w-32 h-32 bg-base-300 rounded-full mb-4 object-cover transition-all duration-300 group-hover:brightness-75" alt="User Avatar">
 
-                            <!-- Camera Icon inside the Profile Picture, only shown when hovering over the image -->
-                            <i class="fas fa-camera w-8 h-8 absolute top-0 bottom-0 left-0 right-0 m-auto opacity-0 hover:opacity-100 text-white bg-gray-800 p-2 rounded-full transition-opacity duration-300" @click="openModal"></i>
-
-                            <!-- Modal for Image Preview -->
-                            <div v-if="isModalOpen" class="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-                                <div class="bg-white p-6 rounded-lg w-80">
-                                    <h2 class="text-xl font-bold mb-4">Choose Profile Picture</h2>
-                                    <!-- Image Preview -->
-                                    <div class="mb-4">
-                                        <img :src="imagePreview" v-if="imagePreview" class="w-full h-40 object-cover rounded-lg"/>
-                                        <p v-if="!imagePreview" class="text-gray-500">No image selected</p>
-                                    </div>
-
-                                    <!-- File Input -->
-                                    <input type="file" @change="handleFileChange" class="mb-4" accept="image/*" />
-
-                                    <!-- Save and Cancel Buttons -->
-                                    <div class="flex justify-end gap-4">
-                                        <button @click="save" class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700">Save</button>
-                                        <button @click="closeModal" class="p-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="flex flex-row gap-x-2 align-middle items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16" @click="toggleEditing">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -50,58 +26,60 @@
                             <span class="text-sm">{{ user.username }}</span>
                             <p class="text-base-content/70">{{ user.role }}</p>
                         </div>
-
-                        <hr class="my-6 border-t border-base-300">
-                        <!-- -->
-                        <div class="flex flex-col">
-                            <ul class="flex flex-wrap gap-x-2 gap-y-2">
-                                <button class="GetVerifiedButton m-auto"  onclick="GetVerifiedModal.showModal()">
-                                    <span class="GetVerifiedShadow"></span>
-                                    <span class="GetVerifiedEdge"></span>
-                                    <span class="front text flex-col flex">
-                                        Get Verified
-                                    </span>
-                                </button>
-                            </ul>
+                        <div v-if="user.role === 'User'">
+                            <hr class="my-6 border-t border-base-300">
+                            <!-- Get Verified -->
+                            <div  class="flex flex-col">
+                                <ul class="flex flex-wrap gap-x-2 gap-y-2">
+                                    <button class="GetVerifiedButton m-auto"  @click="hasPendingApplication ? openVerificationStatusModal() : openGetVerifiedModal()">
+                                        <span class="GetVerifiedShadow"></span>
+                                        <span class="GetVerifiedEdge"></span>
+                                        <span class="front text flex-col flex">
+                                            {{ hasPendingApplication ? 'Ongoing' : 'Get Verified' }}
+                                        </span>
+                                    </button>
+                                </ul>
+                            </div>
+                            <hr class="my-6 border-t border-base-300">
                         </div>
-                        <hr class="my-6 border-t border-base-300">
-                        <!-- -->
-                        <div class="flex flex-col">
-                            <span class="text-base-content uppercase font-bold tracking-wider mb-2">Badges</span>
-                            <ul class="flex flex-wrap gap-x-2 gap-y-2">
-                                <div class="badge badge-accent">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
-                                        <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
-                                    </svg>
-                                    100-Paws-t
-                                </div>
-                                <div class="badge badge-warning badge-outline flex flex-row">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
-                                        <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
-                                    </svg>
-                                    First Accounts
-                                </div>
-                                <div class="badge badge-info badge-outline">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
-                                        <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707z"/>
-                                        <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018"/>
-                                    </svg>
-                                    Foster
-                                </div>
-                                <div class="badge badge-accent badge-outline">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
-                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1z"/>
-                                    </svg>
-                                    Applied
-                                </div>
-                                <div class="badge badge-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
-                                        <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
-                                    </svg>
-                                    Furr-Parent
-                                </div>
-                            </ul>
-                        </div>
+                        <!-- 
+                            <div class="flex flex-col">
+                                <span class="text-base-content uppercase font-bold tracking-wider mb-2">Badges</span>
+                                <ul class="flex flex-wrap gap-x-2 gap-y-2">
+                                    <div class="badge badge-accent">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                            <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                        </svg>
+                                        100-Paws-t
+                                    </div>
+                                    <div class="badge badge-warning badge-outline flex flex-row">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                            <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
+                                        </svg>
+                                        First Accounts
+                                    </div>
+                                    <div class="badge badge-info badge-outline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                            <path d="M7.293 1.5a1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l2.354 2.353a.5.5 0 0 1-.708.707L8 2.207 1.354 8.853a.5.5 0 1 1-.708-.707z"/>
+                                            <path d="m14 9.293-6-6-6 6V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5zm-6-.811c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.691 0-5.018"/>
+                                        </svg>
+                                        Foster
+                                    </div>
+                                    <div class="badge badge-accent badge-outline">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1z"/>
+                                        </svg>
+                                        Applied
+                                    </div>
+                                    <div class="badge badge-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+                                            <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z"/>
+                                        </svg>
+                                        Furr-Parent
+                                    </div>
+                                </ul>
+                            </div>
+                        -->
                     </div>
                 </div>
                 <!-- About Me Section -->
@@ -109,42 +87,106 @@
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
                         <div class="flex flex-row gap-x-2 align-middle items-center justify-left">
                             <h1 class="text-xl font-bold">Bio</h1>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" @click="openBioModal" fill="currentColor" class="w-4 h-4 hover:text-blue-600" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                             </svg>
                         </div>
-                        <p class="text-base-content/70">
-                            Animal lover and proud pet parent! Here to connect, share, and help find loving homes for our furry friends. Let’s make a difference together!                            
+                        <p class="text-base-content/70" :class="{ 'italic text-gray-400': !user.bio }">
+                            {{ user.bio || 'Put something in here...' }}
                         </p>
                     </div>
+
+                    <!-- Bio Modal -->
+                    <dialog id="bioModal" class="modal">
+                        <div class="modal-box bg-base-100 text-base-content max-w-3xl w-full">
+                            <!-- Modal Header -->
+                            <form method="dialog">
+                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                            </form>
+                            <h3 class="text-3xl font-bold">Edit Bio</h3>
+                            <p class="py-2">
+                                Update your bio to share more about yourself with the community.
+                            </p>
+
+                            <!-- Bio Input -->
+                            <div class="form-control w-full mt-4">
+                                <label class="label">
+                                    <span class="label-text">Bio</span>
+                                </label>
+                                <textarea v-model="user.bio" class="textarea textarea-bordered h-24" placeholder="Write something about yourself..."></textarea>
+                            </div>
+
+                            <!-- Save and Cancel Buttons -->
+                            <div class="modal-action">
+                                <button @click="closeBioModal" class="btn btn-ghost">Cancel</button>
+                                <button @click="save" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </dialog>
+
                     <div class="p-2 flex flex-wrap gap-x-4">
                         <!-- mag cchange ng laman yung "div sa baba base sa pinindot dito" -->
                         <div class="flex flex-row md:border-r-2 md:border-accent pr-4 gap-x-4 gap-y-4">        
-                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                            <button class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    :class="{ 'text-primary': activeTab === 'posts' }"
+                                    @click="activeTab = 'posts'">
                                 Posts
-                            </h1>
+                            </button>
                             <!-- If shelter Acooutt -->
-                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                            <button v-if="user.role === 'Shelter' || user.role === 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    :class="{ 'text-primary': activeTab === 'announcements' }"
+                                    @click="activeTab = 'announcements'">
                                 Announcement
-                            </h1>
-                            <h1 class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100">
+                            </button>
+                            <button v-if="user.role === 'Shelter' || user.role === 'Admin'" class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
+                                    :class="{ 'text-primary': activeTab === 'events' }"
+                                    @click="activeTab = 'events'">
                                 Events
-                            </h1>
+                            </button>
                         </div>
                         <!-- Modal muna to -->
                         <div>
-                            <h1 
-                                class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100"
-                                onclick="adoptionModal.showModal()"
-                            >
-                                Adoption Lists
-                            </h1>
+                            <div>
+                                <button 
+                                    class="text-xl font-bold hover:scale-105 hover:text-primary transition-all duration-100 relative"
+                                    onclick="adoptionModal.showModal()"
+                                >
+                                    Adoption Lists
+                                    <span v-if="pendingApplicationsCount > 0" class="badge badge-primary badge-sm absolute -top-2 -right-4">
+                                    {{ pendingApplicationsCount }}
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="bg-base-100 shadow-lg rounded-lg p-6">
-                        <ProfilePostCard/>
+                        <div v-if="activeTab === 'posts'">
+                            <!-- Posts content -->
+                            <ProfilePostCard/>
+                        </div>
+                        <div v-if="activeTab === 'announcements'">
+                            <!-- Posts content -->
+                            <ProfileAnnouncement/>
+                        </div>
+                        <div v-if="activeTab === 'events'">
+                            <!-- Posts content -->
+                            <ProfileEvents/>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Cropper Modal -->
+        <div v-if="isModalOpen" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-base-100 rounded-lg p-6 shadow-lg w-full max-w-md">
+                <h3 class="text-lg font-bold mb-4">Crop Profile Picture</h3>
+                <div class="mb-4">
+                    <img ref="imageCropper" :src="imagePreview" class="max-w-full" alt="Crop Preview" />
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button @click="cancelCrop" class="btn btn-ghost">Cancel</button>
+                    <button @click="cropImage" class="btn btn-primary">Crop & Save</button>
                 </div>
             </div>
         </div>
@@ -153,62 +195,183 @@
     <!-- Place Account Registration Form -->
     <dialog id="GetVerifiedModal" class="modal">
         <div class="modal-box bg-base-100 text-base-content max-w-3xl w-full">
-            <!-- Modal Header -->
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
             <h3 class="text-3xl font-bold">Get Verified</h3>
             <p class="py-2">
-                Complete the registration form to begin the verification process and become an official shelter, pet shop, or pet clinic partner. Once verified, you'll gain access to all the features and benefits available to verified organizations.
+                Complete the registration form to begin the verification process and become an official shelter or pet clinic partner.
             </p>
-
-            <!-- Form Inputs -->
-            <form method="POST" action="/register-verification" enctype="multipart/form-data">
-                <!-- Username (Autofilled, Read-only) -->
-                <div class="form-control w-full">
-                    <label class="label">
-                        <span class="label-text">Username</span>
-                    </label>
-                    <input type="text" name="username" value="{{ auth()->user()->username }} inde ko alam to" class="input input-bordered w-full" readonly>
-                </div>
-
-                <!-- Email (Autofilled, Editable) -->
-                <div class="form-control w-full mt-4">
-                    <label class="label">
-                        <span class="label-text">Email</span>
-                    </label>
-                    <input type="email" name="email" value="{{ auth()->user()->email }} auto filled, pero pwedeng mapalitan" class="input input-bordered w-full">
-                </div>
-
-                <!-- Dropdown -->
+            <form @submit.prevent="submitVerificationForm" enctype="multipart/form-data">
+                <!-- Role Dropdown -->
                 <div class="form-control w-full mt-4">
                     <label class="label">
                         <span class="label-text">Select Type of Organization:</span>
                     </label>
-                    <select name="type" class="select select-bordered w-full">
-                        <option value="Pet Shelter">Pet Shelter</option>
-                        <option value="Pet Clinic">Pet Clinic</option>
-                        <option value="Pet Shop">Pet Shop</option>
+                    <select v-model="form.role" class="select select-bordered w-full" required>
+                        <option value="" disabled>Select an option</option>
+                        <option value="shelter">Pet Shelter</option>
+                        <option value="vet">Pet Clinic</option>
                     </select>
                 </div>
-
                 <!-- Media Input -->
                 <div class="form-control w-full mt-4">
                     <label class="label">
-                        <span class="label-text">Upload Required Documents and Images for Verification...</span>
+                        <span class="label-text">
+                            <template v-if="form.role === 'shelter'">
+                                <strong>Required Documents:</strong>
+                                <ul class="list-disc ml-5">
+                                    <li>Animal Facility Application Form with 1×1 Picture of Applicant</li>
+                                    <li>Proof of Registration/Creationï¿½as an Establishment</li>
+                                    <li>Valid ID of the Officer-in-Charge, Owner, Manager, or Veterinarian</li>
+                                    <li>Notarized Employment Contract/Memorandum of Agreement/Appointment Order</li>
+                                    <li>Picture of the Shelter</li>
+                                </ul>
+                            </template>
+                            <template v-else-if="form.role === 'vet'">
+                                <strong>Required Documents:</strong>
+                                <ul class="list-disc ml-5">
+                                    <li>Animal Facility Application Form with 1×1 Picture of Applicant</li>
+                                    <li>Proof of Registration/Creation as an Establishment</li>
+                                    <li>Valid ID of the Officer-in-Charge, Owner, Manager, or Veterinarian</li>
+                                    <li>Valid PRC ID of the Facility Veterinarian</li>
+                                    <li>Certificate of Attendance from Animal Welfare Seminar</li>
+                                    <li>Picture of the Clinic</li>
+                                </ul>
+                            </template>
+                            <template v-else>
+                                Upload required documents and images for verification
+                            </template>
+                        </span>
                     </label>
-                    <input type="file" name="documents[]" class="file-input file-input-bordered w-full" accept="image/*,.pdf" multiple>
+                    <input
+                        type="file"
+                        @change="handleFileChange($event, 'verification')"
+                        class="file-input file-input-bordered w-full"
+                        accept="image/*,.pdf"
+                        multiple
+                        ref="fileInput"
+                    >
+                </div>
+                <!-- Document Preview -->
+                <div v-if="documentPreviews.length" class="mt-4">
+                    <label class="label">
+                        <span class="label-text">Document Previews:</span>
+                    </label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div v-for="(preview, index) in documentPreviews" :key="index" class="relative">
+                            <div v-if="preview.type.startsWith('image/')" class="w-full h-32">
+                                <img :src="preview.url" class="w-full h-full object-cover rounded-lg" :alt="'Preview ' + index">
+                            </div>
+                            <div v-else-if="preview.type === 'application/pdf'" class="w-full h-32 flex items-center justify-center bg-gray-100 rounded-lg">
+                                <a :href="preview.url" target="_blank" class="text-blue-500 hover:underline">PDF Preview</a>
+                            </div>
+                            <button
+                                @click="removeDocument(index)"
+                                class="absolute top-1 right-1 btn btn-xs btn-circle btn-error"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Checkbox for Animal Welfare Act Compliance (already added) -->
+                <div class="form-control w-full mt-4">
+                    <label class="label cursor-pointer">
+                    <input
+                        type="checkbox"
+                        v-model="form.compliance"
+                        class="checkbox checkbox-primary"
+                        required
+                    />
+                    <span class="label-text ml-2">
+                        By checking this box, you confirm that your establishment complies with the provisions of Republic Act No. 8485 (The Animal Welfare Act of 1998), including the proper treatment, care, and facilities required for the welfare of animals.
+                    </span>
+                    </label>
+                </div>
+
+                <!-- Error Message -->
+                <div v-if="form.errors.length" class="alert alert-error mt-4">
+                    <ul>
+                        <li v-for="error in form.errors" :key="error">{{ error }}</li>
+                    </ul>
+                </div>
                 <!-- Buttons -->
                 <div class="modal-action">
-                    <button type="button" class="btn btn-ghost" formmethod="dialog">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="button" class="btn btn-ghost" @click="closeVerificationModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" :disabled="form.isSubmitting || !form.compliance">
+                    {{ form.isSubmitting ? 'Submitting...' : 'Register' }}
+                    </button>
                 </div>
             </form>
         </div>
     </dialog>
 
+    <!-- Confirmation Modal for Get Verified -->
+    <dialog id="ConfirmVerificationModal" class="modal">
+        <div class="modal-box bg-base-100 text-base-content max-w-md w-full">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-2xl font-bold">Confirm Submission</h3>
+            <p class="py-4">
+                Are you sure you want to submit your verification application? Please ensure all documents are correct before proceeding.
+            </p>
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="closeConfirmVerificationModal">Cancel</button>
+                <button class="btn btn-primary" @click="confirmVerificationSubmission">Confirm</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="VerificationStatusModal" class="modal">
+        <div class="modal-box bg-base-100 text-base-content max-w-4xl w-full">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-3xl font-bold">Verification Applications</h3>
+            <p class="py-2">
+                View the status of your verification applications below.
+            </p>
+            <div class="overflow-x-auto mt-4">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Rejection Reason</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="application in verificationApplications" :key="application.verify_id">
+                            <td>{{ application.verify_id }}</td>
+                            <td>{{ application.role === 'shelter' ? 'Pet Shelter' : 'Pet Clinic' }}</td>
+                            <td>
+                                <span :class="{
+                                    'badge badge-primary': application.status === 'pending',
+                                    'badge badge-success': application.status === 'approved',
+                                    'badge badge-error': application.status === 'rejected'
+                                }">
+                                    {{ application.status.charAt(0).toUpperCase() + application.status.slice(1) }}
+                                </span>
+                            </td>
+                            <td>{{ application.rejection_reason || '-' }}</td>
+                            <td>{{ new Date(application.created_at).toLocaleDateString() }}</td>
+                        </tr>
+                        <tr v-if="verificationApplications.length === 0">
+                            <td colspan="5" class="text-center">No applications found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-action">
+                <button class="btn btn-ghost" @click="closeVerificationStatusModal">Close</button>
+            </div>
+        </div>
+    </dialog>
 
 
     <!-- EZ MODAL WTF -->
@@ -219,19 +382,6 @@
             </form>
         
             <h3 class="text-lg font-bold mb-4">Adoption Requests</h3>
-        
-            <!-- Search and Filter Section -->
-            <div class="flex flex-wrap items-center justify-between mb-4">
-            <!-- Filter Button -->
-            <div>
-                <button class="btn btn-outline btn-primary">Filter</button>
-            </div>
-        
-            <!-- Search Input -->
-            <div class="form-control w-full max-w-md">
-                <input type="text" placeholder="Search requests..." class="input input-bordered" />
-            </div>
-            </div>
         
             <!-- Table Section -->
             <div class="overflow-x-auto z-10">
@@ -247,8 +397,8 @@
                     </thead>
             
                     <!-- Table Body -->
-                    <tbody v-for="(application, index) in userAdoptionForms" :key="index">
-                        <tr>
+                    <tbody v-if="userAdoptionForms.length > 0">
+                        <tr v-for="(application, index) in userAdoptionForms" :key="index">
                             <td>{{ application.adoption_code }}</td>
                             <td>{{ application.adopter_account }}</td>
                             <td>{{ application.status }}</td>
@@ -260,10 +410,25 @@
                                 <button v-if="application.status === 'Ongoing'" class="btn btn-xs btn-primary text-white" @click.prevent="openReviewModal(application)">
                                     Review
                                 </button>
+
+                                <button v-if="application.status === 'Reject'" class="btn btn-xs btn-info text-white" disabled>
+                                    Rejected
+                                </button>
+
+                                <button v-if="application.status === 'Failed'" class="btn btn-xs btn-info text-white" disabled>
+                                    Failed
+                                </button>
+
+                                <button v-if="application.status === 'Complete'" class="btn btn-xs btn-info text-white" disabled>
+                                    Completed
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="userAdoptionForms.length === 0" class="text-center py-2">
+                    <p class="text-gray-500">No adoption request available.</p>
+                </div>
                 <!-- Review Modal -->
             </div>
         </div>
@@ -345,20 +510,39 @@
                         <div class="form-control mb-4 text-xl">
                             <p>
                                 <strong>Government ID:</strong>
-                                <img :src="`/storage/${ selectedApplication.gov_id }`" alt="" class="rounded-lg">
+                                <div v-if="selectedApplication.gov_id">
+                                    <!-- Display PDF if the file is a PDF -->
+                                    <iframe
+                                        v-if="selectedApplication.gov_id.endsWith('.pdf')"
+                                        :src="`/storage/${selectedApplication.gov_id}`"
+                                        width="100%"
+                                        height="500px"
+                                        class="rounded-lg"
+                                        frameborder="0"
+                                    ></iframe>
+
+                                    <!-- Display image if the file is an image -->
+                                    <img
+                                        v-else
+                                        :src="`/storage/${selectedApplication.gov_id}`"
+                                        alt="Government ID"
+                                        class="rounded-lg"
+                                    />
+                                </div>
+                                <span v-else>No Government ID uploaded.</span>
                             </p>
                         </div>
                         <div class="flex justify-end gap-4 mt-6">
-                            <button v-if="selectedApplication.status === 'Pending'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="closeReviewModal">
+                            <button v-if="selectedApplication.status === 'Pending'" @click.prevent="rejectForm" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                                 <strong>Reject</strong>
                             </button>
                             <button v-if="selectedApplication.status === 'Pending'" @click.prevent="acceptForm" type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                                 <strong>Accept</strong>
                             </button>
-                            <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" @click.prevent="changeStatusToFailed">
-                                <strong>Reject</strong>
+                            <button v-if="selectedApplication.status === 'Ongoing'" @click.prevent="changeStatusToFailed" type="button" class="btn btn-error bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" >
+                                <strong>Failed</strong>
                             </button>
-                            <button v-if="selectedApplication.status === 'Ongoing'" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600" @click.prevent="changeStatusToComplete">
+                            <button v-if="selectedApplication.status === 'Ongoing'" @click.prevent="changeStatusToComplete" type="button" class="btn btn-warning bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
                                 <strong>Completed</strong>
                             </button>
                             
@@ -375,7 +559,6 @@
                 </button>
             </div>
         </div>
-
     </dialog>         
 </template>
 <script>
@@ -383,19 +566,36 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import ProfilePostCard from '../partials/profile/ProfilePostCard.vue';
+import ProfileAnnouncement from '../partials/profile/ProfileAnnouncement.vue';
+import ProfileEvents from '../partials/profile/ProfileEvents.vue';
 
 export default {
   components: {
-    ProfilePostCard
+    ProfilePostCard,
+    ProfileAnnouncement,
+    ProfileEvents
   },
   data() {
     return {
       isEditing: false,
       isModalOpen: false,
       imagePreview: null,
+      selectedImage: null,
+      cropper: null,
       userAdoptionForms: [],
       showFormModal: false,
       selectedApplication: null,
+      bioInput: '', // Temporary storage for bio input
+      isBioModalOpen: false, // Controls the visibility of the bio modal
+      csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || '', // Fetch CSRF token from meta tag
+      compliance: false,
+      form: {
+        email: '',
+        type: '',
+        documents: [],
+        errors: [],
+        isSubmitting: false,
+      },
       user: {
         name: '',
         username: '',
@@ -403,9 +603,194 @@ export default {
         role: '',
         bio: '',
       },
+      activeTab: 'posts',
+      hasPendingApplication: false,
+      verificationApplications: [],
+      pendingApplicationsCount: 0,
+      isConfirmVerificationModalOpen: false,
+      documentPreviews: [],
     };
   },
   methods: {
+    // Add method to remove a document
+    removeDocument(index) {
+        // Revoke the object URL to prevent memory leaks
+        URL.revokeObjectURL(this.documentPreviews[index].url);
+        // Remove the document and its preview
+        this.form.documents.splice(index, 1);
+        this.documentPreviews.splice(index, 1);
+    },
+    openConfirmVerificationModal() {
+        this.isConfirmVerificationModalOpen = true;
+        document.getElementById('ConfirmVerificationModal').showModal();
+    },
+    closeConfirmVerificationModal() {
+        this.isConfirmVerificationModalOpen = false;
+        document.getElementById('ConfirmVerificationModal').close();
+    },
+    async submitFormData() {
+        this.form.isSubmitting = true;
+        this.form.errors = [];
+
+        const formData = new FormData();
+        formData.append('role', this.form.role);
+        formData.append('compliance', this.form.compliance ? '1' : '0');
+        this.form.documents.forEach((file, index) => {
+            formData.append(`documents[${index}]`, file);
+        });
+
+        try {
+            const response = await axios.post('/api/verify/apply', formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            Swal.fire({
+                position: "bottom-end",
+                icon: "success",
+                title: "Verification application submitted successfully!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+                toast: true,
+            });
+
+            this.hasPendingApplication = true; // Update button state
+            this.closeVerificationModal();
+        } catch (error) {
+            if (error.response?.data?.errors) {
+                this.form.errors = Object.values(error.response.data.errors).flat();
+            } else {
+                this.form.errors = ['Failed to submit application. Please try again.'];
+            }
+            Swal.fire({
+                position: "bottom-end",
+                icon: "error",
+                title: "Failed to submit verification application.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+                toast: true,
+            });
+        } finally {
+            this.form.isSubmitting = false;
+        }
+    },
+    submitVerificationForm() {
+        this.form.errors = [];
+        if (!this.form.role || this.form.documents.length === 0) {
+            this.form.errors.push('Please select an organization type and upload documents.');
+        }
+        if (!this.form.compliance) {
+            this.form.errors.push('You must confirm compliance with Republic Act No. 8485.');
+        }
+        if (this.form.errors.length > 0) {
+            return;
+        }
+        this.openConfirmVerificationModal();
+    },
+    confirmVerificationSubmission() {
+        this.closeConfirmVerificationModal();
+        this.submitFormData();
+    },
+    async fetchPendingApplicationsCount() {
+      try {
+        const response = await axios.get('/api/user/adoption/pending-count', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        this.pendingApplicationsCount = response.data.pending_count;
+      } catch (error) {
+        console.error('Error fetching pending applications count:', error);
+      }
+    },
+    openAdoptionModal() {
+      const modal = document.getElementById('adoptionModal');
+      if (modal) {
+        this.fetchPendingApplicationsCount();
+        modal.showModal();
+      }
+    },
+    async fetchVerificationApplications() {
+        try {
+            const response = await axios.get('/api/verify/user-applications/', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            this.verificationApplications = response.data.applications;
+            this.hasPendingApplication = this.verificationApplications.some(app => app.status === 'pending');
+        } catch (error) {
+            console.error('Error fetching verification applications:', error);
+        }
+    },
+    openGetVerifiedModal() {
+        document.getElementById('GetVerifiedModal').showModal();
+    },
+    closeVerificationModal() {
+        document.getElementById('GetVerifiedModal').close();
+        this.form.role = '';
+        this.form.documents = [];
+        this.form.errors = [];
+        this.form.isSubmitting = false;
+        this.form.compliance = false;
+        // Clean up all preview URLs
+        this.documentPreviews.forEach(preview => URL.revokeObjectURL(preview.url));
+        this.documentPreviews = [];
+        // Reset the file input
+        if (this.$refs.fileInput) {
+            this.$refs.fileInput.value = '';
+        }
+    },
+    openVerificationStatusModal() {
+        this.fetchVerificationApplications();
+        document.getElementById('VerificationStatusModal').showModal();
+    },
+    closeVerificationStatusModal() {
+        document.getElementById('VerificationStatusModal').close();
+        this.verificationApplications = [];
+    },
+    closeVerificationModal() {
+      document.getElementById('GetVerifiedModal').close();
+      this.form.role = '';
+      this.form.documents = [];
+      this.form.errors = [];
+      this.form.isSubmitting = false;
+    },
+    openModal() {
+      this.isModalOpen = true;
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (event) => this.handleFileChange(event, 'profile');
+      input.click();
+    },
+    closeModal() {
+      this.isModalOpen = false;
+      this.imagePreview = null;
+      if (this.cropper) {
+        this.cropper.destroy();
+        this.cropper = null;
+      }
+    },
+    // Open the bio modal and populate the textarea with the current bio
+    openBioModal() {
+        this.bio = this.user.bio; // Set the input to the current bio
+        this.isBioModalOpen = true;
+        document.getElementById('bioModal').showModal(); // Open the modal
+    },
+    // Close the bio modal
+    closeBioModal() {
+        this.isBioModalOpen = false;
+        document.getElementById('bioModal').close(); // Close the modal
+    },
     openReviewModal(application) {
         console.log(application);
         this.selectedApplication = application; // Clone the application object
@@ -429,8 +814,52 @@ export default {
         axios.put(`/api/user/adoption/accept/${applicationId}`)
         .then((response) => {
             // Handle the success (e.g., show a success message, update UI, etc.)
-            alert('Adoption application accepted!');
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Adoption Form Accepted!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+            });
             this.fetchUserAdoptionApplications();
+            this.fetchPendingApplicationsCount();
+            this.closeReviewModal(); // Close the modal after success
+        })
+        .catch((error) => {
+            // Handle the error (e.g., show an error message)
+            console.error('Error accepting application:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    },
+
+    rejectForm() {
+        // Ensure there is an application_id to update
+        const applicationId = this.selectedApplication?.application_id;
+        
+        if (!applicationId) {
+            // Show a message or alert if no application_id is available
+            return;
+        }
+
+        // Update the status of the adoption application (send a request to the backend)
+        axios.put(`/api/user/adoption/reject/${applicationId}`)
+        .then((response) => {
+            // Handle the success (e.g., show a success message, update UI, etc.)
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Adoption Form Rejected!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+            });
+            this.fetchUserAdoptionApplications();
+            this.fetchPendingApplicationsCount();
             this.closeReviewModal(); // Close the modal after success
         })
         .catch((error) => {
@@ -448,6 +877,8 @@ export default {
         .put(`/api/user/adoption/complete/${applicationId}`)
         .then((response) => {
             alert('Adoption application completed!');
+            this.fetchUserAdoptionApplications();
+            this.fetchPendingApplicationsCount();
             this.closeReviewModal();
         })
         .catch((error) => {
@@ -464,7 +895,17 @@ export default {
         axios
         .put(`/api/user/adoption/fail/${applicationId}`)
         .then((response) => {
-            alert('Adoption application marked as failed!');
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Adoption Process Failed!",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1e293b",
+                color: "#ffffff",
+            });
+            this.fetchUserAdoptionApplications();
             this.closeReviewModal();
         })
         .catch((error) => {
@@ -478,18 +919,119 @@ export default {
     },
     closeModal() {
       this.isModalOpen = false;
-      this.imagePreview = null; // Reset image preview when closed
+      this.imagePreview = null;
+
     },
-    handleFileChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          this.imagePreview = reader.result; // Set the preview image
-          this.selectedImage = file; // Store the selected image file
-        };
-        reader.readAsDataURL(file);
-      }
+    
+    handleFileChange(event, context = 'verification') {
+        if (context === 'profile') {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.imagePreview = e.target.result;
+                    this.selectedImage = file;
+                    this.$nextTick(() => {
+                        const image = this.$refs.imageCropper;
+                        if (image) {
+                            this.cropper = new Cropper(image, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                cropBoxResizable: true,
+                                cropBoxMovable: true,
+                                background: false,
+                            });
+                        }
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        } else {
+            // Handle verification form files
+            const newFiles = Array.from(event.target.files);
+            // Append new files to existing documents
+            this.form.documents = [...this.form.documents, ...newFiles];
+            // Append new previews to existing previews
+            newFiles.forEach(file => {
+                const preview = {
+                    url: URL.createObjectURL(file),
+                    type: file.type,
+                };
+                this.documentPreviews.push(preview);
+            });
+            // Reset the file input to allow re-selecting the same files
+            this.$refs.fileInput.value = '';
+        }
+    },
+    cancelCrop() {
+      this.closeModal();
+    },
+    async cropImage() {
+      if (!this.cropper) return;
+
+      const canvas = this.cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+      });
+
+      // Create a circular canvas
+      const circleCanvas = document.createElement('canvas');
+      const size = 300;
+      circleCanvas.width = size;
+      circleCanvas.height = size;
+      const ctx = circleCanvas.getContext('2d');
+
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(canvas, 0, 0, size, size);
+
+      circleCanvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append('_method', 'PUT');
+        formData.append('name', this.user.name);
+        formData.append('bio', this.user.bio);
+        formData.append('profile_picture', blob, 'profile_picture.png');
+
+        try {
+          const response = await axios.post('/api/user/update/profile', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+          });
+
+          this.user = { ...this.user, ...response.data };
+          this.imagePreview = `/storage/${response.data.profile_picture}`;
+          Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Profile picture updated successfully!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+          });
+          this.closeModal();
+        } catch (error) {
+          console.error('Error updating profile picture:', error);
+          Swal.fire({
+            position: "bottom-end",
+            icon: "error",
+            title: "Failed to update profile picture.",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+          });
+        }
+      }, 'image/png');
     },
     toggleEditing() {
       this.isEditing = !this.isEditing;
@@ -498,26 +1040,56 @@ export default {
         this.isEditing = false; // Hide the input field after saving
 
         const formData = new FormData();
+        formData.append('_method', 'PUT'); // Laravel will interpret this as a PUT request
         formData.append('name', this.user.name); // Append the updated name
+        formData.append('bio', this.user.bio); // Append the updated bio
 
         try {
-            const response = await axios.put('/api/user/update/profile', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            const response = await axios.post('/api/user/update/profile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Ensure you're sending the correct token
+                },
             });
 
             // Log server response for debugging
             console.log('Server Response:', response.data);
 
             // On success, update the local user data
-            if (response.data.name) {
-            this.user.name = response.data.name;
+            if (response.data.name && response.data.bio) {
+                this.user.name = response.data.name;
+                this.user.bio = response.data.bio;
+
+                // Update the profile picture if it was returned in the response
+                if (response.data.profile_picture) {
+                    this.user.profile_picture = response.data.profile_picture;
+                }
+
+                Swal.fire({
+                    position: "bottom-end",
+                    icon: "success",
+                    title: "Your profile has been updated successfully!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: "#1e293b",
+                    color: "#ffffff",
+                    toast: true,
+                });
+
+                this.closeBioModal();
+                this.closeModal(); // Close the modal after saving
+                this.fetchUserProfileInfo(); // Refresh user profile data
+            } else {
+                throw new Error('Name not updated in server response.');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
 
             Swal.fire({
                 position: "bottom-end",
-                icon: "success",
-                title: "Your profile has been updated successfully!",
+                icon: "error",
+                title: "An error occurred. Please try again.",
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -525,28 +1097,8 @@ export default {
                 color: "#ffffff",
                 toast: true,
             });
-
-            this.fetchUserProfileInfo(); // Refresh user profile data
-            this.closeModal(); // Close the modal after saving
-            } else {
-            throw new Error('Name not updated in server response.');
-            }
-        } catch (error) {
-            console.error('Error updating profile:', error);
-
-            Swal.fire({
-            position: "bottom-end",
-            icon: "error",
-            title: "An error occurred. Please try again.",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: "#1e293b",
-            color: "#ffffff",
-            toast: true,
-            });
         }
-        },
+    },
     async fetchUserProfileInfo() {
       try {
         const response = await axios.get('/api/user/profile/info');
@@ -569,11 +1121,26 @@ export default {
   mounted() {
     this.fetchUserProfileInfo();
     this.fetchUserAdoptionApplications();
+    this.fetchPendingApplicationsCount();
+    this.fetchVerificationApplications();
+    setInterval(() => {
+        this.fetchPendingApplicationsCount();
+    }, 30000);
+    if (this.$route.query.openAdoptionModal === 'true') {
+      this.openAdoptionModal();
+      // Optionally, clear the query parameter to avoid re-opening on refresh
+      this.$router.replace({ query: {} });
+    }
   },
 };
 </script>
 
 <style scoped>
+/* Ensure circular cropper */
+.cropper-crop-box,
+.cropper-view-box {
+  border-radius: 50% !important;
+}
     /* From Uiverse.io by cssbuttons-io */ 
     .GetVerifiedButton {
         position: relative;
@@ -667,14 +1234,14 @@ export default {
 </style>
 
 <style>
-  /* Hide the scrollbar but allow scrolling */
-  .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Hides scrollbar in WebKit browsers */
-  }
+/* Hide the scrollbar but allow scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+display: none; /* Hides scrollbar in WebKit browsers */
+}
 
-  .hide-scrollbar {
-  -ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
-  scrollbar-width: none; /* Hides scrollbar in Firefox */
-  overflow: auto; /* Ensure scrolling is enabled */
-  }
+.hide-scrollbar {
+-ms-overflow-style: none; /* Hides scrollbar in IE and Edge */
+scrollbar-width: none; /* Hides scrollbar in Firefox */
+overflow: auto; /* Ensure scrolling is enabled */
+}
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <div class="card bg-base-200 shadow-md w-3/4 max-w-full border border-base-300 p-4">
+  <div class="card bg-base-200 shadow-md w-full border border-base-300 p-4">
     <div class="flex items-start gap-4">
       <!-- Profile Picture -->
-      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : 'https://picsum.photos/200'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />
+      <img :src="userProfile.profile_picture ? `/storage/${userProfile.profile_picture}` : '/storage/images/defaultpics/default-profile.png'"  alt="Profile" class="rounded-full object-cover w-12 h-12" />
       
       <!-- Input and Buttons -->
       <div class="flex-grow">
@@ -24,7 +24,7 @@
             </svg>
             Announcement
           </button>
-          <button class="btn btn-info btn-sm">
+          <button @click="openModal('event')" class="btn btn-info btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
               <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
               <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -41,23 +41,18 @@
     <div class="modal-box">
       <form v-if="modalType === 'announcement'" @submit.prevent="handleSubmitAnnouncement" class="flex flex-col gap-y-2">
         <!-- Close Button -->
-        <button 
-          type="button" 
-          @click="closeModal" 
-          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        >
+        <button type="button" @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
         </button>
 
         <h3 v-if="modalType === 'announcement'" class="font-bold text-2xl">Create Announcement</h3>
 
+        <div v-if="modalType === 'announcement' && validationMessage" class="text-error text-sm mb-2">
+          {{ validationMessage }}
+        </div>
+
         <div v-if="modalType === 'announcement'">
-          <textarea 
-            class="textarea textarea-bordered w-full" 
-            v-model="modalData.title"
-            placeholder="Write a title..." 
-            required
-          ></textarea>
+          <input type="text" class="textarea textarea-bordered w-full" v-model="modalData.title"placeholder="Write a title..." required></input>
         </div>
 
         <!-- Description (Visible for announcement) -->
@@ -84,8 +79,8 @@
           <input type="file" id="thumbnail" class="hidden" ref="imageInput" @change="handleImageChange" />
 
           <!-- Image Preview -->
-          <div v-if="modalData.image_preview" class="my-4">
-            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
+          <div v-if="modalData.thumbnail" class="my-4">
+            <img :src="modalData.image_previews" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
           </div>
         </div>
 
@@ -104,6 +99,11 @@
 
         <!-- Modal Title Based on Type -->
         <h3 v-if="modalType === 'post'" class="font-bold text-lg">Create Post</h3>
+
+        <!-- Validation Message for Post -->
+        <div v-if="modalType === 'post' && validationMessage" class="text-error text-sm mb-2">
+          {{ validationMessage }}
+        </div>
 
         <!-- Caption (Visible for 'post', 'announcement', and 'event' types) -->
         <div v-if="modalType === 'post'">
@@ -126,11 +126,22 @@
           </button>
 
           <!-- Hidden File Input for Image -->
-          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" />
+          <input type="file" id="image_path" class="hidden" ref="imageInput" @change="handleImageChange" multiple :required="modalData.is_adoptable"/>
 
           <!-- Image Preview -->
-          <div v-if="modalData.image_preview" class="my-4">
-            <img :src="modalData.image_preview" alt="Image Preview" class="w-full max-h-64 object-cover rounded-lg" />
+          <div v-if="modalData.image_previews.length > 0" class="my-4">
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="(preview, index) in modalData.image_previews" :key="index" class="relative">
+                <img :src="preview" alt="Image Preview" class="w-full h-24 object-cover rounded-lg" />
+                <button 
+                  type="button" 
+                  @click="removeImage(index)" 
+                  class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -144,6 +155,87 @@
             />
             <span>This post is for adoption</span>
           </label>
+        </div>
+
+        <div v-if="modalData.is_adoptable" class="mt-2">
+          <label class="block font-medium mb-1">Pet</label>
+          <input 
+            type="text" 
+            class="input input-bordered w-full" 
+            v-model="modalData.pet" 
+            placeholder="What pet is that?" 
+            required
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-4">Submit</button>
+      </form>
+      <!-- Event Modal -->
+      <form v-if="modalType === 'event'" @submit.prevent="handleSubmitEvent" class="flex flex-col gap-y-2">
+        <button type="button" @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          ✕
+        </button>
+
+        <h3 v-if="modalType === 'event'" class="font-bold text-2xl">Create Event</h3>
+
+        <div v-if="modalType === 'event' && validationMessage" class="text-error text-sm mb-2">
+          {{ validationMessage }}
+        </div>
+
+        <div v-if="modalType === 'event'">
+          <input type="text" class="textarea textarea-bordered w-full" v-model="modalData.event_location"placeholder="Location" required></input>
+        </div>
+        
+        <div v-if="modalType === 'event'">
+          <input type="text" class="textarea textarea-bordered w-full" v-model="modalData.event_title"placeholder="Write a title..." required></input>
+        </div>
+
+        <!-- Description (Visible for announcement) -->
+        <div v-if="modalType === 'event'">
+          <textarea class="textarea textarea-bordered w-full" v-model="modalData.event_description" placeholder="Write a description" required></textarea>
+        </div>
+        
+        <!-- Event Date -->
+        <div v-if="modalType === 'event'">
+          <label class="label text-white"> Start Event Date</label>
+          <input type="date" class="input input-bordered w-full" v-model="modalData.event_start_date" required/>
+        </div>
+
+        <!-- Event Date -->
+        <div v-if="modalType === 'event'">
+          <label class="label text-white"> End Event Date</label>
+          <input type="date" class="input input-bordered w-full" v-model="modalData.event_end_date" required/>
+        </div>
+
+        <!-- Announcement Thumbnail -->
+        <div v-if="modalType === 'event'">
+          <button id="btnImage" type="button" class="btn btn-primary btn-sm mb-4" @click="triggerFileInput">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
+              <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+              <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z"/>
+            </svg> 
+            Add Thumbnail
+          </button>
+
+          <!-- Hidden File Input for Image -->
+          <input type="file" id="event_thumbnail" class="hidden" ref="imageInput" @change="handleImageChange" multiple/>
+
+          <!-- Image Preview -->
+          <div v-if="modalData.image_previews.length > 0" class="my-4">
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="(preview, index) in modalData.image_previews" :key="index" class="relative">
+                <img :src="preview" alt="Image Preview" class="w-full h-24 object-cover rounded-lg" />
+                <button 
+                  type="button" 
+                  @click="removeImage(index)" 
+                  class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Submit Button -->
@@ -160,9 +252,21 @@ import axios from "axios";
 
 export default {
   props: {
-    fetchPosts: {
+    fetchPostsProp: {
       type: Function,
-      required: true
+      required: false
+    },
+    fetchFeedProp: {
+      type: Function,
+      required: false
+    },
+    fetchAnnouncementsProp: {
+      type: Function,
+      required: false
+    },
+    fetchEventsProp: {
+      type: Function,
+      required: false
     }
   },
   data() {
@@ -171,80 +275,125 @@ export default {
       modalType: null,
       modalData: {
         caption: "",
-        image_path: null,
-        image_preview: null,
+        image_path: [],
+        image_previews: [],
         is_adoptable: false,
         thumbnail: null,
         title: "",
-        description: ""
+        description: "",
+        event_title: "",
+        event_description: "",
+        event_start_date: "",
+        event_end_date: "",
+        event_thumbnail: null,
+        pet: "",
       },
       userProfile: {
         profile_picture: "",
         role: "",
       },
+      maxPostImages: 5,
+      validationMessage: "",
     };
   },
   methods: {
     openModal(type) {
       this.modalType = type;
+      this.validationMessage = "";
       this.$nextTick(() => {
         document.getElementById(`${type}boxModal`).showModal();
       });
     },
     closeModal() {
       this.modalType = null;
+      this.validationMessage = "";
       document.querySelector("dialog").close();
     },
     handleImageChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.modalData.image_path = file;
-        this.modalData.thumbnail = file;
-        this.modalData.image_preview = URL.createObjectURL(file);
+      const files = event.target.files;
+      if (files) {
+        if (this.modalType === "post") {
+          // Check if the total number of images exceeds the limit
+          if (this.modalData.image_path.length + files.length > this.maxPostImages) {
+            this.validationMessage = `You can only upload up to ${this.maxPostImages} images for a post.`;
+            return;
+          }
+
+          // Add new images to the list
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            this.modalData.image_path.push(file);
+            this.modalData.image_previews.push(URL.createObjectURL(file));
+          }
+        } else if (this.modalType === "announcement") {
+          // For announcements, only allow one image
+          if (files.length > 1) {
+            this.validationMessage = "You can only upload one image for an announcement.";
+            return;
+          }
+
+          // Replace the existing image with the new one
+          this.modalData.thumbnail = files[0];
+          this.modalData.image_previews = [URL.createObjectURL(files[0])];
+        } else if (this.modalType === "event") {
+          if(files.length > 5) {
+            this.validationMessage = "You can upload five images for an event";
+            return;
+          }
+
+          this.modalData.event_thumbnail = Array.from(files);
+          this.modalData.image_previews = [];
+
+          for (let i = 0; i < files.length; i++) {
+            this.modalData.image_previews.push(URL.createObjectURL(files[i]));
+          }
+        }
       }
     },
-    handleSubmitPost() {
-      const formData = new FormData();
-      formData.append("caption", this.modalData.caption);
-
-      if (this.modalData.image_path) {
-        formData.append("image_path", this.modalData.image_path);
+    async handleSubmitPost() {
+      if (this.modalData.image_path.length > this.maxPostImages) {
+        this.validationMessage = `You can only upload up to ${this.maxPostImages} images for a post.`;
+        return;
       }
 
-      // Convert the checkbox value to a boolean
+      const formData = new FormData();
+      formData.append("caption", this.modalData.caption);
+      formData.append("pet", this.modalData.pet);
+
+      this.modalData.image_path.forEach((image, index) => {
+        formData.append(`images[${index}]`, image);
+      });
+
       formData.append("is_adoptable", this.modalData.is_adoptable ? "1" : "0");
 
-      axios
-        .post("/api/posts/upload", formData)
-        .then((response) => {
-          console.log("Post created:", response.data);
-          this.closeModal();
-          this.resetForm();
-          this.fetchPosts();
+      try {
+        const response = await axios.post("/api/posts/upload", formData);
+        this.closeModal();
+        this.resetForm();
 
-          Swal.fire({
-            position: "bottom-end",
-            icon: "success",
-            title: "Your post has been uploaded successfully!",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: "#1e293b",
-            color: "#ffffff",
-            toast: true,
-          });
-        })
-        .catch((error) => {
-          console.error("Error creating post:", error);
+        // Fetch the latest posts after creating a new post
+        if (typeof this.fetchPostsProp === 'function') {
+          this.fetchPostsProp(true);
+        } else if (typeof this.fetchFeedProp === 'function') {
+          this.fetchFeedProp(true);
+        }
 
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong while uploading your post!",
-            background: "#1e293b",
-            color: "#ffffff",
-          });
+        Swal.fire({
+          position: "bottom-end",
+          icon: "success",
+          title: "Your post has been uploaded successfully!",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          background: "#1e293b",
+          color: "#ffffff",
+          toast: true,
         });
+
+      } catch (error) {
+        console.error("Error creating post:", error);
+        this.validationMessage = "Something went wrong while uploading your post.";
+      }
     },
     handleSubmitAnnouncement() {
       const formData = new FormData();
@@ -261,7 +410,12 @@ export default {
           console.log("Post created:", response.data);
           this.closeModal();
           this.resetForm();
-          this.fetchPosts();
+          
+          if (typeof this.fetchAnnouncementsProp === 'function') {
+            this.fetchAnnouncementsProp(true);
+          } else if (typeof this.fetchFeedProp === 'function') {
+            this.fetchFeedProp(true);
+          }
 
           Swal.fire({
             position: "bottom-end",
@@ -287,29 +441,80 @@ export default {
           });
         });
     },
+    handleSubmitEvent() {
+      const formData = new FormData();
+      formData.append("event_title", this.modalData.event_title);
+      formData.append("event_description", this.modalData.event_description);
+      formData.append("event_start_date", this.modalData.event_start_date);
+      formData.append("event_end_date", this.modalData.event_end_date);
+      formData.append("event_location", this.modalData.event_location);
 
-    fetchPosts() {
+      if (this.modalData.event_thumbnail && this.modalData.event_thumbnail.length > 0) {
+        this.modalData.event_thumbnail.forEach((file, index) => {
+          formData.append(`event_thumbnail[${index}]`, file);
+        });
+      }
+
       axios
-        .get("/api/posts")
+        .post("/api/events/upload", formData)
         .then((response) => {
-          this.posts = response.data; // Update the posts list
+          console.log("Post created:", response.data);
+          this.closeModal();
+          this.resetForm();
+
+          if (typeof this.fetchEventsProp === 'function') {
+            this.fetchEventsProp(true);
+          } else if (typeof this.fetchFeedProp === 'function') {
+            this.fetchFeedProp(true);
+          }
+
+          Swal.fire({
+            position: "bottom-end",
+            icon: "success",
+            title: "Your event has been uploaded successfully!",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: "#1e293b",
+            color: "#ffffff",
+            toast: true,
+          });
         })
         .catch((error) => {
-          console.error("Error fetching posts:", error);
+          console.error("Error creating post:", error);
+
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong while uploading your post!",
+            background: "#1e293b",
+            color: "#ffffff",
+          });
         });
+    },
+    removeImage(index) {
+      this.modalData.image_path.splice(index, 1);
+      this.modalData.image_previews.splice(index, 1);
     },
     triggerFileInput() {
       this.$refs.imageInput.accept = 'image/*';
+      this.$refs.imageInput.multiple = ['post', 'event', 'announcement'].includes(this.modalType); // Allow multiple files for posts, events, and announcements
       this.$refs.imageInput.click();
     },
     resetForm() {
       this.modalData.caption = "";
-      this.modalData.image_path = null;
-      this.modalData.image_preview = null;
+      this.modalData.image_path = [];
+      this.modalData.image_previews = [];
       this.modalData.is_adoptable = false;
       this.modalData.thumbnail = null;
       this.modalData.title = "";
       this.modalData.description = "";
+      this.modalData.event_title = "",
+      this.modalData.event_description = "",
+      this.modalData.event_thumbnail = null,
+      this.modalData.event_location = "",
+      this.modalData.event_start_date = "",
+      this.modalData.event_end_date = ""
     },
     fetchUserProfile() {
       axios
@@ -340,5 +545,8 @@ export default {
 
   input[type="file"] {
     display: none;
+  }
+  .text-error {
+    color: #ff4444; /* Red color for error messages */
   }
 </style>

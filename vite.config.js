@@ -8,11 +8,29 @@ export default defineConfig({
       input: ['resources/css/app.css', 'resources/js/app.js'],
       refresh: true,
     }),
-    vue(),
+    vue({
+      template: {
+          transformAssetUrls: {
+            base: null,
+            includeAbsolute: false,
+          },
+        },
+    }),
   ],
   resolve: {
     alias: {
-      vue: 'vue/dist/vue.esm-bundler.js', // This line ensures Vue uses the full build
+      vue: 'vue/dist/vue.esm-bundler.js',
     },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'axios', 'lodash'], // Separate large libraries
+          daisyui: ['daisyui'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase limit to suppress warnings
   },
 });

@@ -23,7 +23,7 @@ class AdoptionFormController extends Controller
             'experience' => 'required|string',
             'reason' => 'required|string',
             'current_pets' => 'required|integer|min:0',
-            'gov_id' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10000',
+            'gov_id' => 'required|file|mimes:jpg,jpeg,png,pdf|max:50000',
             'sender_id' => 'required|exists:users,user_id',
         ]);
     
@@ -57,6 +57,16 @@ class AdoptionFormController extends Controller
         $notification->save();
     
         return response()->json(['message' => 'Application submitted successfully!'], 201);
+    }
+
+    public function getPendingApplicationsCount(Request $request)
+    {
+        $userId = $request->user()->user_id; // Get the authenticated user's ID
+        $pendingCount = AdoptionApplication::where('receiver_id', $userId)
+            ->where('status', 'Pending')
+            ->count();
+    
+        return response()->json(['pending_count' => $pendingCount], 200);
     }
     
 }

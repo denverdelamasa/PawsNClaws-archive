@@ -1,7 +1,3 @@
 @include('partials.main.head')
-
-    <div id="app3">
-        <announcement-cards></announcement-cards> 
-    </div>
-
+    <announcement-cards></announcement-cards> 
 @include('partials.main.footer')

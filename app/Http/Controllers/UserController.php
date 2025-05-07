@@ -5,28 +5,71 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\VerifyApplication;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function getUsersList()
+    public function getUsersList(Request $request)
     {
-        // Fetch users with 'last_online' field
-        $users = User::select('user_id', 'name', 'email', 'profile_picture', 'role', 'status', 'is_online', 'last_online')->get();
-        
+        // Initialize query
+        $query = User::select('user_id', 'name', 'email', 'profile_picture', 'role', 'status', 'is_online', 'last_online');
+    
+        // Handle search
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+    
+        // Handle filter
+        $filter = $request->query('filter', 'alphabetical'); // Default to alphabetical
+        switch ($filter) {
+            case 'alphabetical':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'recent':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'most_active':
+                // Assuming activity is based on a 'posts' relationship
+                $query->withCount('posts')->orderBy('posts_count', 'desc');
+                break;
+            case 'least_active':
+                // Assuming activity is based on a 'posts' relationship
+                $query->withCount('posts')->orderBy('posts_count', 'asc');
+                break;
+            default:
+                $query->orderBy('name', 'asc'); // Fallback
+                break;
+        }
+    
+        // Fetch users
+        $users = $query->get();
+    
+        // Transform users
         $users->each(function ($user) {
-            // Check if last_online exists and format it using Carbon
+            // Format last_online
             if ($user->last_online) {
-                // Ensure last_online is in the past and calculate the difference from the current time
-                $user->last_online = Carbon::parse($user->last_online)->diffForHumans(Carbon::now(), true); // 'true' ensures a human-readable format without "from now"
+                $user->last_online = Carbon::parse($user->last_online)->diffForHumans(Carbon::now(), true);
             }
+    
+            // Check for pending verification
+            $user->has_pending_verification = VerifyApplication::where('user_id', $user->user_id)
+                ->where('status', 'pending')
+                ->exists();
         });
-        
-        // Return the users as a JSON response
+    
+        // Return JSON response
         return response()->json($users);
     }
+    
     public function updateRole(Request $request, $user_id)
     {
         // Check if the currently authenticated user is an Admin

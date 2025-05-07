@@ -1,6 +1,5 @@
 <template>
 <div class="card bg-base-200 w-full shadow-xl my-4 border border-base-300">
-
   <!-- Thumbnail -->
   <div class="px-4 hover:cursor-pointer">
     <img src="https://picsum.photos/1920/1080" alt="Thumbnail" class="w-full max-h-[400px] rounded object-cover" />

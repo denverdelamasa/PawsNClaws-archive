@@ -1,5 +1,5 @@
 <div class="container mx-auto p-4">
-  <div class="card bg-base-200 shadow-md p-24">
+  <div class="card bg-base-200 shadow-md lg:p-24 p-8">
     <h1 class="text-5xl font-bold mb-4">Terms of Service</h1>
   
     <section class="mb-6">

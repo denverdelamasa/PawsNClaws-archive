@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @include('partials.main.data-theme')>
 @include('partials.main.scripts-styles')
-    <body class="font-sans antialiased">
+    <body class="font-sans">
         <div id="app2">
           <sign-up></sign-up>       
         </div>
@@ -13,7 +13,7 @@
         <a class="link link-hover">Posts</a>
         <a class="link link-hover">Announcements</a>
         <a class="link link-hover">Events</a>
-        <a class="link link-hover">Shelters</a>
+        <a class="link link-hover">Services</a>
       </nav>
       <nav>
         <h6 class="footer-title text-xs">Site</h6>

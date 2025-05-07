@@ -3,11 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -64,4 +65,21 @@ class User extends Authenticatable
         return $this->hasMany(Post::class, 'user_id', 'user_id');
     }
     
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'sender_id', 'user_id')
+                    ->orWhere('receiver_id', 'user_id');
+    }
+    
+    /**
+     * Get the messages sent by the user.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id', 'user_id');
+    }
+    public function verificationApplications()
+    {
+        return $this->hasMany(VerifyApplication::class, 'user_id', 'user_id');
+    }
 }

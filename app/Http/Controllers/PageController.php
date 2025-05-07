@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public function contentDetail()
+    {
+        return view('pages.notifications.content-details');
+    }
     public function showPage(Request $request)
     {
         // Fetch theme from session or default to 'light'
@@ -36,9 +40,9 @@ class PageController extends Controller
     {
         return view('pages.events.events'); // Return the view for the home page
     }
-    public function shelters()
+    public function Services()
     {
-        return view('pages.shelters.shelters'); // Return the view for the home page
+        return view('pages.services.services'); // Return the view for the home page
     }
     public function browse()
     {
@@ -50,7 +54,19 @@ class PageController extends Controller
     }
     public function profile()
     {
-        return view('pages.profile.profile'); // Return the view for the home page
+        return view('pages.profile.profile'); // Return the view for the home page 
+    }
+    public function editprofile()
+    {
+        return view('pages.profile.editprofile');
+    }
+    public function bookmarks()
+    {
+        return view('pages.profile.bookmarks');
+    }
+    public function messages()
+    {
+        return view('pages.messages.messages'); // Return the view for the home page
     }
     public function others_profile()
     {

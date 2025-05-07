@@ -2,16 +2,11 @@
   <div>
     <!-- Comments Modal -->
     <dialog ref="commentsDialog" class="modal">
-      <div class="modal-box relative max-w-full w-9/12 h-screen p-8 scrollbar-hidden overflow-auto">
-        <h3 class="text-xl font-bold my-4">Comments</h3>
+      <div class="modal-box relative max-w-full w-[90%] h-screen p-8 scrollbar-hidden overflow-auto">
+        <h3 class="text-xl font-bold my-4">{{ commentsCount }} {{ commentsCount === 1 ? 'Comment' : 'Comments' }}</h3>
         
         <!-- Comment Input -->
-        <textarea
-            v-model="newComment" 
-            placeholder="Write a comment..." 
-            class="textarea textarea-bordered w-full resize-y" 
-            rows="2">
-        </textarea>
+        <textarea v-model="newComment" placeholder="Write a comment..." class="textarea textarea-bordered w-full resize-y" rows="1"></textarea>
         <button @click="postComment" class="btn btn-primary mt-4 btn-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
@@ -86,89 +81,7 @@
                   </div>
                 </dialog>
 
-                <dialog :id="`reportCommentModal-${comment.comment_id}`" class="modal">
-                  <div class="modal-box">
-                    <h3 class="text-lg font-bold">Report Comment</h3>
-                    <p class="py-4">Please select the reason for reporting this post:</p>
-
-                    <form @submit.prevent="submitReport(comment.comment_id)">
-                      <!-- Predefined Report Reasons -->
-                      <div class="my-4 gap-y-2 flex flex-col">
-                        <div>
-                          <input
-                            type="radio"
-                            id="troll"
-                            value="Troll"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="troll" class="ml-2">Troll</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="hate-speech"
-                            value="Hate Speech"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="hate-speech" class="ml-2">Hate Speech</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="spam"
-                            value="Spam"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="spam" class="ml-2">Spam</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="harassment"
-                            value="Harassment"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="harassment" class="ml-2">Harassment</label>
-                        </div>
-
-                        <div>
-                          <input
-                            type="radio"
-                            id="other"
-                            value="Other"
-                            v-model="reportReason"
-                            class="radio"
-                          />
-                          <label for="other" class="ml-2">Other</label>
-                        </div>
-                      </div>
-
-                      <!-- If "Other" is selected, show a text area for additional comments -->
-                      <div v-if="reportReason === 'Other'" class="my-4">
-                        <label for="custom-reason" class="label">Please describe the issue</label>
-                        <textarea
-                          id="custom-reason"
-                          v-model="customReason"
-                          class="textarea textarea-bordered w-full"
-                          rows="4"
-                          placeholder="Enter custom reason for reporting..."
-                        ></textarea>
-                      </div>
-
-                      <div class="modal-action">
-                        <button class="btn btn-error">Submit Report</button>
-                        <a class="btn" @click="closeReportModal(comment.comment_id)">Cancel</a>
-                      </div>
-                    </form>
-                  </div>
-                </dialog>
+                <ReportComments v-if="selectedCommentId" :commentId="selectedCommentId" :reportType="'comment'" :currentUserId="currentUserId" @close="closeReportModal"/>
 
                 <div class="flex items-center space-x-3">
                   <div class="avatar">
@@ -209,15 +122,40 @@
 
             <!-- If no comments, show a message -->
             <div v-else>
-              <p>No comments yet. Be the first to comment!</p>
+              <p v-if="!noMoreComments">No comments yet. Be the first to comment!</p>
             </div>
+
+            <!-- No More Comments Message -->
+            <div v-if="noMoreComments" class="text-center py-4 text-gray-500">
+              {{ comments.length === 0 ? 'No comments available.' : 'No more comments available.' }}
+            </div>
+          </div>
+          <!-- Scroll Loading Indicator -->
+          <div v-if="isLoading && comments.length > 0" class="text-center py-4">
+            <div class="loading loading-spinner loading-md"></div>
           </div>
         </div>
 
+        <div v-if="!noMoreComments" class="text-center mt-4 space-y-2">
+          <!-- Loading text or spinner -->
+          <div v-if="isLoading" class="text-gray-500 text-sm">
+            Loading...
+          </div>
+
+          <!-- Load More Button -->
+          <button 
+            @click="fetchComments" 
+            class="btn btn-primary btn-sm"
+            :disabled="isLoading"
+          >
+            Load More Comments
+          </button>
+        </div>
         <form method="dialog">
           <button @click="closeModal" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
       </div>
+      <LoginFirst v-if="showLoginModal" ref="loginFirst" @close="showLoginModal = false" />
     </dialog>
   </div>
 </template>
@@ -226,24 +164,69 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import ReportComments from '../misc/Reports.vue';
+import LoginFirst from './LoginFirst.vue';
 
 export default {
   name: 'CommentsModal',
-  props: ['isModalOpen', 'postId'],
+  components: {
+    ReportComments,
+    LoginFirst,
+  },
+  props: {
+    isCommentsModalOpen: {
+      type: Boolean,
+      required: true 
+    },
+    postId: {
+      type: [String, Number],
+      required: false
+    },
+    announcementId: {
+      type: [String, Number],
+      required: false
+    },
+    eventId: {
+      type: [String, Number],
+      required: false
+    },
+  },
+  emits: ['close'],
   data() {
     return {
       selectedComment: {},
       comments: [],  // Array to store fetched comments
       newComment: '',
       isLoading: false,
+      loading: false,
       currentUserId: null,
       isAuthenticated: false,
+      selectedCommentId: null,
       isEditing: false,
       reportReason: '',
       customReason: '',
+      currentPage: 1, // Current page number
+      totalPages: 1, // Total number of pages
+      noMoreComments: false,
+      commentsCount: 0,
+      showLoginModal: false,
     };
   },
   methods: {
+    resetCommentState() {
+      this.comments = [];
+      this.currentPage = 1;
+      this.totalPages = 1;
+      this.noMoreComments = false;
+      this.commentsCount = 0;
+    },
+    showModal(commentId) {
+      if (modal) {
+        modal.showModal();
+      } else {
+        console.log("Modal not found");
+      }
+    },
     openEditCommentModal(comment) {
       this.selectedComment = { ...comment };  // Copy comment data to selectedComment
       this.isEditing = true;  // Set editing state to true
@@ -291,61 +274,151 @@ export default {
     closeModal() {
       this.$emit('close'); // Emit the close event to the parent component
       this.$refs.commentsDialog.close(); // Close the dialog using its method
-      this.comments = [];
+      this.resetCommentState();
     },
-    fetchComments() {
-        this.isLoading = true; // Set loading state to true when fetching comments
-        console.log("Fetching comments, isLoading:", this.isLoading);
-        axios.get(`/api/comments/post/${this.postId}`)
-        .then(response => {
-            this.comments = response.data;
-            this.isLoading = false; // Set loading state to false when finished
-        })
-        .catch(error => {
-            console.error("Error fetching comments:", error);
-            this.isLoading = false; // Set loading state to false on error
-        });
-    },
-    postComment() {
-      if (!this.newComment.trim()) {
-        alert("Comment cannot be empty!");
+    async fetchComments() {
+      if (this.isLoading || this.currentPage > this.totalPages) return;
+
+      this.isLoading = true;
+
+      let url = '';
+      if (this.postId) {
+        url = `/api/comments/${this.postId}/post?page=${this.currentPage}`;
+      } else if (this.announcementId) {
+        url = `/api/comments/${this.announcementId}/announcement?page=${this.currentPage}`;
+      } else if (this.eventId) {
+        url = `/api/comments/${this.eventId}/event?page=${this.currentPage}`;
+      } else {
+        console.error("No postId, announcementId, or eventId provided");
+        this.isLoading = false;
         return;
       }
 
-      console.log("Post ID:", this.postId); // Debugging log
-      axios.post('/api/comments/submit', {
-        post_comment_id: this.postId,
-        comment: this.newComment,
-      })
-      .then(response => {
-        this.comments.push(response.data);
-        this.newComment = '';
-        this.fetchComments();
-        this.fetchPost();
-      })
-      .catch(error => {
-        console.error("Error posting comment:", error);
-        Swal.fire({
-        position: 'center',  // Positions it in the center of the screen
-        icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-        title: 'You need to sign in first to comment',  // Customize your message
-        showConfirmButton: true,  // Show the OK button
-        confirmButtonText: 'OK',  // Text of the button
-        background: '#2c2f36',  // Dark background color
-        color: '#fff',  // White text color
-        confirmButtonColor: '#3085d6',  // Blue color for the button
-        toast: true,  // Display as a toast
-        timer: 3000,  // Time in milliseconds before the toast closes
-        timerProgressBar: true,  // Optional, shows a progress bar
-        customClass: {
-            container: 'Comment_Toast'  // Apply the custom class here
-        },
-        didOpen: () => {
-          Swal.showLoading();  // Show loading indicator
+      try {
+        const response = await axios.get(url);
+        const data = response.data;
+
+        console.log('API Response:', data);
+
+        const modal = this.$refs.commentsDialog;
+        const previousScrollHeight = modal ? modal.scrollHeight : 0;
+
+        if (this.currentPage === 1) {
+          this.comments = data.data || [];
+          this.commentsCount = data.comments_count || 0;
+        } else {
+          this.comments = [...this.comments, ...data.data];
         }
+
+        this.currentPage++;
+        this.totalPages = data.last_page || 1;
+
+        if (this.currentPage > this.totalPages) {
+          this.noMoreComments = true;
+        }
+
+        this.$nextTick(() => {
+          if (modal && this.currentPage > 2) {
+            const newScrollHeight = modal.scrollHeight;
+            modal.scrollTop += newScrollHeight - previousScrollHeight;
+          }
         });
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+
+    handleCommentsScroll() {
+      const modal = this.$refs.commentsDialog;
+      if (!modal) {
+        console.warn("Modal reference not found");
+        return;
+      }
+
+      const bottomOfModal = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 100;
+      console.log('Scroll Check:', {
+        scrollTop: modal.scrollTop,
+        clientHeight: modal.clientHeight,
+        scrollHeight: modal.scrollHeight,
+        bottomOfModal,
+        isLoading: this.isLoading,
+        noMoreComments: this.noMoreComments
+      });
+
+      if (bottomOfModal && !this.isLoading && !this.noMoreComments) {
+        console.log('Fetching more comments...');
+        this.fetchComments();
+      }
+    },
+
+    triggerLoginModal() {
+      this.showLoginModal = true;
+      this.$nextTick(() => {
+        const loginFirst = this.$refs.loginFirst;
+        if (loginFirst) {
+          loginFirst.showLoginModal();
+        }
       });
     },
+
+    postComment() {
+      if (!this.isAuthenticated) {
+          this.triggerLoginModal();
+          return;
+      }
+
+      if (!this.newComment.trim()) {
+          alert("Comment cannot be empty!");
+          return;
+      }
+
+      let commentData = {
+          comment: this.newComment,
+      };
+
+      if (this.announcementId) {
+          commentData.announcement_comment_id = this.announcementId;
+      } else if (this.postId) {
+          commentData.post_comment_id = this.postId;
+      } else if (this.eventId){
+          commentData.event_comment_id = this.eventId;
+      } else {
+          console.error("No postId or announcementId provided");
+          return;
+      }
+
+      axios.post('/api/comments/submit', commentData)
+          .then(response => {
+              this.comments.unshift(response.data);
+              this.newComment = '';
+
+              // Reset pagination and comments
+              this.comments = [];
+              this.currentPage = 1;
+              this.noMoreComments = false;
+
+              // Fetch fresh comments
+              this.fetchComments();
+          })
+          .catch(error => {
+              console.error("Error posting comment:", error);
+              Swal.fire({
+                  position: 'center',
+                  icon: 'error',
+                  title: 'Something went wrong!',
+                  text: error.response ? error.response.data.message : 'Try again later.',
+                  showConfirmButton: false,
+                  toast: true,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  background: '#2c2f36',
+                  color: '#fff',
+              });
+          });
+    },
+
     async checkAuthentication() {
       try {
           const response = await axios.get('/api/auth/status');
@@ -361,87 +434,96 @@ export default {
         this.selectedComment = {}; // Clear the selected comment
       }
     },
+    
     openReportModal(commentId) {
-      const modal = document.getElementById(`reportCommentModal-${commentId}`);
-      modal.showModal();
+      this.reportType = 'comment';
+      this.selectedCommentId = commentId;
     },
 
-    closeReportModal(commentId) {
-      const modal = document.getElementById(`reportCommentModal-${commentId}`);
-      modal.close();
-      this.reportReason = ''; // Clear the selected reason
-      this.customReason = ''; // Clear the custom reason field
+    closeReportModal() {
+      this.selectedCommentId = null;
     },
-    submitReport(commentId) {
-      const reportData = {
-        user_id: this.currentUserId,  // The user reporting the post/comment
-        reason: this.reportReason,
-        type: "comment",
-        comment_id: commentId,
-        details: this.reportReason === 'Other' ? this.customReason : '',
-      };
+    openSuccessModal() {
+      this.$refs.successModal.showModal(); // Open the success modal
+    },
 
-      axios.post('/api/reports/submit', reportData)
-        .then(response => {
-          this.closeReportModal(commentId);
-          
-          Swal.fire({
-            position: 'center',  // Positions it in the center of the screen
-            icon: 'success',  // You can change the icon to 'error', 'warning', etc.
-            title: 'Your report has been submitted successfully!',  // Customize your message
-            showConfirmButton: true,  // Show the OK button
-            confirmButtonText: 'OK',  // Text of the button
-            background: '#2c2f36',  // Dark background color
-            color: '#fff',  // White text color
-            confirmButtonColor: '#3085d6',  // Blue color for the button
-            toast: true,  // Display as a toast
-            timer: 3000,  // Time in milliseconds before the toast closes
-            timerProgressBar: true,  // Optional, shows a progress bar
-            didOpen: () => {
-              Swal.showLoading();  // Show loading indicator
-            }
-          });
-        })
-        .catch(error => {
-          console.error('Error submitting report:', error);
-          
-          Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'Something went wrong!',
-          text: error.response ? error.response.data.message : 'Try again later.',
-          showConfirmButton: false,
-          toast: true,
-          timer: 3000,
-          timerProgressBar: true,
-          background: '#2c2f36',
-          color: '#fff',
-        });
-        });
+    closeSuccessModal() {
+      this.$refs.successModal.close(); // Close the success modal
     },
     
   },
   watch: {
-    isModalOpen(newVal) {
+    isCommentsModalOpen(newVal) {
       if (newVal) {
-        this.$refs.commentsDialog.showModal(); // Open the dialog when the prop is true
-        this.fetchComments();  // Fetch comments when modal opens
+        this.$refs.commentsDialog.showModal();
+        this.resetCommentState();
+        this.fetchComments();
       } else {
-        this.$refs.commentsDialog.close(); // Close the modal when the prop is false
+        this.$refs.commentsDialog.close();
+        this.resetCommentState();
+      }
+    },
+    postId(newVal, oldVal) {
+      if (newVal !== oldVal && newVal) {
+        this.resetCommentState();
+        this.fetchComments();
+      }
+    },
+    announcementId(newVal, oldVal) {
+      if (newVal !== oldVal && newVal) {
+        this.resetCommentState();
+        this.fetchComments();
+      }
+    },
+    eventId(newVal, oldVal) {
+      if (newVal !== oldVal && newVal) {
+        this.resetCommentState();
+        this.fetchComments();
       }
     }
   },
   mounted(){
     this.checkAuthentication();
     window.addEventListener('keydown', this.handleEscKey);
+    if (this.$refs.commentsDialog) {
+      this.$refs.commentsDialog.addEventListener('scroll', this.handleCommentsScroll);
+    }
   },
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleEscKey); // Clean up the event listener
+    if (this.$refs.commentsDialog) {
+      this.$refs.commentsDialog.removeEventListener('scroll', this.handleCommentsScroll);
+    }
   }
 };
 </script>
 
 <style scoped>
+.swal2-container {
+  z-index: 9999 !important;
+}
 
+.modal-box {
+  overflow-y: auto;
+  max-height: 80vh; /* Adjust as needed */
+}
+.modal-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #3085d6;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1c6aa8;
+} 
 </style>
 
